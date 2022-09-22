@@ -27,4 +27,25 @@ describe('PaymentChannelCreate', function () {
 
     await testTransaction(this.client, paymentChannelCreate, this.wallet)
   })
+
+  it('base ic', async function () {
+    const wallet2 = await generateFundedWallet(this.client)
+    const wallet3 = await generateFundedWallet(this.client)
+    console.log(wallet2);
+
+    const paymentChannelCreate: PaymentChannelCreate = {
+      TransactionType: 'PaymentChannelCreate',
+      Account: this.wallet.classicAddress,
+      Amount: {
+        currency: 'USD',
+        issuer: wallet3.classicAddress,
+        value: '10',
+      },
+      Destination: wallet2.classicAddress,
+      SettleDelay: 86400,
+      PublicKey: this.wallet.publicKey,
+    }
+
+    await testTransaction(this.client, paymentChannelCreate, this.wallet)
+  })
 })

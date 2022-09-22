@@ -1,5 +1,6 @@
 /* eslint-disable complexity -- Necessary for validatePaymentChannelCreate */
 import { ValidationError } from '../../errors'
+import { Amount } from '../common'
 
 import { BaseTransaction, validateBaseTransaction } from './common'
 
@@ -17,7 +18,7 @@ export interface PaymentChannelCreate extends BaseTransaction {
    * Destination address. When the channel closes, any unclaimed XRP is returned
    * to the source address's balance.
    */
-  Amount: string
+  Amount: Amount
   /**
    * Address to receive XRP claims against this channel. This is also known as
    * the "destination address" for the channel.

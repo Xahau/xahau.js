@@ -53,7 +53,10 @@ npm test
 ```bash
 npm install
 # sets up the rippled standalone Docker container - you can skip this step if you already have it set up
-docker run -p 6006:6006 -it natenichols/rippled-standalone:latest
+docker run -p 6006:6006 -it gcr.io/metaxrplorer/icv2:latest
+
+# If you want to run the explorer run the following
+# docker run -p 80:80 -it gcr.io/metaxrplorer/explorer:latest --build-arg VUE_APP_WSS_ENDPOINT=ws://0.0.0.0:80
 npm run build
 npm run test:integration
 ```
@@ -69,7 +72,7 @@ The other is in the command line (this is what we use for CI) -
 ```bash
 npm run build
 # sets up the rippled standalone Docker container - you can skip this step if you already have it set up
-docker run -p 6006:6006 -it natenichols/rippled-standalone:latest
+docker run -p 6006:6006 -it gcr.io/metaxrplorer/icv2:latest
 npm run test:browser
 ```
 

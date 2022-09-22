@@ -55,8 +55,12 @@ npm install
 # sets up the rippled standalone Docker container - you can skip this step if you already have it set up
 docker run -p 6006:6006 -it gcr.io/metaxrplorer/icv2:latest
 
-# If you want to run the explorer run the following
-# docker run -p 80:80 -it gcr.io/metaxrplorer/explorer:latest --build-arg VUE_APP_WSS_ENDPOINT=ws://0.0.0.0:80
+# If you want to run rippled w/ explorer run the following
+# Run rippled in standalone
+docker run -p 6006:6006 -p 80:80 -it gcr.io/metaxrplorer/icv2:latest
+# In another shell run the explorer
+docker run -e VUE_APP_WSS_ENDPOINT=ws://0.0.0.0:80 -p 3000:3000 -it gcr.io/metaxrplorer/explorer:latest
+
 npm run build
 npm run test:integration
 ```

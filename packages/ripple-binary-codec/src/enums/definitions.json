@@ -1432,6 +1432,26 @@
       }
     ],
     [
+      "SignatureReward",
+      {
+        "nth": 29,
+        "isVLEncoded": false,
+        "isSerialized": true,
+        "isSigningField": true,
+        "type": "Amount"
+      }
+    ],
+    [
+      "MinAccountCreateAmount",
+      {
+        "nth": 30,
+        "isVLEncoded": false,
+        "isSerialized": true,
+        "isSigningField": true,
+        "type": "Amount"
+      }
+    ],
+    [
       "LockedBalance",
       {
         "nth": 31,

@@ -48,3 +48,12 @@ export { SetHookFlagsInterface, SetHookFlags, SetHook } from './setHook'
 export { SignerListSet } from './signerListSet'
 export { TicketCreate } from './ticketCreate'
 export { TrustSetFlagsInterface, TrustSetFlags, TrustSet } from './trustSet'
+export {
+  URITokenMintFlagsInterface,
+  URITokenMintFlags,
+  URITokenMint,
+} from './uriTokenMint'
+export { URITokenBurn } from './uriTokenBurn'
+export { URITokenSell } from './uriTokenSell'
+export { URITokenBuy } from './uriTokenBuy'
+export { URITokenClear } from './uriTokenClear'

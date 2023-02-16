@@ -3,14 +3,14 @@ import { ValidationError } from '../../errors'
 import { BaseTransaction, validateBaseTransaction } from './common'
 
 /**
- * Map of flags to boolean values representing {@link URITokenClear} transaction
+ * Map of flags to boolean values representing {@link URITokenCancelSellOffer} transaction
  * flags.
  *
  * @category Transaction Flags
  *
  * @example
  * ```typescript
- * const tx: URITokenClear = {
+ * const tx: URITokenCancelSellOffer = {
  * Account: 'rhFcpWDHLqpBmX4ezWiA5VLSS4e1BHqhHd',
  * URITokenID: '7AFCE32EBA8BD310CC2D00BE10B76E2183337EA20444D4580E4DBDB396C101FB',
  * TransactionType: 'URITokenCancelSellOffer',
@@ -31,13 +31,13 @@ import { BaseTransaction, validateBaseTransaction } from './common'
  */
 
 /**
- * An URITokenClear transaction is effectively a limit order . It defines an
+ * An URITokenCancelSellOffer transaction is effectively a limit order . It defines an
  * intent to exchange currencies, and creates an Offer object if not completely.
  * Fulfilled when placed. Offers can be partially fulfilled.
  *
  * @category Transaction Models
  */
-export interface URITokenClear extends BaseTransaction {
+export interface URITokenCancelSellOffer extends BaseTransaction {
   TransactionType: 'URITokenCancelSellOffer'
   /**
    * Identifies the URITokenID of the NFToken object that the
@@ -47,15 +47,19 @@ export interface URITokenClear extends BaseTransaction {
 }
 
 /**
- * Verify the form and type of an URITokenClear at runtime.
+ * Verify the form and type of an URITokenCancelSellOffer at runtime.
  *
- * @param tx - An URITokenClear Transaction.
- * @throws When the URITokenClear is Malformed.
+ * @param tx - An URITokenCancelSellOffer Transaction.
+ * @throws When the URITokenCancelSellOffer is Malformed.
  */
-export function validateURITokenClear(tx: Record<string, unknown>): void {
+export function validateURITokenCancelSellOffer(
+  tx: Record<string, unknown>,
+): void {
   validateBaseTransaction(tx)
 
   if (tx.URITokenID == null) {
-    throw new ValidationError('URITokenClear: missing field URITokenID')
+    throw new ValidationError(
+      'URITokenCancelSellOffer: missing field URITokenID',
+    )
   }
 }

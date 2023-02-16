@@ -54,6 +54,6 @@ export {
   URITokenMint,
 } from './uriTokenMint'
 export { URITokenBurn } from './uriTokenBurn'
-export { URITokenSell } from './uriTokenSell'
+export { URITokenCreateSellOffer } from './uriTokenCreateSellOffer'
 export { URITokenBuy } from './uriTokenBuy'
-export { URITokenClear } from './uriTokenClear'
+export { URITokenCancelSellOffer } from './uriTokenCancelSellOffer'

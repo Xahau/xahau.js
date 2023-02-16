@@ -52,9 +52,15 @@ import { TicketCreate, validateTicketCreate } from './ticketCreate'
 import { TrustSet, validateTrustSet } from './trustSet'
 import { URITokenBurn, validateURITokenBurn } from './uriTokenBurn'
 import { URITokenBuy, validateURITokenBuy } from './uriTokenBuy'
-import { URITokenClear, validateURITokenClear } from './uriTokenClear'
+import {
+  URITokenCancelSellOffer,
+  validateURITokenCancelSellOffer,
+} from './uriTokenCancelSellOffer'
+import {
+  URITokenCreateSellOffer,
+  validateURITokenCreateSellOffer,
+} from './uriTokenCreateSellOffer'
 import { URITokenMint, validateURITokenMint } from './uriTokenMint'
-import { URITokenSell, validateURITokenSell } from './uriTokenSell'
 
 /**
  * @category Transaction Models
@@ -89,9 +95,9 @@ export type Transaction =
   | TrustSet
   | URITokenBurn
   | URITokenBuy
-  | URITokenClear
+  | URITokenCancelSellOffer
   | URITokenMint
-  | URITokenSell
+  | URITokenCreateSellOffer
 
 /**
  * @category Transaction Models
@@ -237,7 +243,7 @@ export function validate(transaction: Record<string, unknown>): void {
       break
 
     case 'URITokenCreateSellOffer':
-      validateURITokenSell(tx)
+      validateURITokenCreateSellOffer(tx)
       break
 
     case 'URITokenBuy':
@@ -245,7 +251,7 @@ export function validate(transaction: Record<string, unknown>): void {
       break
 
     case 'URITokenCancelSellOffer':
-      validateURITokenClear(tx)
+      validateURITokenCancelSellOffer(tx)
       break
 
     default:

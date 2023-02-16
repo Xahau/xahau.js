@@ -31,7 +31,7 @@ describe('server_state', function () {
         id: 0,
         result: {
           state: {
-            build_version: '1.7.3',
+            build_version: '1.10.0-rc1',
             complete_ledgers: '2563-2932',
             io_latency_ms: 1,
             jq_trans_overflow: '0',
@@ -103,6 +103,8 @@ describe('server_state', function () {
       )
 
       const removeKeys = [
+        'initial_sync_duration_us',
+        'node_size',
         'complete_ledgers',
         'load',
         'state_accounting',
@@ -133,7 +135,7 @@ describe('server_state', function () {
         )
         assert.equal(
           typeof response.result.state.state_accounting[key].transitions,
-          'number',
+          'string',
         )
       })
 

@@ -5,29 +5,28 @@ import {
   teardownClient,
   type XrplIntegrationTestContext,
 } from '../setup'
-import { generateFundedWallet, testTransaction } from '../utils'
+import { testTransaction } from '../utils'
 
 // how long before each test case times out
 const TIMEOUT = 20000
 const { hashPaymentChannel } = hashes
 
-describe('PaymentChannelFund', function () {
+describe('PaymentChannelClaim', function () {
   let testContext: XrplIntegrationTestContext
 
   beforeEach(async () => {
-    testContext = await setupClient(serverUrl)
+    testContext = await setupClient(serverUrl, true)
   })
   afterEach(async () => teardownClient(testContext))
 
   it(
-    'base',
+    'test xrp',
     async () => {
-      const wallet2 = await generateFundedWallet(testContext.client)
       const paymentChannelCreate: PaymentChannelCreate = {
         TransactionType: 'PaymentChannelCreate',
         Account: testContext.wallet.classicAddress,
         Amount: '100',
-        Destination: wallet2.classicAddress,
+        Destination: testContext.destination.classicAddress,
         SettleDelay: 86400,
         PublicKey: testContext.wallet.publicKey,
       }
@@ -36,6 +35,7 @@ describe('PaymentChannelFund', function () {
         paymentChannelCreate,
         { wallet: testContext.wallet },
       )
+
       await testTransaction(
         testContext.client,
         paymentChannelCreate,
@@ -47,10 +47,54 @@ describe('PaymentChannelFund', function () {
         TransactionType: 'PaymentChannelFund',
         Channel: hashPaymentChannel(
           testContext.wallet.classicAddress,
-          wallet2.classicAddress,
+          testContext.destination.classicAddress,
           paymentChannelResponse.result.tx_json.Sequence ?? 0,
         ),
         Amount: '100',
+      }
+
+      await testTransaction(
+        testContext.client,
+        paymentChannelFund,
+        testContext.wallet,
+      )
+    },
+    TIMEOUT,
+  )
+  it(
+    'test token',
+    async () => {
+      const paymentChannelCreate: PaymentChannelCreate = {
+        TransactionType: 'PaymentChannelCreate',
+        Account: testContext.wallet.classicAddress,
+        Amount: {
+          currency: 'USD',
+          issuer: testContext.gateway.classicAddress,
+          value: '100',
+        },
+        Destination: testContext.destination.classicAddress,
+        SettleDelay: 86400,
+        PublicKey: testContext.wallet.publicKey,
+      }
+
+      const paymentChannelResponse = await testContext.client.submit(
+        paymentChannelCreate,
+        { wallet: testContext.wallet },
+      )
+
+      const paymentChannelFund: PaymentChannelFund = {
+        Account: testContext.wallet.classicAddress,
+        TransactionType: 'PaymentChannelFund',
+        Channel: hashPaymentChannel(
+          testContext.wallet.classicAddress,
+          testContext.destination.classicAddress,
+          paymentChannelResponse.result.tx_json.Sequence ?? 0,
+        ),
+        Amount: {
+          currency: 'USD',
+          issuer: testContext.gateway.classicAddress,
+          value: '100',
+        },
       }
 
       await testTransaction(

@@ -1539,6 +1539,26 @@
       }
     ],
     [
+      "HookCallbackFee",
+      {
+        "nth": 20,
+        "isVLEncoded": false,
+        "isSerialized": true,
+        "isSigningField": true,
+        "type": "Amount"
+      }
+    ],
+    [
+      "LockedBalance",
+      {
+        "nth": 21,
+        "isVLEncoded": false,
+        "isSerialized": true,
+        "isSigningField": true,
+        "type": "Amount"
+      }
+    ],
+    [
       "BaseFeeDrops",
       {
         "nth": 22,
@@ -2516,6 +2536,7 @@
     "temXCHAIN_TOO_MANY_ATTESTATIONS": -254,
     "temHOOK_DATA_TOO_LARGE": -253,
     "temHOOK_REJECTED": -252,
+
     "tefFAILURE": -199,
     "tefALREADY": -198,
     "tefBAD_ADD_AUTH": -197,

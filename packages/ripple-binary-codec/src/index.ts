@@ -3,7 +3,7 @@ import { quality, binary } from './coretypes'
 import { decodeLedgerData } from './ledger-hashes'
 import { ClaimObject } from './binary'
 import { JsonObject } from './types/serialized-type'
-import { TRANSACTION_TYPES } from './enums'
+import { TRANSACTION_TYPES, TRANSACTION_TYPE_MAP } from './enums'
 
 const {
   signingData,
@@ -112,4 +112,5 @@ export {
   decodeQuality,
   decodeLedgerData,
   TRANSACTION_TYPES,
+  TRANSACTION_TYPE_MAP,
 }

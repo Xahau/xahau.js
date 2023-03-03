@@ -10,6 +10,13 @@ export const TRANSACTION_TYPES = Object.entries(enums.TRANSACTION_TYPES)
   .filter(([_key, value]) => value >= 0)
   .map(([key, _value]) => key)
 
+export const TRANSACTION_TYPE_MAP = Object.assign(
+  {},
+  ...Object.entries(enums.TRANSACTION_TYPES)
+    .filter(([_, v]) => v >= 0)
+    .map(([k, v]) => ({ [k]: v })),
+)
+
 const TYPE_WIDTH = 2
 const LEDGER_ENTRY_WIDTH = 2
 const TRANSACTION_TYPE_WIDTH = 2

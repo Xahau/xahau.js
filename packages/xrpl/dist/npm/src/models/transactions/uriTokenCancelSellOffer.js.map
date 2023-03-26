@@ -1,0 +1,1 @@
+{"version":3,"file":"uriTokenCancelSellOffer.js","sourceRoot":"","sources":["../../../../../src/models/transactions/uriTokenCancelSellOffer.ts"],"names":[],"mappings":";;;AAAA,yCAA8C;AAE9C,qCAAmE;AAoDnE,SAAgB,+BAA+B,CAC7C,EAA2B;IAE3B,IAAA,gCAAuB,EAAC,EAAE,CAAC,CAAA;IAE3B,IAAI,EAAE,CAAC,UAAU,IAAI,IAAI,EAAE;QACzB,MAAM,IAAI,wBAAe,CACvB,mDAAmD,CACpD,CAAA;KACF;AACH,CAAC;AAVD,0EAUC"}

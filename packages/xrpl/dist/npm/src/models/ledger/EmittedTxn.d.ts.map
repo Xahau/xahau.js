@@ -1,0 +1,1 @@
+{"version":3,"file":"EmittedTxn.d.ts","sourceRoot":"","sources":["../../../../../src/models/ledger/EmittedTxn.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,WAAW,EAAE,MAAM,iBAAiB,CAAA;AAE7C,OAAO,eAAe,MAAM,mBAAmB,CAAA;AAO/C,MAAM,CAAC,OAAO,WAAW,UAAW,SAAQ,eAAe;IACzD,eAAe,EAAE,YAAY,CAAA;IAE7B,UAAU,EAAE,WAAW,CAAA;IAMvB,SAAS,EAAE,MAAM,CAAA;CAClB"}

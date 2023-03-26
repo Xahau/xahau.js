@@ -1,0 +1,1 @@
+{"version":3,"file":"uriTokenBurn.js","sourceRoot":"","sources":["../../../../src/models/transactions/uriTokenBurn.ts"],"names":[],"mappings":";;;AAAA,yCAA8C;AAE9C,qCAAmE;AAmDnE,SAAgB,oBAAoB,CAAC,EAA2B;IAC9D,IAAA,gCAAuB,EAAC,EAAE,CAAC,CAAA;IAE3B,IAAI,EAAE,CAAC,UAAU,IAAI,IAAI,EAAE;QACzB,MAAM,IAAI,wBAAe,CAAC,uCAAuC,CAAC,CAAA;KACnE;AACH,CAAC;AAND,oDAMC"}

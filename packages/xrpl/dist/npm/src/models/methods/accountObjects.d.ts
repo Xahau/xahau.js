@@ -1,0 +1,29 @@
+import { LedgerIndex } from '../common';
+import { Check, DepositPreauth, Escrow, Offer, PayChannel, RippleState, SignerList, Ticket } from '../ledger';
+import { BaseRequest, BaseResponse } from './baseMethod';
+type AccountObjectType = 'check' | 'deposit_preauth' | 'escrow' | 'nft_offer' | 'offer' | 'payment_channel' | 'signer_list' | 'state' | 'ticket';
+export interface AccountObjectsRequest extends BaseRequest {
+    command: 'account_objects';
+    account: string;
+    type?: AccountObjectType;
+    deletion_blockers_only?: boolean;
+    ledger_hash?: string;
+    ledger_index?: LedgerIndex;
+    limit?: number;
+    marker?: unknown;
+}
+type AccountObject = Check | DepositPreauth | Escrow | Offer | PayChannel | SignerList | RippleState | Ticket;
+export interface AccountObjectsResponse extends BaseResponse {
+    result: {
+        account: string;
+        account_objects: AccountObject[];
+        ledger_hash?: string;
+        ledger_index?: number;
+        ledger_current_index?: number;
+        limit?: number;
+        marker?: string;
+        validated?: boolean;
+    };
+}
+export {};
+//# sourceMappingURL=accountObjects.d.ts.map

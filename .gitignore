@@ -57,7 +57,7 @@ test/config.js
 npm-debug.log
 
 # Ignore dist folder, built from tsc
-dist/
+# dist/
 
 # TypeScript incremental compilation cache
 *.tsbuildinfo

@@ -1,0 +1,1 @@
+{"version":3,"file":"getFeeXrp.d.ts","sourceRoot":"","sources":["../../../src/sugar/getFeeXrp.ts"],"names":[],"mappings":"AAEA,OAAO,KAAK,EAAE,MAAM,EAAE,MAAM,IAAI,CAAA;AAchC,wBAAsB,SAAS,CAC7B,MAAM,EAAE,MAAM,EACd,OAAO,CAAC,EAAE,MAAM,GACf,OAAO,CAAC,MAAM,CAAC,CAyBjB;AAUD,wBAAsB,iBAAiB,CACrC,MAAM,EAAE,MAAM,EACd,MAAM,EAAE,MAAM,GACb,OAAO,CAAC,MAAM,CAAC,CAMjB"}

@@ -1,0 +1,1 @@
+{"version":3,"file":"uriTokenBurn.d.ts","sourceRoot":"","sources":["../../../../src/models/transactions/uriTokenBurn.ts"],"names":[],"mappings":"AAEA,OAAO,EAAE,eAAe,EAA2B,MAAM,UAAU,CAAA;AAqCnE,MAAM,WAAW,YAAa,SAAQ,eAAe;IACnD,eAAe,EAAE,cAAc,CAAA;IAI/B,UAAU,EAAE,MAAM,CAAA;CACnB;AAQD,wBAAgB,oBAAoB,CAAC,EAAE,EAAE,MAAM,CAAC,MAAM,EAAE,OAAO,CAAC,GAAG,IAAI,CAMtE"}

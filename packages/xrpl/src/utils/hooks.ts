@@ -34,6 +34,9 @@ export function calculateHookOn(arr: Array<keyof TTS>): string {
   let hash =
     '0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffbfffff'
   arr.forEach((nth) => {
+    if (!TRANSACTION_TYPE_MAP) {
+      throw new XrplError(`TRANSACTION_TYPE_MAP malformed or undefined`)
+    }
     if (typeof nth !== 'string') {
       throw new XrplError(`HookOn transaction type must be string`)
     }

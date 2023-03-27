@@ -789,19 +789,9 @@
       }
     ],
     [
-      "VoteWeight",
+      "LockCount",
       {
         "nth": 47,
-        "isVLEncoded": false,
-        "isSerialized": true,
-        "isSigningField": true,
-        "type": "UInt32"
-      }
-    ],
-    [
-      "DiscountedFee",
-      {
-        "nth": 48,
         "isVLEncoded": false,
         "isSerialized": true,
         "isSigningField": true,

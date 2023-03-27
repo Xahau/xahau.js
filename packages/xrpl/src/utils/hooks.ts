@@ -34,9 +34,6 @@ export function calculateHookOn(arr: Array<keyof TTS>): string {
   let hash =
     '0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffbfffff'
   arr.forEach((nth) => {
-    if (!TRANSACTION_TYPE_MAP) {
-      throw new XrplError(`TRANSACTION_TYPE_MAP malformed or undefined`)
-    }
     if (typeof nth !== 'string') {
       throw new XrplError(`HookOn transaction type must be string`)
     }
@@ -48,7 +45,7 @@ export function calculateHookOn(arr: Array<keyof TTS>): string {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- Required
     const tts: Record<string, number> = TRANSACTION_TYPE_MAP
     let value = BigInt(hash)
-    // eslint-disable-next-line no-bitwise, @typescript-eslint/no-unsafe-member-access -- Required
+    // eslint-disable-next-line no-bitwise -- Required
     value ^= BigInt(1) << BigInt(tts[nth])
     // eslint-disable-next-line @typescript-eslint/no-magic-numbers -- Required
     hash = `0x${value.toString(16)}`

@@ -178,6 +178,9 @@ export interface BaseTransaction {
    * account it says it is from.
    */
   TxnSignature?: string
+  /**
+   * The network id of the transaction.
+   */
   NetworkID?: number
 }
 

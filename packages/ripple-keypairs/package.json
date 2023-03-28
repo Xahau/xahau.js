@@ -1,5 +1,5 @@
 {
-  "name": "ripple-keypairs",
+  "name": "@transia/ripple-keypairs",
   "version": "1.1.5",
   "description": "Cryptographic key pairs for the XRP Ledger",
   "scripts": {

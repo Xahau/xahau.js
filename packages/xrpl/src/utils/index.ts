@@ -25,6 +25,7 @@ import { Transaction } from '../models/transactions/transaction'
 import createCrossChainPayment from './createCrossChainPayment'
 import { deriveKeypair, deriveAddress, deriveXAddress } from './derive'
 import getBalanceChanges from './getBalanceChanges'
+import getNFTokenID from './getNFTokenID'
 import {
   hashSignedTx,
   hashTx,
@@ -39,6 +40,7 @@ import {
   hashEscrow,
   hashPaymentChannel,
 } from './hashes'
+import { calculateHookOn, hexNamespace, hexHookParameters, TTS } from './hooks'
 import parseNFTokenID from './parseNFTokenID'
 import {
   percentToTransferRate,
@@ -218,6 +220,11 @@ export {
   encodeForMultiSigning,
   encodeForSigning,
   encodeForSigningClaim,
+  getNFTokenID,
   createCrossChainPayment,
   parseNFTokenID,
+  calculateHookOn,
+  hexNamespace,
+  hexHookParameters,
+  TTS,
 }

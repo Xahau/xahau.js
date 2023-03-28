@@ -1,10 +1,6 @@
 /* eslint-disable complexity -- verifies 19 tx types hence a lot of checks needed */
 /* eslint-disable max-lines-per-function -- need to work with a lot of Tx verifications */
 
-import isEqual from 'lodash/isEqual'
-import omitBy from 'lodash/omitBy'
-import { encode, decode } from 'ripple-binary-codec'
-
 import { ValidationError } from '../../errors'
 import { setTransactionFlagsToNumber } from '../utils/flags'
 
@@ -47,6 +43,7 @@ import {
   PaymentChannelFund,
   validatePaymentChannelFund,
 } from './paymentChannelFund'
+import { SetHook, validateSetHook } from './setHook'
 import { SetRegularKey, validateSetRegularKey } from './setRegularKey'
 import { SignerListSet, validateSignerListSet } from './signerListSet'
 import { TicketCreate, validateTicketCreate } from './ticketCreate'
@@ -87,6 +84,7 @@ export type Transaction =
   | PaymentChannelClaim
   | PaymentChannelCreate
   | PaymentChannelFund
+  | SetHook
   | SetRegularKey
   | SignerListSet
   | TicketCreate
@@ -208,6 +206,10 @@ export function validate(transaction: Record<string, unknown>): void {
       validateSetRegularKey(tx)
       break
 
+    case 'SetHook':
+      validateSetHook(tx)
+      break
+
     case 'SignerListSet':
       validateSignerListSet(tx)
       break
@@ -244,14 +246,5 @@ export function validate(transaction: Record<string, unknown>): void {
       throw new ValidationError(
         `Invalid field TransactionType: ${tx.TransactionType}`,
       )
-  }
-
-  if (
-    !isEqual(
-      decode(encode(tx)),
-      omitBy(tx, (value) => value == null),
-    )
-  ) {
-    throw new ValidationError(`Invalid Transaction: ${tx.TransactionType}`)
   }
 }

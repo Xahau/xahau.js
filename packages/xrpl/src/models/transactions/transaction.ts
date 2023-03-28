@@ -6,6 +6,11 @@ import { setTransactionFlagsToNumber } from '../utils/flags'
 
 import { AccountDelete, validateAccountDelete } from './accountDelete'
 import { AccountSet, validateAccountSet } from './accountSet'
+import { AMMBid, validateAMMBid } from './AMMBid'
+import { AMMCreate, validateAMMCreate } from './AMMCreate'
+import { AMMDeposit, validateAMMDeposit } from './AMMDeposit'
+import { AMMVote, validateAMMVote } from './AMMVote'
+import { AMMWithdraw, validateAMMWithdraw } from './AMMWithdraw'
 import { CheckCancel, validateCheckCancel } from './checkCancel'
 import { CheckCash, validateCheckCash } from './checkCash'
 import { CheckCreate, validateCheckCreate } from './checkCreate'
@@ -48,6 +53,17 @@ import { SetRegularKey, validateSetRegularKey } from './setRegularKey'
 import { SignerListSet, validateSignerListSet } from './signerListSet'
 import { TicketCreate, validateTicketCreate } from './ticketCreate'
 import { TrustSet, validateTrustSet } from './trustSet'
+import { URITokenBurn, validateURITokenBurn } from './uriTokenBurn'
+import { URITokenBuy, validateURITokenBuy } from './uriTokenBuy'
+import {
+  URITokenCancelSellOffer,
+  validateURITokenCancelSellOffer,
+} from './uriTokenCancelSellOffer'
+import {
+  URITokenCreateSellOffer,
+  validateURITokenCreateSellOffer,
+} from './uriTokenCreateSellOffer'
+import { URITokenMint, validateURITokenMint } from './uriTokenMint'
 
 /**
  * @category Transaction Models
@@ -55,6 +71,11 @@ import { TrustSet, validateTrustSet } from './trustSet'
 export type Transaction =
   | AccountDelete
   | AccountSet
+  | AMMBid
+  | AMMDeposit
+  | AMMCreate
+  | AMMVote
+  | AMMWithdraw
   | CheckCancel
   | CheckCash
   | CheckCreate
@@ -78,6 +99,11 @@ export type Transaction =
   | SignerListSet
   | TicketCreate
   | TrustSet
+  | URITokenBurn
+  | URITokenBuy
+  | URITokenCancelSellOffer
+  | URITokenMint
+  | URITokenCreateSellOffer
 
 /**
  * @category Transaction Models
@@ -112,6 +138,26 @@ export function validate(transaction: Record<string, unknown>): void {
 
     case 'AccountSet':
       validateAccountSet(tx)
+      break
+
+    case 'AMMBid':
+      validateAMMBid(tx)
+      break
+
+    case 'AMMDeposit':
+      validateAMMDeposit(tx)
+      break
+
+    case 'AMMCreate':
+      validateAMMCreate(tx)
+      break
+
+    case 'AMMVote':
+      validateAMMVote(tx)
+      break
+
+    case 'AMMWithdraw':
+      validateAMMWithdraw(tx)
       break
 
     case 'CheckCancel':
@@ -204,6 +250,26 @@ export function validate(transaction: Record<string, unknown>): void {
 
     case 'TrustSet':
       validateTrustSet(tx)
+      break
+
+    case 'URITokenMint':
+      validateURITokenMint(tx)
+      break
+
+    case 'URITokenBurn':
+      validateURITokenBurn(tx)
+      break
+
+    case 'URITokenCreateSellOffer':
+      validateURITokenCreateSellOffer(tx)
+      break
+
+    case 'URITokenBuy':
+      validateURITokenBuy(tx)
+      break
+
+    case 'URITokenCancelSellOffer':
+      validateURITokenCancelSellOffer(tx)
       break
 
     default:

@@ -1,5 +1,5 @@
 {
-  "name": "ripple-binary-codec",
+  "name": "@transia/ripple-binary-codec",
   "version": "1.6.0",
   "description": "XRP Ledger binary codec",
   "files": [
@@ -17,7 +17,7 @@
     "buffer": "6.0.3",
     "create-hash": "^1.2.0",
     "decimal.js": "^10.2.0",
-    "ripple-address-codec": "^4.3.0"
+    "@transia/ripple-address-codec": "^4.3.0"
   },
   "scripts": {
     "build": "tsc -b && copyfiles ./src/enums/definitions.json ./dist/enums/",
@@ -28,7 +28,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git@github.com:XRPLF/xrpl.js.git"
+    "url": "git@github.com/Transia-RnD/xrpl.js/tree/beta"
   },
   "bugs": {
     "url": "https://github.com/XRPLF/xrpl.js/issues"

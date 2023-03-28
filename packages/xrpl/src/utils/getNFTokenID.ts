@@ -1,5 +1,5 @@
+import { decode } from '@transia/ripple-binary-codec'
 import flatMap from 'lodash/flatMap'
-import { decode } from 'ripple-binary-codec'
 
 import { NFToken } from '../models/ledger/NFTokenPage'
 import {

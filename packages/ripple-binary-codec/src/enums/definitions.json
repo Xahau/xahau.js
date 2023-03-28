@@ -1494,27 +1494,7 @@
       }
     ],
     [
-      "LPTokenOut",
-      {
-        "nth": 20,
-        "isVLEncoded": false,
-        "isSerialized": true,
-        "isSigningField": true,
-        "type": "Amount"
-      }
-    ],
-    [
-      "LPTokenIn",
-      {
-        "nth": 21,
-        "isVLEncoded": false,
-        "isSerialized": true,
-        "isSigningField": true,
-        "type": "Amount"
-      }
-    ],
-    [
-      "EPrice",
+      "BaseFeeDrops",
       {
         "nth": 22,
         "isVLEncoded": false,
@@ -1524,7 +1504,7 @@
       }
     ],
     [
-      "Price",
+      "ReserveBaseDrops",
       {
         "nth": 23,
         "isVLEncoded": false,
@@ -1534,9 +1514,59 @@
       }
     ],
     [
-      "LPTokenBalance",
+      "ReserveIncrementDrops",
       {
         "nth": 24,
+        "isVLEncoded": false,
+        "isSerialized": true,
+        "isSigningField": true,
+        "type": "Amount"
+      }
+    ],
+    [
+      "LPTokenOut",
+      {
+        "nth": 25,
+        "isVLEncoded": false,
+        "isSerialized": true,
+        "isSigningField": true,
+        "type": "Amount"
+      }
+    ],
+    [
+      "LPTokenIn",
+      {
+        "nth": 26,
+        "isVLEncoded": false,
+        "isSerialized": true,
+        "isSigningField": true,
+        "type": "Amount"
+      }
+    ],
+    [
+      "EPrice",
+      {
+        "nth": 27,
+        "isVLEncoded": false,
+        "isSerialized": true,
+        "isSigningField": true,
+        "type": "Amount"
+      }
+    ],
+    [
+      "Price",
+      {
+        "nth": 28,
+        "isVLEncoded": false,
+        "isSerialized": true,
+        "isSigningField": true,
+        "type": "Amount"
+      }
+    ],
+    [
+      "LPTokenBalance",
+      {
+        "nth": 29,
         "isVLEncoded": false,
         "isSerialized": true,
         "isSigningField": true,
@@ -1874,16 +1904,6 @@
       }
     ],
     [
-      "AMMAccount",
-      {
-        "nth": 11,
-        "isVLEncoded": true,
-        "isSerialized": true,
-        "isSigningField": true,
-        "type": "AccountID"
-      }
-    ],
-    [
       "HookAccount",
       {
         "nth": 16,
@@ -2186,7 +2206,7 @@
     [
       "AuctionSlot",
       {
-        "nth": 27,
+        "nth": 26,
         "isVLEncoded": false,
         "isSerialized": true,
         "isSigningField": true,
@@ -2196,7 +2216,7 @@
     [
       "AuthAccount",
       {
-        "nth": 28,
+        "nth": 27,
         "isVLEncoded": false,
         "isSerialized": true,
         "isSigningField": true,
@@ -2296,7 +2316,7 @@
     [
       "VoteSlots",
       {
-        "nth": 14,
+        "nth": 12,
         "isVLEncoded": false,
         "isSerialized": true,
         "isSigningField": true,
@@ -2356,7 +2376,7 @@
     [
       "AuthAccounts",
       {
-        "nth": 26,
+        "nth": 21,
         "isVLEncoded": false,
         "isSerialized": true,
         "isSigningField": true,

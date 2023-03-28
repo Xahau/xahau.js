@@ -21,6 +21,7 @@
     "UInt192": 21,
     "UInt384": 22,
     "UInt512": 23,
+    "Issue": 24,
     "Transaction": 10001,
     "LedgerEntry": 10002,
     "Validation": 10003,
@@ -44,6 +45,7 @@
     "NegativeUNL": 78,
     "NFTokenPage": 80,
     "NFTokenOffer": 55,
+    "AMM": 121,
     "URIToken": 85,
     "Any": -3,
     "Child": -2,
@@ -270,6 +272,16 @@
       "TransferFee",
       {
         "nth": 4,
+        "isVLEncoded": false,
+        "isSerialized": true,
+        "isSigningField": true,
+        "type": "UInt16"
+      }
+    ],
+    [
+      "TradingFee",
+      {
+        "nth": 5,
         "isVLEncoded": false,
         "isSerialized": true,
         "isSigningField": true,
@@ -777,9 +789,19 @@
       }
     ],
     [
-      "LockCount",
+      "VoteWeight",
       {
         "nth": 47,
+        "isVLEncoded": false,
+        "isSerialized": true,
+        "isSigningField": true,
+        "type": "UInt32"
+      }
+    ],
+    [
+      "DiscountedFee",
+      {
+        "nth": 48,
         "isVLEncoded": false,
         "isSerialized": true,
         "isSigningField": true,
@@ -1127,6 +1149,16 @@
       }
     ],
     [
+      "AMMID",
+      {
+        "nth": 14,
+        "isVLEncoded": false,
+        "isSerialized": true,
+        "isSigningField": true,
+        "type": "Hash256"
+      }
+    ],
+    [
       "BookDirectory",
       {
         "nth": 16,
@@ -1437,6 +1469,36 @@
       }
     ],
     [
+      "Amount2",
+      {
+        "nth": 11,
+        "isVLEncoded": false,
+        "isSerialized": true,
+        "isSigningField": true,
+        "type": "Amount"
+      }
+    ],
+    [
+      "BidMin",
+      {
+        "nth": 12,
+        "isVLEncoded": false,
+        "isSerialized": true,
+        "isSigningField": true,
+        "type": "Amount"
+      }
+    ],
+    [
+      "BidMax",
+      {
+        "nth": 13,
+        "isVLEncoded": false,
+        "isSerialized": true,
+        "isSigningField": true,
+        "type": "Amount"
+      }
+    ],
+    [
       "MinimumOffer",
       {
         "nth": 16,
@@ -1477,9 +1539,9 @@
       }
     ],
     [
-      "HookCallbackFee",
+      "BaseFeeDrops",
       {
-        "nth": 20,
+        "nth": 22,
         "isVLEncoded": false,
         "isSerialized": true,
         "isSigningField": true,
@@ -1487,9 +1549,69 @@
       }
     ],
     [
-      "LockedBalance",
+      "ReserveBaseDrops",
       {
-        "nth": 21,
+        "nth": 23,
+        "isVLEncoded": false,
+        "isSerialized": true,
+        "isSigningField": true,
+        "type": "Amount"
+      }
+    ],
+    [
+      "ReserveIncrementDrops",
+      {
+        "nth": 24,
+        "isVLEncoded": false,
+        "isSerialized": true,
+        "isSigningField": true,
+        "type": "Amount"
+      }
+    ],
+    [
+      "LPTokenOut",
+      {
+        "nth": 25,
+        "isVLEncoded": false,
+        "isSerialized": true,
+        "isSigningField": true,
+        "type": "Amount"
+      }
+    ],
+    [
+      "LPTokenIn",
+      {
+        "nth": 26,
+        "isVLEncoded": false,
+        "isSerialized": true,
+        "isSigningField": true,
+        "type": "Amount"
+      }
+    ],
+    [
+      "EPrice",
+      {
+        "nth": 27,
+        "isVLEncoded": false,
+        "isSerialized": true,
+        "isSigningField": true,
+        "type": "Amount"
+      }
+    ],
+    [
+      "Price",
+      {
+        "nth": 28,
+        "isVLEncoded": false,
+        "isSerialized": true,
+        "isSigningField": true,
+        "type": "Amount"
+      }
+    ],
+    [
+      "LPTokenBalance",
+      {
+        "nth": 29,
         "isVLEncoded": false,
         "isSerialized": true,
         "isSigningField": true,
@@ -1907,6 +2029,26 @@
       }
     ],
     [
+      "Asset",
+      {
+        "nth": 3,
+        "isVLEncoded": false,
+        "isSerialized": true,
+        "isSigningField": true,
+        "type": "Issue"
+      }
+    ],
+    [
+      "Asset2",
+      {
+        "nth": 4,
+        "isVLEncoded": false,
+        "isSerialized": true,
+        "isSigningField": true,
+        "type": "Issue"
+      }
+    ],
+    [
       "TransactionMetaData",
       {
         "nth": 2,
@@ -2117,6 +2259,36 @@
       }
     ],
     [
+      "VoteEntry",
+      {
+        "nth": 25,
+        "isVLEncoded": false,
+        "isSerialized": true,
+        "isSigningField": true,
+        "type": "STObject"
+      }
+    ],
+    [
+      "AuctionSlot",
+      {
+        "nth": 26,
+        "isVLEncoded": false,
+        "isSerialized": true,
+        "isSigningField": true,
+        "type": "STObject"
+      }
+    ],
+    [
+      "AuthAccount",
+      {
+        "nth": 27,
+        "isVLEncoded": false,
+        "isSerialized": true,
+        "isSigningField": true,
+        "type": "STObject"
+      }
+    ],
+    [
       "Signers",
       {
         "nth": 3,
@@ -2207,6 +2379,16 @@
       }
     ],
     [
+      "VoteSlots",
+      {
+        "nth": 12,
+        "isVLEncoded": false,
+        "isSerialized": true,
+        "isSigningField": true,
+        "type": "STArray"
+      }
+    ],
+    [
       "Majorities",
       {
         "nth": 16,
@@ -2250,6 +2432,16 @@
       "HookGrants",
       {
         "nth": 20,
+        "isVLEncoded": false,
+        "isSerialized": true,
+        "isSigningField": true,
+        "type": "STArray"
+      }
+    ],
+    [
+      "AuthAccounts",
+      {
+        "nth": 21,
         "isVLEncoded": false,
         "isSerialized": true,
         "isSigningField": true,
@@ -2324,7 +2516,6 @@
     "temXCHAIN_TOO_MANY_ATTESTATIONS": -254,
     "temHOOK_DATA_TOO_LARGE": -253,
     "temHOOK_REJECTED": -252,
-
     "tefFAILURE": -199,
     "tefALREADY": -198,
     "tefBAD_ADD_AUTH": -197,
@@ -2359,7 +2550,8 @@
     "terNO_RIPPLE": -90,
     "terQUEUED": -89,
     "terPRE_TICKET": -88,
-    "terNO_HOOK": -87,
+    "terNO_AMM": -87,
+    "terNO_HOOK": -86,
 
     "tesSUCCESS": 0,
 
@@ -2466,6 +2658,11 @@
     "NFTokenCreateOffer": 27,
     "NFTokenCancelOffer": 28,
     "NFTokenAcceptOffer": 29,
+    "AMMCreate": 35,
+    "AMMDeposit": 36,
+    "AMMWithdraw": 37,
+    "AMMVote": 38,
+    "AMMBid": 39,
     "URITokenMint": 45,
     "URITokenBurn": 46,
     "URITokenBuy": 47,

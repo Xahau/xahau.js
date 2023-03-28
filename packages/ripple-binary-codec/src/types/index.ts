@@ -50,6 +50,7 @@ export {
   Hash128,
   Hash160,
   Hash256,
+  Issue,
   PathSet,
   STArray,
   STObject,

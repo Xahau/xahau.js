@@ -27,6 +27,7 @@ export { DepositPreauth } from './depositPreauth'
 export { EscrowCancel } from './escrowCancel'
 export { EscrowCreate } from './escrowCreate'
 export { EscrowFinish } from './escrowFinish'
+export { Invoke } from './invoke'
 export { NFTokenAcceptOffer } from './NFTokenAcceptOffer'
 export { NFTokenBurn } from './NFTokenBurn'
 export { NFTokenCancelOffer } from './NFTokenCancelOffer'
@@ -55,6 +56,16 @@ export {
 export { PaymentChannelCreate } from './paymentChannelCreate'
 export { PaymentChannelFund } from './paymentChannelFund'
 export { SetRegularKey } from './setRegularKey'
+export { SetHook } from './setHook'
 export { SignerListSet } from './signerListSet'
 export { TicketCreate } from './ticketCreate'
 export { TrustSetFlagsInterface, TrustSetFlags, TrustSet } from './trustSet'
+export {
+  URITokenMintFlagsInterface,
+  URITokenMintFlags,
+  URITokenMint,
+} from './uriTokenMint'
+export { URITokenBurn } from './uriTokenBurn'
+export { URITokenCreateSellOffer } from './uriTokenCreateSellOffer'
+export { URITokenBuy } from './uriTokenBuy'
+export { URITokenCancelSellOffer } from './uriTokenCancelSellOffer'

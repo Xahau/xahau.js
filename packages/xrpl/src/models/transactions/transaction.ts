@@ -1,10 +1,6 @@
 /* eslint-disable complexity -- verifies 19 tx types hence a lot of checks needed */
 /* eslint-disable max-lines-per-function -- need to work with a lot of Tx verifications */
 
-import isEqual from 'lodash/isEqual'
-import omitBy from 'lodash/omitBy'
-import { encode, decode } from 'ripple-binary-codec'
-
 import { ValidationError } from '../../errors'
 import { setTransactionFlagsToNumber } from '../utils/flags'
 
@@ -52,10 +48,22 @@ import {
   PaymentChannelFund,
   validatePaymentChannelFund,
 } from './paymentChannelFund'
+import { SetHook, validateSetHook } from './setHook'
 import { SetRegularKey, validateSetRegularKey } from './setRegularKey'
 import { SignerListSet, validateSignerListSet } from './signerListSet'
 import { TicketCreate, validateTicketCreate } from './ticketCreate'
 import { TrustSet, validateTrustSet } from './trustSet'
+import { URITokenBurn, validateURITokenBurn } from './uriTokenBurn'
+import { URITokenBuy, validateURITokenBuy } from './uriTokenBuy'
+import {
+  URITokenCancelSellOffer,
+  validateURITokenCancelSellOffer,
+} from './uriTokenCancelSellOffer'
+import {
+  URITokenCreateSellOffer,
+  validateURITokenCreateSellOffer,
+} from './uriTokenCreateSellOffer'
+import { URITokenMint, validateURITokenMint } from './uriTokenMint'
 
 /**
  * @category Transaction Models
@@ -86,10 +94,16 @@ export type Transaction =
   | PaymentChannelClaim
   | PaymentChannelCreate
   | PaymentChannelFund
+  | SetHook
   | SetRegularKey
   | SignerListSet
   | TicketCreate
   | TrustSet
+  | URITokenBurn
+  | URITokenBuy
+  | URITokenCancelSellOffer
+  | URITokenMint
+  | URITokenCreateSellOffer
 
 /**
  * @category Transaction Models
@@ -222,6 +236,10 @@ export function validate(transaction: Record<string, unknown>): void {
       validateSetRegularKey(tx)
       break
 
+    case 'SetHook':
+      validateSetHook(tx)
+      break
+
     case 'SignerListSet':
       validateSignerListSet(tx)
       break
@@ -234,18 +252,29 @@ export function validate(transaction: Record<string, unknown>): void {
       validateTrustSet(tx)
       break
 
+    case 'URITokenMint':
+      validateURITokenMint(tx)
+      break
+
+    case 'URITokenBurn':
+      validateURITokenBurn(tx)
+      break
+
+    case 'URITokenCreateSellOffer':
+      validateURITokenCreateSellOffer(tx)
+      break
+
+    case 'URITokenBuy':
+      validateURITokenBuy(tx)
+      break
+
+    case 'URITokenCancelSellOffer':
+      validateURITokenCancelSellOffer(tx)
+      break
+
     default:
       throw new ValidationError(
         `Invalid field TransactionType: ${tx.TransactionType}`,
       )
-  }
-
-  if (
-    !isEqual(
-      decode(encode(tx)),
-      omitBy(tx, (value) => value == null),
-    )
-  ) {
-    throw new ValidationError(`Invalid Transaction: ${tx.TransactionType}`)
   }
 }

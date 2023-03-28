@@ -104,6 +104,7 @@ import {
   getXrpBalance,
   submit,
   submitAndWait,
+  getNetworkID,
 } from '../sugar'
 import fundWallet from '../Wallet/fundWallet'
 
@@ -204,6 +205,13 @@ class Client extends EventEmitter {
   public readonly maxFeeXRP: string
 
   /**
+   * Network ID of the server this sdk is connected to
+   *
+   * @category Fee
+   */
+  public networkID: number
+
+  /**
    * Creates a new Client with a websocket connection to a rippled server.
    *
    * @param server - URL of the server to connect to.
@@ -221,6 +229,7 @@ class Client extends EventEmitter {
 
     this.feeCushion = options.feeCushion ?? DEFAULT_FEE_CUSHION
     this.maxFeeXRP = options.maxFeeXRP ?? DEFAULT_MAX_FEE_XRP
+    this.networkID = 1
 
     this.connection = new Connection(server, options)
 
@@ -637,6 +646,11 @@ class Client extends EventEmitter {
    * @category Abstraction
    */
   public getLedgerIndex = getLedgerIndex
+
+  /**
+   * @category Abstraction
+   */
+  public getNetworkID = getNetworkID
 
   /**
    * @category Faucet

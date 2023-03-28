@@ -28,12 +28,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "git@github.com:XRPLF/xrpl.js.git"
+    "url": "git@github.com:Transia-RnD/xrpl.js.git"
   },
   "bugs": {
-    "url": "https://github.com/XRPLF/xrpl.js/issues"
+    "url": "https://github.com/Transia-RnD/xrpl.js/issues"
   },
-  "homepage": "https://github.com/XRPLF/xrpl.js/tree/main/packages/ripple-binary-codec#readme",
+  "homepage": "https://github.com/Transia-RnD/xrpl.js/tree/main/packages/ripple-binary-codec#readme",
   "license": "ISC",
   "readmeFilename": "README.md",
   "prettier": "@xrplf/prettier-config",

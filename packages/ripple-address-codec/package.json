@@ -15,7 +15,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git@github.com:XRPLF/xrpl.js.git"
+    "url": "git@github.com:Transia-RnD/xrpl.js.git"
   },
   "prepublish": "tsc -b",
   "prepublishOnly": "tslint -b ./ && jest",

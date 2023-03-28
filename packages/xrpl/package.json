@@ -75,7 +75,7 @@
   "prettier": "@xrplf/prettier-config",
   "repository": {
     "type": "git",
-    "url": "git@github.com:XRPLF/xrpl.js.git"
+    "url": "git@github.com:Transia-RnD/xrpl.js.git"
   },
   "readmeFilename": "README.md",
   "engines": {

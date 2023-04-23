@@ -184,4 +184,22 @@ export function hashPaymentChannel(
   )
 }
 
+/**
+ * Compute the Hash of an Check LedgerEntry.
+ *
+ * @param address - Address of the Check.
+ * @param sequence - Sequence of the CreateCheck tx.
+ * @returns The hash of the Check LedgerEntry.
+ * @category Utilities
+ */
+export function hashCheckId(address: string, sequence: number): string {
+  const hexPrefix = ledgerSpaces.check
+    .charCodeAt(0)
+    .toString(HEX)
+    .padStart(2, '0')
+  const hexSequence = sequence.toString(HEX).padStart(8, '0')
+  const prefix = `00${hexPrefix}`
+  return sha512Half(prefix + addressToHex(address) + hexSequence)
+}
+
 export { hashLedgerHeader, hashSignedTx, hashLedger, hashStateTree, hashTxTree }

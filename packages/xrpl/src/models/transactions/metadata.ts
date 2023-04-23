@@ -29,6 +29,20 @@ export interface DeletedNode {
 
 export type Node = CreatedNode | ModifiedNode | DeletedNode
 
+export interface HookExecution {
+  HookExecution: {
+    HookAccount: string
+    HookEmitCount: number
+    HookExecutionIndex: number
+    HookHash: string
+    HookInstructionCount: string
+    HookResult: number
+    HookReturnCode: number
+    HookReturnString: string
+    HookStateChangeCount: number
+  }
+}
+
 /**
  * A typeguard to check if a node is a CreatedNode.
  *
@@ -63,6 +77,7 @@ export interface TransactionMetadata {
   AffectedNodes: Node[]
   DeliveredAmount?: Amount
   // "unavailable" possible for transactions before 2014-01-20
+  HookExecutions: HookExecution[]
   delivered_amount?: Amount | 'unavailable'
   TransactionIndex: number
   TransactionResult: string

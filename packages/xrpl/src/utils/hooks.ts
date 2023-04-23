@@ -95,20 +95,31 @@ export async function hexNamespace(namespace: string): Promise<string> {
 export function hexHookParameters(data: HookParameter[]): HookParameter[] {
   const hookParameters: HookParameter[] = []
   for (const parameter of data) {
+    let nameValue
+    let valueValue
+    // eslint-disable-next-line require-unicode-regexp -- Required
+    if (/^[0-9a-fA-F]{2,}$/.exec(parameter.HookParameter.HookParameterName)) {
+      nameValue = parameter.HookParameter.HookParameterName
+    } else {
+      nameValue = Buffer.from(parameter.HookParameter.HookParameterName, 'utf8')
+        .toString('hex')
+        .toUpperCase()
+    }
+    // eslint-disable-next-line require-unicode-regexp -- Required
+    if (/^[0-9a-fA-F]{2,}$/.exec(parameter.HookParameter.HookParameterValue)) {
+      valueValue = parameter.HookParameter.HookParameterValue
+    } else {
+      valueValue = Buffer.from(
+        parameter.HookParameter.HookParameterValue,
+        'utf8',
+      )
+        .toString('hex')
+        .toUpperCase()
+    }
     hookParameters.push({
       HookParameter: {
-        HookParameterName: Buffer.from(
-          parameter.HookParameter.HookParameterName,
-          'utf8',
-        )
-          .toString('hex')
-          .toUpperCase(),
-        HookParameterValue: Buffer.from(
-          parameter.HookParameter.HookParameterValue,
-          'utf8',
-        )
-          .toString('hex')
-          .toUpperCase(),
+        HookParameterName: String(nameValue),
+        HookParameterValue: String(valueValue),
       },
     })
   }

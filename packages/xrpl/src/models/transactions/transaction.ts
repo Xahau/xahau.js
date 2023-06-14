@@ -1,10 +1,6 @@
 /* eslint-disable complexity -- verifies 19 tx types hence a lot of checks needed */
 /* eslint-disable max-lines-per-function -- need to work with a lot of Tx verifications */
 
-import isEqual from 'lodash/isEqual'
-import omitBy from 'lodash/omitBy'
-import { encode, decode } from 'ripple-binary-codec'
-
 import { ValidationError } from '../../errors'
 import { setTransactionFlagsToNumber } from '../utils/flags'
 
@@ -17,6 +13,8 @@ import { DepositPreauth, validateDepositPreauth } from './depositPreauth'
 import { EscrowCancel, validateEscrowCancel } from './escrowCancel'
 import { EscrowCreate, validateEscrowCreate } from './escrowCreate'
 import { EscrowFinish, validateEscrowFinish } from './escrowFinish'
+import { Import, validateImport } from './import'
+import { Invoke, validateInvoke } from './invoke'
 import { TransactionMetadata } from './metadata'
 import {
   NFTokenAcceptOffer,
@@ -47,6 +45,7 @@ import {
   PaymentChannelFund,
   validatePaymentChannelFund,
 } from './paymentChannelFund'
+import { SetHook, validateSetHook } from './setHook'
 import { SetRegularKey, validateSetRegularKey } from './setRegularKey'
 import { SignerListSet, validateSignerListSet } from './signerListSet'
 import { TicketCreate, validateTicketCreate } from './ticketCreate'
@@ -65,6 +64,8 @@ export type Transaction =
   | EscrowCancel
   | EscrowCreate
   | EscrowFinish
+  | Import
+  | Invoke
   | NFTokenAcceptOffer
   | NFTokenBurn
   | NFTokenCancelOffer
@@ -76,6 +77,7 @@ export type Transaction =
   | PaymentChannelClaim
   | PaymentChannelCreate
   | PaymentChannelFund
+  | SetHook
   | SetRegularKey
   | SignerListSet
   | TicketCreate
@@ -144,6 +146,14 @@ export function validate(transaction: Record<string, unknown>): void {
       validateEscrowFinish(tx)
       break
 
+    case 'Import':
+      validateImport(tx)
+      break
+
+    case 'Invoke':
+      validateInvoke(tx)
+      break
+
     case 'NFTokenAcceptOffer':
       validateNFTokenAcceptOffer(tx)
       break
@@ -192,6 +202,10 @@ export function validate(transaction: Record<string, unknown>): void {
       validateSetRegularKey(tx)
       break
 
+    case 'SetHook':
+      validateSetHook(tx)
+      break
+
     case 'SignerListSet':
       validateSignerListSet(tx)
       break
@@ -208,14 +222,5 @@ export function validate(transaction: Record<string, unknown>): void {
       throw new ValidationError(
         `Invalid field TransactionType: ${tx.TransactionType}`,
       )
-  }
-
-  if (
-    !isEqual(
-      decode(encode(tx)),
-      omitBy(tx, (value) => value == null),
-    )
-  ) {
-    throw new ValidationError(`Invalid Transaction: ${tx.TransactionType}`)
   }
 }

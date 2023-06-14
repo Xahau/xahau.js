@@ -13,9 +13,9 @@ import {
   isValidClassicAddress,
   isValidXAddress,
   xAddressToClassicAddress,
-} from 'ripple-address-codec'
-import * as rbc from 'ripple-binary-codec'
-import { verify as verifyKeypairSignature } from 'ripple-keypairs'
+} from '@transia/ripple-address-codec'
+import * as rbc from '@transia/ripple-binary-codec'
+import { verify as verifyKeypairSignature } from '@transia/ripple-keypairs'
 
 import { LedgerEntry } from '../models/ledger'
 import { Response } from '../models/methods'
@@ -25,6 +25,7 @@ import { Transaction } from '../models/transactions/transaction'
 import createCrossChainPayment from './createCrossChainPayment'
 import { deriveKeypair, deriveAddress, deriveXAddress } from './derive'
 import getBalanceChanges from './getBalanceChanges'
+import getNFTokenID from './getNFTokenID'
 import {
   hashSignedTx,
   hashTx,
@@ -39,6 +40,7 @@ import {
   hashEscrow,
   hashPaymentChannel,
 } from './hashes'
+import { calculateHookOn, hexNamespace, hexHookParameters, TTS } from './hooks'
 import parseNFTokenID from './parseNFTokenID'
 import {
   percentToTransferRate,
@@ -218,6 +220,11 @@ export {
   encodeForMultiSigning,
   encodeForSigning,
   encodeForSigningClaim,
+  getNFTokenID,
   createCrossChainPayment,
   parseNFTokenID,
+  calculateHookOn,
+  hexNamespace,
+  hexHookParameters,
+  TTS,
 }

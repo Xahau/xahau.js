@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js'
-import { xAddressToClassicAddress, isValidXAddress } from 'ripple-address-codec'
+import { xAddressToClassicAddress, isValidXAddress } from '@transia/ripple-address-codec'
 
 import type { Client } from '..'
 import { ValidationError, XrplError } from '../errors'
@@ -8,10 +8,11 @@ import { Transaction } from '../models/transactions'
 import { setTransactionFlagsToNumber } from '../models/utils/flags'
 import { xrpToDrops } from '../utils'
 
-import getFeeXrp from './getFeeXrp'
+import { getFeeXrp } from './getFeeXrp'
 
 // Expire unconfirmed transactions after 20 ledger versions, approximately 1 minute, by default
 const LEDGER_OFFSET = 20
+const RESTRICTED_NETWORKS = 1024
 interface ClassicAccountAndTag {
   classicAccount: string
   tag: number | false | undefined
@@ -39,8 +40,10 @@ async function autofill<T extends Transaction>(
   setValidAddresses(tx)
 
   setTransactionFlagsToNumber(tx)
-
   const promises: Array<Promise<void>> = []
+  if (this.networkID > RESTRICTED_NETWORKS && tx.NetworkID == null) {
+    tx.NetworkID = this.networkID
+  }
   if (tx.Sequence == null) {
     promises.push(setNextValidSequenceNumber(this, tx))
   }

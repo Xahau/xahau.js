@@ -1,10 +1,16 @@
 /* eslint-disable max-lines-per-function -- Necessary for validateBaseTransaction */
 /* eslint-disable complexity -- Necessary for validateBaseTransaction */
 /* eslint-disable max-statements -- Necessary for validateBaseTransaction */
-import { TRANSACTION_TYPES } from 'ripple-binary-codec'
+import { TRANSACTION_TYPES } from '@transia/ripple-binary-codec'
 
 import { ValidationError } from '../../errors'
-import { Amount, IssuedCurrencyAmount, Memo, Signer } from '../common'
+import {
+  Amount,
+  HookParameter,
+  IssuedCurrencyAmount,
+  Memo,
+  Signer,
+} from '../common'
 import { onlyHasFields } from '../utils'
 
 const MEMO_SIZE = 3
@@ -159,6 +165,14 @@ export interface BaseTransaction {
    * account it says it is from.
    */
   TxnSignature?: string
+  /**
+   * The network id of the transaction.
+   */
+  NetworkID?: number
+  /**
+   * The hook parameters of the transaction.
+   */
+  HookParameters?: HookParameter[]
 }
 
 /**
@@ -251,6 +265,9 @@ export function validateBaseTransaction(common: Record<string, unknown>): void {
     typeof common.TxnSignature !== 'string'
   ) {
     throw new ValidationError('BaseTransaction: invalid TxnSignature')
+  }
+  if (common.NetworkID !== undefined && typeof common.NetworkID !== 'number') {
+    throw new ValidationError('BaseTransaction: invalid NetworkID')
   }
 }
 

@@ -1,5 +1,5 @@
 import { assert } from 'chai'
-import { decode, encode } from 'ripple-binary-codec'
+import { decode, encode } from '@transia/ripple-binary-codec'
 
 import { Transaction, ValidationError } from '../../src'
 import Wallet from '../../src/Wallet'
@@ -139,7 +139,9 @@ describe('Signer', function () {
   it('multisign runs successfully with tx_blobs', function () {
     const transactions = [multisignTxToCombine1, multisignTxToCombine2]
 
-    const encodedTransactions: string[] = transactions.map(encode)
+    const encodedTransactions: string[] = transactions.map((transaction) =>
+      encode(transaction),
+    )
 
     assert.deepEqual(multisign(encodedTransactions), expectedMultisign)
   })

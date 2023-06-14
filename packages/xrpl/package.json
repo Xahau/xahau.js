@@ -1,6 +1,6 @@
 {
-  "name": "xrpl",
-  "version": "2.6.0",
+  "name": "@transia/xrpl",
+  "version": "2.7.3-alpha.1",
   "license": "ISC",
   "description": "A TypeScript/JavaScript API for interacting with the XRP Ledger in Node.js and the browser",
   "files": [
@@ -22,14 +22,14 @@
     "https-proxy-agent": false
   },
   "dependencies": {
+    "@transia/ripple-address-codec": "^4.2.8-alpha.0",
+    "@transia/ripple-binary-codec": "^1.4.6-alpha.1",
+    "@transia/ripple-keypairs": "^1.1.8-alpha.0",
     "bignumber.js": "^9.0.0",
     "bip32": "^2.0.6",
     "bip39": "^3.0.4",
     "https-proxy-agent": "^5.0.0",
     "lodash": "^4.17.4",
-    "ripple-address-codec": "^4.2.4",
-    "ripple-binary-codec": "^1.4.2",
-    "ripple-keypairs": "^1.1.4",
     "ws": "^8.2.2"
   },
   "devDependencies": {
@@ -75,7 +75,7 @@
   "prettier": "@xrplf/prettier-config",
   "repository": {
     "type": "git",
-    "url": "git@github.com:XRPLF/xrpl.js.git"
+    "url": "git@github.com/Transia-RnD/xrpl.js/tree/beta"
   },
   "readmeFilename": "README.md",
   "engines": {

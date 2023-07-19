@@ -54,6 +54,7 @@
     "build": "run-s build:lib build:snippets build:web",
     "build:snippets": "tsc --build ./snippets/tsconfig.json",
     "build:lib": "tsc --build tsconfig.build.json",
+    "build:models": "tsc --build tsconfig.models.json",
     "build:web": "webpack",
     "build:browserTests": "webpack --config ./test/webpack.config.js",
     "analyze": "run-s build:web --analyze",

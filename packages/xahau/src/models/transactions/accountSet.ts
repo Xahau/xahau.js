@@ -61,6 +61,8 @@ export enum AccountSetAsfFlags {
   asfDisallowIncomingTrustline = 15,
   /** Disallow other accounts from sending incoming Remits */
   asfDisallowIncomingRemit = 16,
+  /** Permanently gain the ability to claw back issued IOUs */
+  asfAllowTrustLineClawback = 17,
 }
 
 /**

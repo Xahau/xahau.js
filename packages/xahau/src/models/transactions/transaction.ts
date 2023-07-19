@@ -10,6 +10,7 @@ import { CheckCancel, validateCheckCancel } from './checkCancel'
 import { CheckCash, validateCheckCash } from './checkCash'
 import { CheckCreate, validateCheckCreate } from './checkCreate'
 import { ClaimReward, validateClaimReward } from './claimReward'
+import { Clawback, validateClawback } from './clawback'
 import { BaseTransaction, isIssuedCurrency } from './common'
 import { DepositPreauth, validateDepositPreauth } from './depositPreauth'
 import { EnableAmendment } from './enableAmendment'
@@ -66,6 +67,7 @@ export type SubmittableTransaction =
   | CheckCash
   | CheckCreate
   | ClaimReward
+  | Clawback
   | DepositPreauth
   | EscrowCancel
   | EscrowCreate
@@ -202,6 +204,10 @@ export function validate(transaction: Record<string, unknown>): void {
 
     case 'ClaimReward':
       validateClaimReward(tx)
+      break
+
+    case 'Clawback':
+      validateClawback(tx)
       break
 
     case 'DepositPreauth':

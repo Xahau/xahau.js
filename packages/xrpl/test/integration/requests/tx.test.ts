@@ -52,6 +52,7 @@ describe('tx', function () {
           Fee: txResponse.result.Fee,
           Flags: 0,
           LastLedgerSequence: txResponse.result.LastLedgerSequence,
+          NetworkID: txResponse.result.NetworkID,
           Sequence: txResponse.result.Sequence,
           SigningPubKey: testContext.wallet.publicKey,
           TxnSignature: txResponse.result.TxnSignature,

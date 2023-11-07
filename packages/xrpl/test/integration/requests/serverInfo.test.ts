@@ -31,12 +31,13 @@ describe('server_info (rippled)', function () {
         id: 0,
         result: {
           info: {
-            build_version: '1.7.3',
+            build_version: '2023.10.9-release+391',
+            initial_sync_duration_us: '443484',
             complete_ledgers: '2563-2928',
             hostid: '44578fe64241',
             io_latency_ms: 1,
             jq_trans_overflow: '0',
-            last_close: { converge_time_s: 0.1, proposers: 0 },
+            last_close: { converge_time_s: 0.001, proposers: 0 },
             load: {
               job_types: [
                 {
@@ -53,6 +54,8 @@ describe('server_info (rippled)', function () {
               threads: 1,
             },
             load_factor: 1,
+            network_id: 21337,
+            node_size: 'small',
             peer_disconnects: '0',
             peer_disconnects_resources: '0',
             peers: 0,
@@ -129,7 +132,7 @@ describe('server_info (rippled)', function () {
         )
         assert.equal(
           typeof response.result.info.state_accounting[key].transitions,
-          'number',
+          'string',
         )
       })
 

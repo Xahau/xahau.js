@@ -56,6 +56,7 @@ export interface ServerInfoResponse extends BaseResponse {
       amendment_blocked?: boolean
       /** The version number of the running rippled version. */
       build_version: string
+      initial_sync_duration_us?: string
       /**
        * Information on the most recently closed ledger that has not been
        * validated by consensus. If the most recently validated ledger is
@@ -140,6 +141,7 @@ export interface ServerInfoResponse extends BaseResponse {
        * The network id of the server.
        */
       network_id?: number
+      node_size?: string
       /**
        * Current multiplier to the transaction cost based on
        * load to this server.

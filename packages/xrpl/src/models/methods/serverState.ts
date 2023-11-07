@@ -23,6 +23,7 @@ export interface ServerStateResponse extends BaseResponse {
     state: {
       amendment_blocked?: boolean
       build_version: string
+      initial_sync_duration_us?: string
       complete_ledgers: string
       closed_ledger?: {
         age: number
@@ -51,6 +52,8 @@ export interface ServerStateResponse extends BaseResponse {
       load_factor_fee_queue?: number
       load_factor_fee_reference?: number
       load_factor_server?: number
+      network_id?: number
+      node_size?: string
       peer_disconnects?: string
       peer_disconnects_resources?: string
       peers: number

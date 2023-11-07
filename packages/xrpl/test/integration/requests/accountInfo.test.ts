@@ -36,6 +36,7 @@ describe('account_info', function () {
           account_data: {
             Account: testContext.wallet.classicAddress,
             Balance: '400000000',
+            AccountIndex: '1',
             Flags: 0,
             LedgerEntryType: 'AccountRoot',
             OwnerCount: 0,
@@ -65,12 +66,14 @@ describe('account_info', function () {
       assert.equal(typeof response.result.account_data.Sequence, 'number')
       assert.deepEqual(
         omit(response.result.account_data, [
+          'AccountIndex',
           'PreviousTxnID',
           'PreviousTxnLgrSeq',
           'Sequence',
           'index',
         ]),
         omit(expected.result.account_data, [
+          'AccountIndex',
           'PreviousTxnID',
           'PreviousTxnLgrSeq',
           'Sequence',

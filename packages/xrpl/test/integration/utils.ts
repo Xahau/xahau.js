@@ -214,6 +214,7 @@ export async function verifySubmittedTransaction(
   assert(data.result)
   assert.deepEqual(
     omit(data.result, [
+      'ctid',
       'date',
       'hash',
       'inLedger',

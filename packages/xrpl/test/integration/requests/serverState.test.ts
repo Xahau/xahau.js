@@ -31,12 +31,13 @@ describe('server_state', function () {
         id: 0,
         result: {
           state: {
-            build_version: '1.7.3',
+            build_version: '2023.10.9-release+391',
+            initial_sync_duration_us: '443484',
             complete_ledgers: '2563-2932',
             io_latency_ms: 1,
             jq_trans_overflow: '0',
             last_close: {
-              converge_time: 100,
+              converge_time: 1,
               proposers: 0,
             },
             load: {
@@ -60,6 +61,8 @@ describe('server_state', function () {
             load_factor_fee_queue: 256,
             load_factor_fee_reference: 256,
             load_factor_server: 256,
+            network_id: 21337,
+            node_size: 'small',
             peer_disconnects: '0',
             peer_disconnects_resources: '0',
             peers: 0,
@@ -133,7 +136,7 @@ describe('server_state', function () {
         )
         assert.equal(
           typeof response.result.state.state_accounting[key].transitions,
-          'number',
+          'string',
         )
       })
 

@@ -36,6 +36,7 @@ export async function setupClient(
     client: new Client(server, { timeout: 200000 }),
     wallet: Wallet.generate(),
   }
+  context.client.networkID = 21337
   return connectWithRetry(context.client).then(async () => {
     await fundAccount(context.client, context.wallet, {
       count: 20,

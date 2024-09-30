@@ -17,7 +17,7 @@ export interface IssuedCurrencyAmount extends IssuedCurrency {
 
 export type Amount = IssuedCurrencyAmount | string
 
-export type AmountEntry = Amount
+export type AmountEntry = { AmountEntry: { Amount: Amount } }
 
 export interface Signer {
   Signer: {

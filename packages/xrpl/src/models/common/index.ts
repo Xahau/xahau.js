@@ -87,7 +87,7 @@ export interface HookParameter {
     /**
      * The value of the parameter.
      */
-    HookParameterValue: string
+    HookParameterValue?: string
   }
 }
 

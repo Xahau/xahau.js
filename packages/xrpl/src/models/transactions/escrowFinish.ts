@@ -1,6 +1,12 @@
 import { ValidationError } from '../../errors'
 
-import { BaseTransaction, validateBaseTransaction } from './common'
+import {
+  Account,
+  BaseTransaction,
+  isAccount,
+  validateBaseTransaction,
+  validateRequiredField,
+} from './common'
 
 /**
  * Deliver amount from a held payment to the recipient.
@@ -10,12 +16,12 @@ import { BaseTransaction, validateBaseTransaction } from './common'
 export interface EscrowFinish extends BaseTransaction {
   TransactionType: 'EscrowFinish'
   /** Address of the source account that funded the held payment. */
-  Owner: string
+  Owner: Account
   /**
    * Transaction sequence of EscrowCreate transaction that created the held.
    * payment to finish.
    */
-  OfferSequence: number
+  OfferSequence: number | string
   /**
    * Hex value matching the previously-supplied PREIMAGE-SHA-256.
    * crypto-condition of the held payment.
@@ -37,19 +43,17 @@ export interface EscrowFinish extends BaseTransaction {
 export function validateEscrowFinish(tx: Record<string, unknown>): void {
   validateBaseTransaction(tx)
 
-  if (tx.Owner === undefined) {
-    throw new ValidationError('EscrowFinish: missing field Owner')
-  }
+  validateRequiredField(tx, 'Owner', isAccount)
 
-  if (typeof tx.Owner !== 'string') {
-    throw new ValidationError('EscrowFinish: Owner must be a string')
-  }
-
-  if (tx.OfferSequence === undefined) {
+  if (tx.OfferSequence == null) {
     throw new ValidationError('EscrowFinish: missing field OfferSequence')
   }
 
-  if (typeof tx.OfferSequence !== 'number') {
+  if (
+    (typeof tx.OfferSequence !== 'number' &&
+      typeof tx.OfferSequence !== 'string') ||
+    Number.isNaN(Number(tx.OfferSequence))
+  ) {
     throw new ValidationError('EscrowFinish: OfferSequence must be a number')
   }
 

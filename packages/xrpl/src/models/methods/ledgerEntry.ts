@@ -1,7 +1,7 @@
-import { LedgerIndex } from '../common'
+import { Currency, XChainBridge } from '../common'
 import { LedgerEntry } from '../ledger'
 
-import { BaseRequest, BaseResponse } from './baseMethod'
+import { BaseRequest, BaseResponse, LookupByLedgerRequest } from './baseMethod'
 
 /**
  * The `ledger_entry` method returns a single ledger object from the XRP Ledger
@@ -19,18 +19,29 @@ import { BaseRequest, BaseResponse } from './baseMethod'
  *
  * @category Requests
  */
-export interface LedgerEntryRequest extends BaseRequest {
+export interface LedgerEntryRequest extends BaseRequest, LookupByLedgerRequest {
   command: 'ledger_entry'
+  /**
+   * Retrieve an Automated Market Maker (AMM) object from the ledger.
+   * This is similar to amm_info method, but the ledger_entry version returns only the ledger entry as stored.
+   */
+  amm?: {
+    asset: {
+      currency: string
+      issuer?: string
+    }
+    asset2: {
+      currency: string
+      issuer?: string
+    }
+  }
+
   /**
    * If true, return the requested ledger object's contents as a hex string in
    * the XRP Ledger's binary format. Otherwise, return data in JSON format. The
    * default is false.
    */
   binary?: boolean
-  /** A 20-byte hex string for the ledger version to use. */
-  ledger_hash?: string
-  /** The ledger index of the ledger to use, or a shortcut string. */
-  ledger_index?: LedgerIndex
 
   /*
    * Only one of the following properties should be defined in a single request
@@ -62,6 +73,12 @@ export interface LedgerEntryRequest extends BaseRequest {
         authorized: string
       }
     | string
+
+  /**
+   * Specify a DID object to retrieve. If a string, must be the
+   * object ID of the DID object, as hexadecimal, or the account ID.
+   */
+  did?: string
 
   /**
    * The DirectoryNode to retrieve. If a string, must be the object ID of the
@@ -185,6 +202,35 @@ export interface LedgerEntryRequest extends BaseRequest {
     | string
 
   /**
+   * Must be the object ID of the NFToken page, as hexadecimal
+   */
+  nft_page?: string
+
+  bridge_account?: string
+
+  bridge?: XChainBridge
+
+  xchain_owned_claim_id?:
+    | {
+        locking_chain_door: string
+        locking_chain_issue: Currency
+        issuing_chain_door: string
+        issuing_chain_issue: Currency
+        xchain_owned_claim_id: string | number
+      }
+    | string
+
+  xchain_owned_create_account_claim_id?:
+    | {
+        locking_chain_door: string
+        locking_chain_issue: Currency
+        issuing_chain_door: string
+        issuing_chain_issue: Currency
+        xchain_owned_create_account_claim_id: string | number
+      }
+    | string
+
+  /**
    * The URIToken object to retrieve. If a string, must be the object ID of the
    * URIToken, as hexadecimal. If an object, the `issuer` and `uri`
    * sub-fields are required to uniquely specify the URIToken entry.
@@ -204,7 +250,7 @@ export interface LedgerEntryRequest extends BaseRequest {
  *
  * @category Responses
  */
-export interface LedgerEntryResponse extends BaseResponse {
+export interface LedgerEntryResponse<T = LedgerEntry> extends BaseResponse {
   result: {
     /** The unique ID of this ledger object. */
     index: string
@@ -214,7 +260,7 @@ export interface LedgerEntryResponse extends BaseResponse {
      * Object containing the data of this ledger object, according to the
      * ledger format.
      */
-    node?: LedgerEntry
+    node?: T
     /** The binary representation of the ledger object, as hexadecimal. */
     node_binary?: string
     validated?: boolean

@@ -25,53 +25,60 @@ describe('EscrowCancel', function () {
     assert.doesNotThrow(() => validate(cancel))
   })
 
+  it(`Valid EscrowCancel with string OfferSequence`, function () {
+    cancel.OfferSequence = '7'
+
+    assert.doesNotThrow(() => validateEscrowCancel(cancel))
+    assert.doesNotThrow(() => validate(cancel))
+  })
+
   it(`Invalid EscrowCancel missing owner`, function () {
     delete cancel.Owner
 
     assert.throws(
       () => validateEscrowCancel(cancel),
       ValidationError,
-      'EscrowCancel: missing Owner',
+      'EscrowCancel: missing field Owner',
     )
     assert.throws(
       () => validate(cancel),
       ValidationError,
-      'EscrowCancel: missing Owner',
+      'EscrowCancel: missing field Owner',
     )
   })
 
-  it(`Invalid EscrowCancel missing offerSequence`, function () {
+  it(`Invalid EscrowCancel missing offerSequence or EscrowID`, function () {
     delete cancel.OfferSequence
 
     assert.throws(
       () => validateEscrowCancel(cancel),
       ValidationError,
-      'EscrowCancel: missing OfferSequence',
+      'EscrowCancel: must include OfferSequence or EscrowID',
     )
     assert.throws(
       () => validate(cancel),
       ValidationError,
-      'EscrowCancel: missing OfferSequence',
+      'EscrowCancel: must include OfferSequence or EscrowID',
     )
   })
 
-  it(`Invalid OfferSequence`, function () {
+  it(`Invalid Owner`, function () {
     cancel.Owner = 10
 
     assert.throws(
       () => validateEscrowCancel(cancel),
       ValidationError,
-      'EscrowCancel: Owner must be a string',
+      'EscrowCancel: invalid field Owner',
     )
     assert.throws(
       () => validate(cancel),
       ValidationError,
-      'EscrowCancel: Owner must be a string',
+      'EscrowCancel: invalid field Owner',
     )
   })
 
-  it(`Invalid owner`, function () {
-    cancel.OfferSequence = '10'
+  it(`Invalid OfferSequence`, function () {
+    cancel.OfferSequence = 'random'
 
     assert.throws(
       () => validateEscrowCancel(cancel),

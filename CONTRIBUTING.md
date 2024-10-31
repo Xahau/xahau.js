@@ -12,7 +12,7 @@
 
 ### Requirements
 
-We use Node v14 for development - that is the version that our linters require.
+We use Node v18 for development - that is the version that our linters require.
 You must also use `npm` v7. You can check your `npm` version with:
 
 ```bash
@@ -47,7 +47,7 @@ npm run lint
 
 ## Running Tests
 
-For integration and browser tests, we use a `rippled` node in standalone mode to test xrpl.js code against. To set this up, you can either run `rippled` locally, or set up the Docker container `natenichols/rippled-standalone:latest` for this purpose. The latter will require you to [install Docker](https://docs.docker.com/get-docker/).
+For integration and browser tests, we use a `rippled` node in standalone mode to test xrpl.js code against. To set this up, you can either configure and run `rippled` locally, or set up the Docker container `rippleci/rippled` by [following these instructions](#integration-tests). The latter will require you to [install Docker](https://docs.docker.com/get-docker/).
 
 ### Unit Tests
 
@@ -59,13 +59,23 @@ npm test
 
 ### Integration Tests
 
+From the top-level xrpl.js folder (one level above `packages`), run the following commands:
+
 ```bash
 npm install
 # sets up the rippled standalone Docker container - you can skip this step if you already have it set up
-docker run -p 6006:6006 -it natenichols/rippled-standalone:latest
+docker run -p 6006:6006 --interactive -t --volume $PWD/.ci-config:/opt/ripple/etc/ --platform linux/amd64 rippleci/rippled:2.0.0-b4 /opt/ripple/bin/rippled -a --conf /opt/ripple/etc/rippled.cfg
 npm run build
 npm run test:integration
 ```
+
+Breaking down the command:
+* `docker run -p 6006:6006` starts a Docker container with an open port for admin WebSocket requests.
+* `--interactive` allows you to interact with the container.
+* `-t` starts a terminal in the container for you to send commands to.
+* `--volume $PWD/.ci-config:/config/` identifies the `rippled.cfg` and `validators.txt` to import. It must be an absolute path, so we use `$PWD` instead of `./`.
+* `rippleci/rippled` is an image that is regularly updated with the latest `rippled` releases
+* `/opt/ripple/bin/rippled -a --conf /opt/ripple/etc/rippled.cfg` starts `rippled` in standalone mode
 
 ### Browser Tests
 
@@ -75,10 +85,12 @@ One is in the browser - run `npm run build:browserTests` and open `test/localInt
 
 The other is in the command line (this is what we use for CI) -
 
+This should be run from the `xrpl.js` top level folder (one above the `packages` folder).
+
 ```bash
 npm run build
 # sets up the rippled standalone Docker container - you can skip this step if you already have it set up
-docker run -p 6006:6006 -it natenichols/rippled-standalone:latest
+docker run -p 6006:6006 --interactive -t --volume $PWD/.ci-config:/opt/ripple/etc/ --platform linux/amd64 rippleci/rippled:2.2.0-b3 /opt/ripple/bin/rippled -a --conf /opt/ripple/etc/rippled.cfg
 npm run test:browser
 ```
 
@@ -92,6 +104,8 @@ The 4 packages currently here are:
 2. ripple-binary-codec - A library for serializing and deserializing transactions for the ledger.
 3. ripple-keypairs - A library for generating and using cryptographic keypairs.
 4. ripple-address-codec - A library for encoding and decoding XRP Ledger addresses and seeds.
+5. isomorphic - A collection of isomorphic implementations of crypto and utility functions.
+6. secret-numbers - Generate XRPL Accounts with a number-based secret: 8 chunks of 6 digits.
 
 Each package has it's own README which dives deeper into what it's main purpose is, and the core functionality it offers.
 They also run tests independently as they were originally in separate repositories.
@@ -169,6 +183,33 @@ npm install abbrev -w ripple-keypairs
 npm uninstall abbrev -w xrpl
 ```
 
+## Updating the Docker container for CI
+
+In order to test the library, we need to enable the latest amendments in the docker container.
+This requires updating the `/.ci-config/rippled.cfg` file with the hashes and names of new amendments.
+
+In order to update the list, follow these steps from the top level of the library:
+1. Run `node ./.ci-config/getNewAmendments.js`
+2. If there are any new amendment hashes, add a comment to the end of `/.ci-config/rippled.cfg` with the date
+   - `Ex. "# Added August 9th, 2023"`
+3. For each hash printed out by the script, add the hash and name to the config file.
+   - Ex. `B2A4DB846F0891BF2C76AB2F2ACC8F5B4EC64437135C6E56F3F859DE5FFD5856 ExpandedSignerList`
+   - You can look up the name by searching for the hash on https://xrpl.org/known-amendments.html
+4. Push your changes
+
+Note: The same updated config can be used to update xrpl-py's CI as well.
+
+## Updating `definitions.json`
+
+This should almost always be done using the [`xrpl-codec-gen`](https://github.com/RichardAH/xrpl-codec-gen) script - if the output needs manual intervention afterwards, consider updating the script instead.
+
+1. Clone / pull the latest changes from [rippled](https://github.com/XRPLF/rippled) - Specifically the `develop` branch is usually the right one.
+2. Clone / pull the latest changes from [`xrpl-codec-gen`](https://github.com/RichardAH/xrpl-codec-gen)
+3. From the `xrpl-codec-gen` tool, follow the steps in the `README.md` to generate a new `definitions.json` file.
+4. Replace the `definitions.json` file in the `ripple-binary-codec` with the newly generated file.
+5. Verify that the changes make sense by inspection before submitting, as there may be updates required for the `xrpl-codec-gen` tool depending on the latest amendments we're updating to match.
+
+
 ## Release process + checklist
 
 ## PR process
@@ -192,9 +233,10 @@ npm uninstall abbrev -w xrpl
 
 1. Run `npm run docgen` if the docs were modified in this release to update them (skip this step for a beta).
 1. Run `npm run build` to triple check the build still works
-1. Run `npx lerna version --no-git-tag-version` - This creates a draft PR and bumps the versions of the packages.
+1. Run `npx lerna version --no-git-tag-version` - This bumps the package versions.
 
    - For each changed package, pick what the new version should be. Lerna will bump the versions, commit version bumps to `main`, and create a new git tag for each published package.
+   - If you do NOT want to update the package number, choose "Custom Version" and set the version to be the same as the existing version. Lerna will not publish any changes in this case.
    - If publishing a beta, make sure that the versions are all of the form `a.b.c-beta.d`, where `a`, `b`, and `c` are identical to the last normal release except for one, which has been incremented by 1.
 
 1. Run `npm i` to update the package-lock with the updated versions.
@@ -203,15 +245,13 @@ npm uninstall abbrev -w xrpl
 1. Actually publish the packages with one of the following:
 
    - Stable release: Run `npx lerna publish from-package --yes`
-   - Beta release: Run `npx lerna publish from-package --dist-tag beta --yes`  
+   - Beta release: Run `npx lerna publish from-package --dist-tag beta --yes`
      Notice this allows developers to install the package with `npm add xrpl@beta`
 
 1. If requested, enter your [npmjs.com](https://npmjs.com) OTP (one-time password) to complete publication.
-1. If not a beta release: Create a new branch (`git checkout -b <BRANCH_NAME>`) to capture the updated packages from the release. Merge those changes into `main`.
 
    NOW YOU HAVE PUBLISHED! But you're not done; we have to notify people!
 
-1. Pull the most recent changes to `main` locally.
 1. Run `git tag <tagname> -m <tagname>`, where `<tagname>` is the new package and version (e.g. `xrpl@2.1.1`), for each version released.
 1. Run `git push --follow-tags`, to push the tags to Github.
 1. On GitHub, click the "Releases" link on the right-hand side of the page.
@@ -222,26 +262,12 @@ npm uninstall abbrev -w xrpl
    1. Click "Choose a tag", and choose a tag that you just created.
    1. Edit the name of the release to match the tag (IE \<package\>@\<version\>) and edit the description as you see fit.
 
-1. Lastly, send an email to [xrpl-announce](https://groups.google.com/g/xrpl-announce).
+1. Send an email to [xrpl-announce](https://groups.google.com/g/xrpl-announce).
+1. Lastly, send a similar message to the XRPL Discord in the [`javascript` channel](https://discord.com/channels/886050993802985492/886053111179915295). The message should include:
+   1. The version changes for xrpl libraries
+   1. A link to the more detailed changes
+   1. Highlights of important changes
 
-# ripple-lib 1.x releases
-
-- [ ] Publish the release to npm.
-
-  - [ ] If you are publishing a 1.x release to the `xrpl` package, use:
-
-        npm publish --tag ripple-lib
-
-    This prevents the release from taking the `latest` tag.
-
-For ripple-lib:
-
- - Have one of the ripple-lib package maintainers push to `ripple-lib` (npm package name). You can contact [@intelliot](https://github.com/intelliot) to request the npm publish.
-- For ripple-lib releases, cross-publish the package to `xrpl` with `--tag ripple-lib`
-  - [Here's why](https://blog.greenkeeper.io/one-simple-trick-for-javascript-package-maintainers-to-avoid-breaking-their-user-s-software-and-to-6edf06dc5617).
-
-- https://www.npmjs.com/package/ripple-lib
-- https://www.npmjs.com/package/xrpl
 
 ## Mailing Lists
 

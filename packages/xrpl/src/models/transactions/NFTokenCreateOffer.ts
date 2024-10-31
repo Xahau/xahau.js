@@ -8,7 +8,11 @@ import {
   validateBaseTransaction,
   isAmount,
   parseAmountValue,
+  isAccount,
+  validateOptionalField,
+  Account,
 } from './common'
+import type { TransactionMetadataBase } from './metadata'
 
 /**
  * Transaction Flags for an NFTokenCreateOffer Transaction.
@@ -67,7 +71,7 @@ export interface NFTokenCreateOffer extends BaseTransaction {
    * (since an offer to sell a token one doesn't already hold
    * is meaningless).
    */
-  Owner?: string
+  Owner?: Account
   /**
    * Indicates the time after which the offer will no longer
    * be valid. The value is the number of seconds since the
@@ -79,8 +83,13 @@ export interface NFTokenCreateOffer extends BaseTransaction {
    * accepted by the specified account. Attempts by other
    * accounts to accept this offer MUST fail.
    */
-  Destination?: string
+  Destination?: Account
   Flags?: number | NFTokenCreateOfferFlagsInterface
+}
+
+export interface NFTokenCreateOfferMetadata extends TransactionMetadataBase {
+  // rippled 1.11.0 or later
+  offer_id?: string
 }
 
 function validateNFTokenSellOfferCases(tx: Record<string, unknown>): void {
@@ -125,6 +134,9 @@ export function validateNFTokenCreateOffer(tx: Record<string, unknown>): void {
       'NFTokenCreateOffer: Destination and Account must not be equal',
     )
   }
+
+  validateOptionalField(tx, 'Destination', isAccount)
+  validateOptionalField(tx, 'Owner', isAccount)
 
   if (tx.NFTokenID == null) {
     throw new ValidationError('NFTokenCreateOffer: missing field NFTokenID')

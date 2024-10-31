@@ -10,8 +10,9 @@ import { OfferCreate, Transaction } from '../transactions'
 import { TransactionMetadata } from '../transactions/metadata'
 
 import type { BaseRequest, BaseResponse } from './baseMethod'
+import { ManifestRequest } from './manifest'
 
-interface Book {
+export interface SubscribeBook {
   /**
    * Specification of which currency the account taking the Offer would
    * receive, as a currency object with no amount.
@@ -38,7 +39,7 @@ interface Book {
 
 /**
  * The subscribe method requests periodic notifications from the server when
- * certain events happen. Expects a response in the form of a.
+ * certain events happen. Expects a response in the form of a
  * {@link SubscribeResponse}.
  *
  * @category Requests
@@ -60,7 +61,7 @@ export interface SubscribeRequest extends BaseRequest {
    * Array of objects defining order books  to monitor for updates, as detailed
    * Below.
    */
-  books?: Book[]
+  books?: SubscribeBook[]
   /**
    * URL where the server sends a JSON-RPC callbacks for each event.
    * Admin-only.
@@ -72,7 +73,7 @@ export interface SubscribeRequest extends BaseRequest {
   url_password?: string
 }
 
-type BooksSnapshot = Offer[]
+export type BooksSnapshot = Offer[]
 
 /**
  * Response expected from a {@link SubscribeRequest}.
@@ -102,8 +103,8 @@ export interface LedgerStream extends BaseStream {
    * Transaction cost applies starting with the following ledger version.
    */
   fee_base: number
-  /** The reference transaction cost in "fee units". */
-  fee_ref: number
+  /** The reference transaction cost in "fee units". This is not returned after the SetFees amendment is enabled. */
+  fee_ref?: number
   /** The identifying hash of the ledger version that was closed. */
   ledger_hash: string
   /** The ledger index of the ledger that was closed. */
@@ -143,8 +144,8 @@ export interface LedgerStreamResponse {
    * Transaction cost applies starting with the following ledger version.
    */
   fee_base: number
-  /** The reference transaction cost in "fee units". */
-  fee_ref: number
+  /** The reference transaction cost in "fee units". This is not returned after the SetFees amendment is enabled. */
+  fee_ref?: number
   /** The identifying hash of the ledger version that was closed. */
   ledger_hash: string
   /** The ledger index of the ledger that was closed. */
@@ -433,3 +434,38 @@ export type Stream =
   | PeerStatusStream
   | OrderBookStream
   | ConsensusStream
+
+export type EventTypes =
+  | 'connected'
+  | 'disconnected'
+  | 'ledgerClosed'
+  | 'validationReceived'
+  | 'transaction'
+  | 'peerStatusChange'
+  | 'consensusPhase'
+  | 'manifestReceived'
+  | 'path_find'
+  | 'error'
+
+export type OnEventToListenerMap<T extends EventTypes> = T extends 'connected'
+  ? () => void
+  : T extends 'disconnected'
+  ? (code: number) => void
+  : T extends 'ledgerClosed'
+  ? (ledger: LedgerStream) => void
+  : T extends 'validationReceived'
+  ? (validation: ValidationStream) => void
+  : T extends 'transaction'
+  ? (transaction: TransactionStream) => void
+  : T extends 'peerStatusChange'
+  ? (peerStatus: PeerStatusStream) => void
+  : T extends 'consensusPhase'
+  ? (consensus: ConsensusStream) => void
+  : T extends 'manifestReceived'
+  ? (manifest: ManifestRequest) => void
+  : T extends 'path_find'
+  ? (path: PathFindStream) => void
+  : T extends 'error'
+  ? // eslint-disable-next-line @typescript-eslint/no-explicit-any -- needs to be any for overload
+    (...err: any[]) => void
+  : (...args: never[]) => void

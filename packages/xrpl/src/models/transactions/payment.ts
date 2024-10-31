@@ -1,4 +1,3 @@
-/* eslint-disable complexity -- Necessary for validatePayment */
 import { ValidationError } from '../../errors'
 import { Amount, Path } from '../common'
 import { isFlagEnabled } from '../utils'
@@ -8,7 +7,13 @@ import {
   isAmount,
   GlobalFlags,
   validateBaseTransaction,
+  isAccount,
+  validateRequiredField,
+  validateOptionalField,
+  isNumber,
+  Account,
 } from './common'
+import type { TransactionMetadataBase } from './metadata'
 
 /**
  * Enum representing values for Payment Transaction Flags.
@@ -21,7 +26,7 @@ export enum PaymentFlags {
    * This is intended to force the transaction to take arbitrage opportunities.
    * Most clients do not need this.
    */
-  tfNoDirectRipple = 0x00010000,
+  tfNoRippleDirect = 0x00010000,
   /**
    * If the specified Amount cannot be sent without spending more than SendMax,
    * reduce the received amount instead of failing outright. See Partial.
@@ -83,7 +88,7 @@ export interface PaymentFlagsInterface extends GlobalFlags {
    * This is intended to force the transaction to take arbitrage opportunities.
    * Most clients do not need this.
    */
-  tfNoDirectRipple?: boolean
+  tfNoRippleDirect?: boolean
   /**
    * If the specified Amount cannot be sent without spending more than SendMax,
    * reduce the received amount instead of failing outright. See Partial.
@@ -113,7 +118,7 @@ export interface Payment extends BaseTransaction {
    */
   Amount: Amount
   /** The unique address of the account receiving the payment. */
-  Destination: string
+  Destination: Account
   /**
    * Arbitrary tag that identifies the reason for the payment to the
    * destination, or a hosted recipient to pay.
@@ -147,6 +152,11 @@ export interface Payment extends BaseTransaction {
   Flags?: number | PaymentFlagsInterface
 }
 
+export interface PaymentMetadata extends TransactionMetadataBase {
+  DeliveredAmount?: Amount
+  delivered_amount?: Amount | 'unavailable'
+}
+
 /**
  * Verify the form and type of a Payment at runtime.
  *
@@ -164,19 +174,8 @@ export function validatePayment(tx: Record<string, unknown>): void {
     throw new ValidationError('PaymentTransaction: invalid Amount')
   }
 
-  if (tx.Destination === undefined) {
-    throw new ValidationError('PaymentTransaction: missing field Destination')
-  }
-
-  if (!isAmount(tx.Destination)) {
-    throw new ValidationError('PaymentTransaction: invalid Destination')
-  }
-
-  if (tx.DestinationTag != null && typeof tx.DestinationTag !== 'number') {
-    throw new ValidationError(
-      'PaymentTransaction: DestinationTag must be a number',
-    )
-  }
+  validateRequiredField(tx, 'Destination', isAccount)
+  validateOptionalField(tx, 'DestinationTag', isNumber)
 
   if (tx.InvoiceID !== undefined && typeof tx.InvoiceID !== 'string') {
     throw new ValidationError('PaymentTransaction: InvoiceID must be a string')

@@ -4,10 +4,7 @@
  * This module contains the transaction types and the function to calculate the hook on
  */
 
-import {
-  TRANSACTION_TYPES,
-  TRANSACTION_TYPE_MAP,
-} from '@transia/ripple-binary-codec'
+import { TRANSACTION_TYPES, TRANSACTION_TYPE_MAP } from 'ripple-binary-codec'
 // import createHash = require('create-hash')
 
 import { XrplError } from '../errors'

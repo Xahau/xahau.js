@@ -1,6 +1,6 @@
 import { Hook as WHook } from '../common'
 
-import BaseLedgerEntry from './BaseLedgerEntry'
+import { BaseLedgerEntry } from './BaseLedgerEntry'
 
 /**
  * The Hook object type contains the

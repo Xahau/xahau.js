@@ -1,5 +1,5 @@
-import { classicAddressToXAddress } from '@transia/ripple-address-codec'
-import { deriveKeypair, deriveAddress } from '@transia/ripple-keypairs'
+import { classicAddressToXAddress } from 'ripple-address-codec'
+import { deriveKeypair, deriveAddress } from 'ripple-keypairs'
 
 /**
  * Derive an X-Address from a public key and a destination tag.

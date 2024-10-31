@@ -1,10 +1,12 @@
-/* eslint-disable complexity -- Necessary for validateAccountSet */
-
-import { isValidClassicAddress } from '@transia/ripple-address-codec'
-
 import { ValidationError } from '../../errors'
 
-import { BaseTransaction, validateBaseTransaction } from './common'
+import {
+  Account,
+  BaseTransaction,
+  isAccount,
+  validateBaseTransaction,
+  validateOptionalField,
+} from './common'
 
 /**
  * Enum for AccountSet Flags.
@@ -57,6 +59,8 @@ export enum AccountSetAsfFlags {
   asfDisallowIncomingPayChan = 14,
   /** Disallow other accounts from creating incoming Trustlines */
   asfDisallowIncomingTrustline = 15,
+  /** Permanently gain the ability to claw back issued IOUs */
+  // asfAllowTrustLineClawback = 16,
   /** Disallow other accounts from sending incoming Remits */
   asfDisallowIncomingRemit = 16,
 }
@@ -158,7 +162,7 @@ export interface AccountSet extends BaseTransaction {
    * Sets an alternate account that is allowed to mint NFTokens on this
    * account's behalf using NFTokenMint's `Issuer` field.
    */
-  NFTokenMinter?: string
+  NFTokenMinter?: Account
 }
 
 const MIN_TICK_SIZE = 3
@@ -170,16 +174,11 @@ const MAX_TICK_SIZE = 15
  * @param tx - An AccountSet Transaction.
  * @throws When the AccountSet is Malformed.
  */
-// eslint-disable-next-line max-lines-per-function, max-statements -- okay for this method, only a little over
+// eslint-disable-next-line max-lines-per-function -- okay for this method, only a little over
 export function validateAccountSet(tx: Record<string, unknown>): void {
   validateBaseTransaction(tx)
 
-  if (
-    tx.NFTokenMinter !== undefined &&
-    !isValidClassicAddress(String(tx.NFTokenMinter))
-  ) {
-    throw new ValidationError('AccountSet: invalid NFTokenMinter')
-  }
+  validateOptionalField(tx, 'NFTokenMinter', isAccount)
 
   if (tx.ClearFlag !== undefined) {
     if (typeof tx.ClearFlag !== 'number') {

@@ -1,5 +1,12 @@
-export { validate, TransactionAndMetadata, Transaction } from './transaction'
-export { TransactionMetadata } from './metadata'
+export { BaseTransaction } from './common'
+export {
+  validate,
+  PseudoTransaction,
+  SubmittableTransaction,
+  TransactionAndMetadata,
+  Transaction,
+} from './transaction'
+export * from './metadata'
 export {
   AccountSetAsfFlags,
   AccountSetTfFlags,
@@ -7,14 +14,32 @@ export {
   AccountSet,
 } from './accountSet'
 export { AccountDelete } from './accountDelete'
+export { AMMBid } from './AMMBid'
+export { AMMDelete } from './AMMDelete'
+export {
+  AMMDepositFlags,
+  AMMDepositFlagsInterface,
+  AMMDeposit,
+} from './AMMDeposit'
+export { AMMCreate } from './AMMCreate'
+export { AMMVote } from './AMMVote'
+export {
+  AMMWithdrawFlags,
+  AMMWithdrawFlagsInterface,
+  AMMWithdraw,
+} from './AMMWithdraw'
 export { CheckCancel } from './checkCancel'
 export { CheckCash } from './checkCash'
 export { CheckCreate } from './checkCreate'
 export { ClaimReward } from './claimReward'
+export { Clawback } from './clawback'
+export { DIDDelete } from './DIDDelete'
+export { DIDSet } from './DIDSet'
 export { DepositPreauth } from './depositPreauth'
 export { EscrowCancel } from './escrowCancel'
 export { EscrowCreate } from './escrowCreate'
 export { EscrowFinish } from './escrowFinish'
+export { EnableAmendment, EnableAmendmentFlags } from './enableAmendment'
 export { Import } from './import'
 export { Invoke } from './invoke'
 export { NFTokenAcceptOffer } from './NFTokenAcceptOffer'
@@ -36,6 +61,8 @@ export {
   OfferCreateFlagsInterface,
   OfferCreate,
 } from './offerCreate'
+export { OracleDelete } from './oracleDelete'
+export { OracleSet } from './oracleSet'
 export { PaymentFlags, PaymentFlagsInterface, Payment } from './payment'
 export {
   PaymentChannelClaimFlags,
@@ -46,10 +73,12 @@ export { PaymentChannelCreate } from './paymentChannelCreate'
 export { PaymentChannelFund } from './paymentChannelFund'
 export { Remit } from './remit'
 export { SetHookFlagsInterface, SetHookFlags, SetHook } from './setHook'
+export { SetFee, SetFeePreAmendment, SetFeePostAmendment } from './setFee'
 export { SetRegularKey } from './setRegularKey'
 export { SignerListSet } from './signerListSet'
 export { TicketCreate } from './ticketCreate'
 export { TrustSetFlagsInterface, TrustSetFlags, TrustSet } from './trustSet'
+export { UNLModify } from './UNLModify'
 export {
   URITokenMintFlagsInterface,
   URITokenMintFlags,
@@ -59,3 +88,15 @@ export { URITokenBurn } from './uriTokenBurn'
 export { URITokenCreateSellOffer } from './uriTokenCreateSellOffer'
 export { URITokenBuy } from './uriTokenBuy'
 export { URITokenCancelSellOffer } from './uriTokenCancelSellOffer'
+export { XChainAddAccountCreateAttestation } from './XChainAddAccountCreateAttestation'
+export { XChainAddClaimAttestation } from './XChainAddClaimAttestation'
+export { XChainClaim } from './XChainClaim'
+export { XChainCommit } from './XChainCommit'
+export { XChainCreateBridge } from './XChainCreateBridge'
+export { XChainCreateClaimID } from './XChainCreateClaimID'
+export { XChainAccountCreateCommit } from './XChainAccountCreateCommit'
+export {
+  XChainModifyBridge,
+  XChainModifyBridgeFlags,
+  XChainModifyBridgeFlagsInterface,
+} from './XChainModifyBridge'

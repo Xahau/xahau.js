@@ -1,5 +1,21 @@
 import { Amount } from '../common'
 
+import { BaseTransaction } from './common'
+import {
+  NFTokenAcceptOffer,
+  NFTokenAcceptOfferMetadata,
+} from './NFTokenAcceptOffer'
+import {
+  NFTokenCancelOffer,
+  NFTokenCancelOfferMetadata,
+} from './NFTokenCancelOffer'
+import {
+  NFTokenCreateOffer,
+  NFTokenCreateOfferMetadata,
+} from './NFTokenCreateOffer'
+import { NFTokenMint, NFTokenMintMetadata } from './NFTokenMint'
+import { Payment, PaymentMetadata } from './payment'
+
 export interface HookExecution {
   HookExecution: {
     HookAccount: string
@@ -47,6 +63,7 @@ export interface DeletedNode {
   DeletedNode: {
     LedgerEntryType: string
     LedgerIndex: string
+    PreviousFields?: { [field: string]: unknown }
     FinalFields: { [field: string]: unknown }
   }
 }
@@ -83,13 +100,26 @@ export function isDeletedNode(node: Node): node is DeletedNode {
   return Object.prototype.hasOwnProperty.call(node, `DeletedNode`)
 }
 
-export interface TransactionMetadata {
+export interface TransactionMetadataBase {
+  AffectedNodes: Node[]
   HookExecutions?: HookExecution[]
   HookEmissions?: HookEmission[]
-  AffectedNodes: Node[]
   DeliveredAmount?: Amount
   // "unavailable" possible for transactions before 2014-01-20
   delivered_amount?: Amount | 'unavailable'
   TransactionIndex: number
   TransactionResult: string
 }
+
+export type TransactionMetadata<T extends BaseTransaction = BaseTransaction> =
+  T extends Payment
+    ? PaymentMetadata
+    : T extends NFTokenMint
+    ? NFTokenMintMetadata
+    : T extends NFTokenCreateOffer
+    ? NFTokenCreateOfferMetadata
+    : T extends NFTokenAcceptOffer
+    ? NFTokenAcceptOfferMetadata
+    : T extends NFTokenCancelOffer
+    ? NFTokenCancelOfferMetadata
+    : TransactionMetadataBase

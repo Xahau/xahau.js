@@ -5,15 +5,13 @@ import {
   XrplDefinitionsBase,
 } from '../enums'
 import { SerializedType, JsonObject } from './serialized-type'
-import {
-  xAddressToClassicAddress,
-  isValidXAddress,
-} from '@transia/ripple-address-codec'
+import { xAddressToClassicAddress, isValidXAddress } from 'ripple-address-codec'
 import { BinaryParser } from '../serdes/binary-parser'
 import { BinarySerializer, BytesList } from '../serdes/binary-serializer'
-import { Buffer } from 'buffer/'
 
-const OBJECT_END_MARKER_BYTE = Buffer.from([0xe1])
+import { STArray } from './st-array'
+
+const OBJECT_END_MARKER_BYTE = Uint8Array.from([0xe1])
 const OBJECT_END_MARKER = 'ObjectEndMarker'
 const ST_OBJECT = 'STObject'
 const DESTINATION = 'Destination'
@@ -134,9 +132,12 @@ class STObject extends SerializedType {
     }
 
     sorted.forEach((field) => {
-      const associatedValue = field.associatedType.from(
-        xAddressDecoded[field.name],
-      )
+      const associatedValue =
+        field.type.name === ST_OBJECT
+          ? this.from(xAddressDecoded[field.name], undefined, definitions)
+          : field.type.name === 'STArray'
+          ? STArray.from(xAddressDecoded[field.name], definitions)
+          : field.associatedType.from(xAddressDecoded[field.name])
 
       if (associatedValue == undefined) {
         throw new TypeError(
@@ -178,7 +179,10 @@ class STObject extends SerializedType {
       if (field.name === OBJECT_END_MARKER) {
         break
       }
-      accumulator[field.name] = objectParser.readFieldValue(field).toJSON()
+
+      accumulator[field.name] = objectParser
+        .readFieldValue(field)
+        .toJSON(definitions)
     }
 
     return accumulator

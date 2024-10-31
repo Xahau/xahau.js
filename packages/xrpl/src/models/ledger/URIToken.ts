@@ -1,6 +1,6 @@
 import { Amount } from '../common'
 
-import BaseLedgerEntry from './BaseLedgerEntry'
+import { BaseLedgerEntry } from './BaseLedgerEntry'
 
 /**
  * The URIToken object type contains the

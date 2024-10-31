@@ -1,14 +1,15 @@
-import { decode } from '@transia/ripple-binary-codec'
 import BigNumber from 'bignumber.js'
+import { decode } from 'ripple-binary-codec'
 
 import type {
-  AccountTxResponse,
-  Response,
   TransactionEntryResponse,
   TransactionStream,
   TxResponse,
 } from '..'
-import type { Amount } from '../models/common'
+import type { Amount, APIVersion, DEFAULT_API_VERSION } from '../models/common'
+import type { RequestResponseMap } from '../models/methods'
+import { AccountTxVersionResponseMap } from '../models/methods/accountTx'
+import { BaseRequest, BaseResponse } from '../models/methods/baseMethod'
 import { PaymentFlags, Transaction } from '../models/transactions'
 import type { TransactionMetadata } from '../models/transactions/metadata'
 import { isFlagEnabled } from '../models/utils'
@@ -62,7 +63,10 @@ function isPartialPayment(
   }
 
   const delivered = meta.delivered_amount
-  const amount = tx.Amount
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment -- DeliverMax is a valid field on Payment response
+  // @ts-expect-error -- DeliverMax is a valid field on Payment response
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- DeliverMax is a valid field on Payment response
+  const amount = tx.DeliverMax
 
   if (delivered === undefined) {
     return false
@@ -72,20 +76,35 @@ function isPartialPayment(
 }
 
 function txHasPartialPayment(response: TxResponse): boolean {
-  return isPartialPayment(response.result, response.result.meta)
+  return isPartialPayment(response.result.tx_json, response.result.meta)
 }
 
 function txEntryHasPartialPayment(response: TransactionEntryResponse): boolean {
   return isPartialPayment(response.result.tx_json, response.result.metadata)
 }
 
-function accountTxHasPartialPayment(response: AccountTxResponse): boolean {
+function accountTxHasPartialPayment<
+  Version extends APIVersion = typeof DEFAULT_API_VERSION,
+>(response: AccountTxVersionResponseMap<Version>): boolean {
   const { transactions } = response.result
-  const foo = transactions.some((tx) => isPartialPayment(tx.tx, tx.meta))
+  const foo = transactions.some((tx) => {
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- api_version 1
+    if (tx.tx_json != null) {
+      const transaction = tx
+      return isPartialPayment(transaction.tx_json, transaction.meta)
+    }
+
+    const transaction = tx
+    return isPartialPayment(transaction.tx, transaction.meta)
+  })
   return foo
 }
 
-function hasPartialPayment(command: string, response: Response): boolean {
+function hasPartialPayment<
+  R extends BaseRequest,
+  V extends APIVersion = typeof DEFAULT_API_VERSION,
+  T = RequestResponseMap<R, V>,
+>(command: string, response: T): boolean {
   /* eslint-disable @typescript-eslint/consistent-type-assertions -- Request type is known at runtime from command */
   switch (command) {
     case 'tx':
@@ -93,7 +112,9 @@ function hasPartialPayment(command: string, response: Response): boolean {
     case 'transaction_entry':
       return txEntryHasPartialPayment(response as TransactionEntryResponse)
     case 'account_tx':
-      return accountTxHasPartialPayment(response as AccountTxResponse)
+      return accountTxHasPartialPayment(
+        response as AccountTxVersionResponseMap<V>,
+      )
     default:
       return false
   }
@@ -106,12 +127,13 @@ function hasPartialPayment(command: string, response: Response): boolean {
  * @param command - Command from the request, tells us what response to expect.
  * @param response - Response to check for a partial payment.
  */
-export function handlePartialPayment(
-  command: string,
-  response: Response,
-): void {
+export function handlePartialPayment<
+  R extends BaseRequest,
+  T = RequestResponseMap<R, APIVersion>,
+>(command: string, response: T): void {
   if (hasPartialPayment(command, response)) {
-    const warnings = response.warnings ?? []
+    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions -- We are checking dynamically and safely.
+    const warnings = (response as BaseResponse).warnings ?? []
 
     const warning = {
       id: WARN_PARTIAL_PAYMENT_CODE,
@@ -120,6 +142,8 @@ export function handlePartialPayment(
 
     warnings.push(warning)
 
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment -- We are checking dynamically and safely.
+    // @ts-expect-error -- We are checking dynamically and safely.
     response.warnings = warnings
   }
 }

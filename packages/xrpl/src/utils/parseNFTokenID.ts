@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-magic-numbers -- Doing hex string parsing. */
-import { encodeAccountID } from '@transia/ripple-address-codec'
+import { hexToBytes } from '@xrplf/isomorphic/utils'
 import BigNumber from 'bignumber.js'
+import { encodeAccountID } from 'ripple-address-codec'
 
 import { XrplError } from '../errors'
 
@@ -24,7 +25,17 @@ import { XrplError } from '../errors'
  */
 function unscrambleTaxon(taxon: number, tokenSeq: number): number {
   /* eslint-disable no-bitwise -- XOR is part of the encode/decode scheme. */
-  return (taxon ^ (384160001 * tokenSeq + 2459)) % 4294967296
+  const seed = 384160001
+  const increment = 2459
+  const max = 4294967296
+
+  const scramble = new BigNumber(seed)
+    .multipliedBy(tokenSeq)
+    .modulo(max)
+    .plus(increment)
+    .modulo(max)
+    .toNumber()
+  return (taxon ^ scramble) >>> 0
   /* eslint-enable no-bitwise */
 }
 
@@ -75,7 +86,7 @@ export default function parseNFTokenID(nftokenID: string): {
     NFTokenID: nftokenID,
     Flags: new BigNumber(nftokenID.substring(0, 4), 16).toNumber(),
     TransferFee: new BigNumber(nftokenID.substring(4, 8), 16).toNumber(),
-    Issuer: encodeAccountID(Buffer.from(nftokenID.substring(8, 48), 'hex')),
+    Issuer: encodeAccountID(hexToBytes(nftokenID.substring(8, 48))),
     Taxon: unscrambleTaxon(scrambledTaxon, sequence),
     Sequence: sequence,
   }

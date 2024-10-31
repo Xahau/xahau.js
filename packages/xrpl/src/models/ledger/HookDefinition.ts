@@ -1,6 +1,6 @@
 import { HookParameter } from '../common'
 
-import BaseLedgerEntry from './BaseLedgerEntry'
+import { BaseLedgerEntry } from './BaseLedgerEntry'
 
 /**
  * The HookDefintion object type contains the

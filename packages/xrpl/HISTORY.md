@@ -1,13 +1,206 @@
-# xrpl.js (ripple-lib) Release History
+# xrpl.js Release History
 
 Subscribe to [the **xrpl-announce** mailing list](https://groups.google.com/g/xrpl-announce) for release announcements. We recommend that xrpl.js (ripple-lib) users stay up-to-date with the latest stable release.
-## Unreleased
+
+## 4.0.0 (2024-07-15)
+
+### BREAKING CHANGES
+* Use rippled api_version v2 as default while maintaining support for v1.
 
 ### Added
-* Null and undefined values in transactions are now treated as though the field was not passed in.
+* Add `nfts_by_issuer` clio-only API definition
+* Support for the `fixPreviousTxnID` amendment.
+* Support for the user version of the `feature` RPC.
+* Add `hash` field to `ledger` command response
+
+### Removed
+* Remove references to the Hooks testnet faucet in the xrpl.js code repository.
+
+## 3.1.0 (2024-06-03)
+
+### BREAKING CHANGES
+* Small fix in the API to use a new flag name `tfNoDirectRipple` instead of the existing flag name `tfNoRippleDirect`
+* Node.js has been upgraded to a minimum version of 18
+* `fetch` now relies on the native javascript environment in browsers and Node.js
+
+### Added
+* Support for the Price Oracles amendment (XLS-47).
 
 ### Fixed
+* Typo in `Channel` type `source_tab` -> `source_tag`
+* Fix `client.requestAll` to handle filters better
+* Add the missing `AMMDeposit` flag `tfTwoAssetIfEmpty`
+* Add missing `lsfAMMNode` flag to `RippleState` ledger object
+* Add `PreviousFields` to `DeletedNode` metadata type
+
+## 3.0.0 (2024-02-01)
+
+### BREAKING CHANGES
+* Bump typescript to 5.x
+* Remove Node 14 support
+* Remove `crypto` polyfills, `create-hash`, `elliptic`, `hash.js`, and their many dependencies in favor of `@noble/hashes` and `@nobel/curves`
+* Remove `bip32` and `bip39` in favor of `@scure/bip32` and `@scure/bip39`
+* Remove `assert` dependency. If you were catching `AssertionError` you need to change to `Error`
+* Configuring a proxy:
+  * Instead of passing various parameters on the `ConnectionsOptions` you know specify the `agent` parameter. This object can use be created by libraries such as `https-proxy-agent` or any that implements the `http.Agent`.
+  * This was changed to both support the latest `https-proxy-agent` and to remove the need to include the package in bundlers.   Tests will still be done using `https-proxy-agent` and only tested in a node environment which was the only way it was previously supported anyway
+* Remove `BroadcastClient` which was deprecated
+* Uses `@xrplf/secret-numbers` instead of `xrpl-secret-numbers`
+* Improve key algorithm detection. It will now throw Errors with helpful messages
+* Move `authorizeChannel` from `wallet/signer` to `wallet/authorizeChannel` to solve a circular dependency issue.
+* When using a bundler you must remove the mapping of `ws` to `WSWrapper`. ex. `ws: 'xrpl/dist/npm/client/WSWrapper'`. See [../UNIQUE_STEPS](Unique Steps) for the new, much smaller, configs.
+* `Transaction` type has been redefined to include all transactions and `SubmittableTransaction` was created to define the old value. The following functions which only handle transactions to be submitted now use `SubmittableTransaction`:
+  * `Client.autofill`
+  * `Client.submit`
+  * `Client.submitAndWait`
+  * `Client.prepareTransaction`
+  * `getSignedTx`
+  * `isAccountDelete`
+* `dropsToXRP` and `Client.getXrpBalance` now return a `number` instead of a `string`
+* `Buffer` has been replaced with `UInt8Array` for both params and return values.  `Buffer` may continue to work with params since they extend `UInt8Arrays`.
+
+### Bundling Changes
+Bundler configurations are much more simplified. See [../UNIQUE_STEPS](Unique Steps) for the new, much smaller, configs.
+* removed the following polyfills:
+  * `buffer`
+  * `assert`
+  * `crypto-browserify`
+  * `https-browserify`
+  * `os-browserify`
+  * `process`
+  * `stream-browserify`
+  * `stream-http`
+  * `url`
+  * `util` - previously added automatically by `webpack`
+  * `events` - previously added automatically by `webpack` but manual for `vite`**
+* Removed mappings for:
+  * `ws` to `WsWrapper`
+  * Excluding `https-proxy-agent`
+
+### Non-Breaking Changes
+* Deprecated:
+  * `convertHexToString` in favor of `@xrplf/isomorphic/utils`'s `hexToString`
+  * `convertStringToHex` in favor of `@xrplf/isomorphic/utils`'s `stringToHex`
+
+## 2.14.1 (2024-02-01)
+
+### Fixed
+* Fix `AMM` ledger object's `LPTokenBalance` type to `IssuedCurrencyAmount`.
+
+## 2.14.0 (2023-11-30)
+
+### Added
+* Support for the DID amendment (XLS-40).
+* Support for `server_definitions` RPC
+* Support for Concise Transaction Identifier (ctid) as defined in [XLS-37](https://github.com/XRPLF/XRPL-Standards/discussions/91)
+
+### Fixed
+* Allow flag maps when submitting `NFTokenMint` and `NFTokenCreateOffer` transactions like others with flags
+* Fix parseNFTokenID to return the correct taxon if large serial and (or) taxon were used
+
+### Removed
+* Remove AMM devnet which is being decommissioned
+
+## 2.13.0 (2023-10-18)
+
+### Fixed
+* Allow flag maps when submitting `NFTokenMint` and `NFTokenCreateOffer` transactions like others with flags
+* Add pseudo transaction types to `tx` and `ledger` method responses.
+* Add missing `type` param to `ledger_data` and `ledger` requests
+* Type assertions around `PreviousTxnID` and `PreviousTxnLgrSeq` missing on some ledger objects
+* Transaction fields that represent an address no longer allow an empty string (`''`). If you want to specify [ACCOUNT_ZERO](https://xrpl.org/addresses.html#special-addresses), you can specify `rrrrrrrrrrrrrrrrrrrrrhoLvTp`. ⚠️ **WARNING:** `rrrrrrrrrrrrrrrrrrrrrhoLvTp` is a black hole address, with no corresponding private key. Accounts/funds controlled by this address are not accessible.
+* Invalid addresses on a transaction now throws a `ValidationError` when submitting a transaction instead of `Error('checksum_invalid')`
+
+### Changed
+* Make `LedgerEntryResponse` a generic so it can be used like `LedgerEntryResponse<Escrow>`
+* Clean up typing of `type` param and the response property `account_objects` of the `account_objects` request.
+* Error messages for fields that equate to an address, `DestinationTag`, or `NFTokenID`.  They will still be of type `ValidationError`.
+* Add alias type of `Account` to improve intellisense for Transaction fields that equate to an address.
+* Removed sidechain-devnet faucet support as it is being moved to Devnet
+
+## 2.12.0 (2023-09-27)
+### Added
+* Added `ports` field to `ServerInfoResponse`
+* Support for the XChainBridge amendment.
+
+### Fixed
+* Fix request model fields related to AMM
+* Rename `AMMAccount` to `Account` on `AMM` ledger objects
+* Fixed `EscrowCancel` and `EscrowFinish` validation
+
+## 2.11.0 (2023-08-24)
+
+### Added
+* Add AMM support [XLS-30](https://github.com/XRPLF/XRPL-Standards/discussions/78)
+* Add `walletFromSecretNumbers` to derive a wallet from [XLS-12](https://github.com/XRPLF/XRPL-Standards/issues/15). Currently only works with `secp256k1` keys, but will work with `ED25519` keys as part of 3.0 via [#2376](https://github.com/XRPLF/xrpl.js/pull/2376).
+
+### Fixed
+* Fix source-maps not finding their designated source
+
+## 2.10.0 (2023-08-07)
+
+### Added
+* Add a new Clawback transaction
+* Add account flag lsfAllowTrustLineClawback
+* Add support for bitwise flag checking of 64 bit flags
+
+## 2.9.1 (2023-07-18)
+### Fixed
+* Passing Definitions from `STObject` to `STArray` back to `STObject`, both for signing & decoding (to JSON)
+
+## 2.9.0 (2023-07-12)
+
+### Added
+* `NetworkId` field support including auto-filling and to `server_info` response
+* Add `BurnedNFTokens`, `FirstNFTSequence`, `MintedNFTokens`,
+`NFTokenMinter`, and `WalletLocator` to `AccountRoot`
+* Add `ledger_hash` and `ledger_index` to `account_nfts`,
+  `nft_buy_offers`, and `nft_sell_offers` requests
+* Add `nft_page` to `ledger_entry` request
+* Add types for `NFTokenPage` and `NFTokenOffer` LedgerEntries.
+* Add type for NFToken object that is stored on a `NFTokenPage`
+* Add type for `account_info`'s `account_flags` property
+* Add types for `EnableAmendment`, `SetFee`, and `UNLModify` transactions
+* Add the new fields for `XRPFees` amendment and id for the `FeeSettings`
+* Add `FeeSettings`, `NegativeUNL`, and `Amendments` singleton ledger entry ids
+* Add `WalletLocator` to `SignerEntry` on `SignerList` (LedgerEntry)
+* Export many nested types and interfaces
+
+### Fixed
+* `getNFTokenID` now also accepts metadata from `tx` in binary format
+* Allowing the removal of a signer list
+* Importing `Wallet` as a named import.
+
+### Breaking
+* If you were deep importing these types previously you will need to import them from `xrpl` and rename them:
+  * `methods/accountLines`: `Trustline` -> `AccountLinesTrustline`
+  * `methods/bookOffers`: `TakerAmount` -> `BookOfferCurrency`
+  * `methods/ledgerData`: `BinaryLedgerEntry` -> `LedgerDataBinaryLedgerEntry`
+
+## 2.8.1 (2023-06-13)
+
+### Fixed
+* Points to latest version of `ripple-keypairs` instead of a beta release
+
+## 2.8.0 (2023-06-13)
+
+### Added
+* Adds support for npm v9
+
+### Fixed
+* Fixed `ServerState.transitions` typing, it is now a string instead of a number. (Only used in return from `server_state` request)
 * Added `destination_amount` to `PathOption` which is returned as part of a `path_find` request
+* Removed the `decode(encode(tx)) == tx` check from the wallet signing process
+* Fixed the location of `signer_lists` in the `account_info` response so that it matches rippled
+* Guard check for signing algorithm used in `Wallet.generate()`
+* Null and undefined values in transactions are now treated as though the field was not passed in.
+* Improved the type definition of the return value of `submitAndWait()`
+
+### Changed
+* Added sidechain devnet support to faucet generation
+
+### Removed
+* RPCs and utils related to the old sidechain design
 
 ## 2.7.0 (2023-03-08)
 
@@ -96,6 +289,7 @@ Wallet.fromMmnemonic()
 ## 2.2.1 (2022-04-21)
 ### Fixed
 * Fix return field of NFT offer
+* Updated `getOrderbook` docs and param names to reflect actual behavior of checking both sides of order book.
 
 ## 2.2.0 (2022-04-19)
 ### Added

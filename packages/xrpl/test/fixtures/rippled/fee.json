@@ -1,0 +1,27 @@
+{
+  "api_version": 1,
+  "id": 1,
+  "result": {
+    "current_ledger_size": "13",
+    "current_queue_size": "0",
+    "drops": {
+      "base_fee": "10",
+      "base_fee_no_hooks": "10",
+      "median_fee": "5000",
+      "minimum_fee": "10",
+      "open_ledger_fee": "10"
+    },
+    "expected_ledger_size": "409",
+    "fee_hooks_feeunits": "10",
+    "ledger_current_index": 8229940,
+    "levels": {
+      "median_level": "128000",
+      "minimum_level": "256",
+      "open_ledger_level": "256",
+      "reference_level": "256"
+    },
+    "max_queue_size": "8180"
+  },
+  "type": "response",
+  "status": "success"
+}

@@ -1,4 +1,4 @@
-import BaseLedgerEntry from './BaseLedgerEntry'
+import { BaseLedgerEntry } from './BaseLedgerEntry'
 
 /**
  *

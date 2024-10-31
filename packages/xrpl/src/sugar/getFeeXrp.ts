@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js'
 
-import type { Client } from '..'
+import { type Client } from '..'
 import { XrplError } from '../errors'
 
 const NUM_DECIMAL_PLACES = 6
@@ -20,8 +20,11 @@ export async function getFeeXrp(
 ): Promise<string> {
   const feeCushion = cushion ?? client.feeCushion
 
-  const serverInfo = (await client.request({ command: 'server_info' })).result
-    .info
+  const serverInfo = (
+    await client.request({
+      command: 'server_info',
+    })
+  ).result.info
 
   const baseFee = serverInfo.validated_ledger?.base_fee_xrp
 
@@ -50,20 +53,18 @@ export async function getFeeXrp(
  *
  * @param client - The Client used to connect to the ledger.
  * @param txBlob - The encoded transaction to estimate the fee for.
- * @param signersCount - The number of multisigners.
  * @returns The transaction fee.
  */
 export async function getFeeEstimateXrp(
   client: Client,
   txBlob: string,
-  signersCount = 0,
 ): Promise<string> {
   const response = await client.request({
     command: 'fee',
     tx_blob: txBlob,
   })
-  const openLedgerFee = response.result.drops.open_ledger_fee
-  const baseFee = new BigNumber(response.result.drops.base_fee)
-  const totalFee = BigNumber.sum(openLedgerFee, Number(baseFee) * signersCount)
-  return new BigNumber(totalFee.toFixed(NUM_DECIMAL_PLACES)).toString(BASE_10)
+  const openLedgerFee = new BigNumber(response.result.drops.open_ledger_fee)
+  return new BigNumber(openLedgerFee.toFixed(NUM_DECIMAL_PLACES)).toString(
+    BASE_10,
+  )
 }

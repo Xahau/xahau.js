@@ -100,7 +100,7 @@ describe('Models Utils', function () {
         Amount: '1234',
         Destination: 'rfkE1aSy9G8Upk4JssnwBxhEv5p4mn2KTy',
         Flags: {
-          tfNoDirectRipple: false,
+          tfNoRippleDirect: false,
           tfPartialPayment: true,
           tfLimitQuality: true,
         },
@@ -168,6 +168,7 @@ describe('Models Utils', function () {
         AccountRootFlags.lsfDisallowIncomingPayChan |
         AccountRootFlags.lsfDisallowIncomingTrustline |
         AccountRootFlags.lsfDisallowIncomingRemit
+      // AccountRootFlags.lsfAllowTrustLineClawback
 
       const parsed = parseAccountRootFlags(accountRootFlags)
 
@@ -186,6 +187,7 @@ describe('Models Utils', function () {
           parsed.lsfDisallowIncomingPayChan &&
           parsed.lsfDisallowIncomingTrustline &&
           parsed.lsfDisallowIncomingRemit,
+        // parsed.lsfAllowTrustLineClawback,
       )
     })
 
@@ -206,6 +208,7 @@ describe('Models Utils', function () {
       assert.isUndefined(parsed.lsfDisallowIncomingPayChan)
       assert.isUndefined(parsed.lsfDisallowIncomingTrustline)
       assert.isUndefined(parsed.lsfDisallowIncomingRemit)
+      // assert.isUndefined(parsed.lsfAllowTrustLineClawback)
     })
   })
 })

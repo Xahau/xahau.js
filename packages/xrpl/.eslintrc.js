@@ -59,9 +59,13 @@ module.exports = {
     'no-shadow': 'off',
     '@typescript-eslint/no-shadow': ['error'],
     'jsdoc/check-examples': 'off',
+    // We want to use certain fields like "@interface" to make join types treated as interfaces.
+    'jsdoc/check-tag-names': 'off',
+    'jsdoc/require-hyphen-before-param-description': 'off',
 
     'tsdoc/syntax': 'off',
     'jsdoc/require-description-complete-sentence': 'off',
+    'import/prefer-default-export': 'off',
   },
   overrides: [
     {
@@ -80,7 +84,6 @@ module.exports = {
         'max-statements': 'off',
         // Snippets have logs on console to better understand the working.
         'no-console': 'off',
-        'import/no-extraneous-dependencies': 'off',
       },
     },
     {
@@ -125,6 +128,12 @@ module.exports = {
       },
     },
     {
+      files: ['src/models/**/*.ts'],
+      rules: {
+        complexity: ['off'],
+      },
+    },
+    {
       files: ['.eslintrc.js', 'jest.config.js'],
       rules: {
         // Removed no-commonjs requirement as eslint must be in common js format
@@ -135,6 +144,18 @@ module.exports = {
 
         // Javascript files have CommonJS exports
         'import/no-unused-modules': 'off',
+      },
+    },
+    {
+      files: ['tools/*.ts', 'tools/*.js'],
+      rules: {
+        'no-console': ['off'],
+        'node/no-process-exit': ['off'],
+        '@typescript-eslint/no-magic-numbers': ['off'],
+        'max-lines-per-function': ['off'],
+        'max-statements': ['off'],
+        complexity: ['off'],
+        'max-depth': ['warn', 3],
       },
     },
   ],

@@ -1,8 +1,72 @@
 # ripple-binary-codec Release History
 
 ## Unreleased
+
+## 2.1.0 (2024-06-03)
+
+### Added
+* Support for the Price Oracles amendment (XLS-47).
+
+### Fixed
+* Better error handling/error messages for serialization/deserialization errors.
+
+## 2.0.0 (2024-02-01)
+
+### BREAKING CHANGES
+* Bump typescript to 5.x
+* Remove Node 14 support
+* Remove decimal.js and big-integer. Use `BigNumber` from `bignumber.js` instead of `Decimal` and the native `BigInt` instead of `bigInt`.
+* Remove `assert` dependency. If you were catching `AssertionError` you need to change to `Error`.
+* Remove `create-hash` in favor of `@noble/hashes`
+* `Buffer` has been replaced with `UInt8Array` for both params and return values. `Buffer` may continue to work with params since they extend `UInt8Arrays`.
+
+### Non-Breaking Changes
+* Update type definitions which causing errors in tests that the code already supported
+  * `makeParser` to accept a `Buffer` in addition to `string`
+  * `SerializedType` constructor allows not passing in a byte array
+  * `Comparable` is now a generic type so that it allows `compareTo` methods to take more that the type itself.
+* Eliminates 4 runtime dependencies: `base-x`, `base64-js`, `buffer`, and `ieee754`.
+
+### Changes
+* Update type definitions which causing errors in tests that the code already supported
+    * `makeParser` to accept a `Buffer` in addition to `string`
+    * `SerializedType` constructor allows not passing in a byte array
+    * `Comparable` is now a generic type so that it allows `compareTo` methods to take more that the type itself.
+
+## 1.11.0 (2023-11-30)
+### Added
+- Support for the DID amendment (XLS-40).
+
+## 1.10.0 (2023-09-27)
+### Added
+- Support for the XChainBridge amendment (XLS-38).
+
+## 1.9.0 (2023-08-24)
+
+### Added
+* Add AMM support [XLS-30](https://github.com/XRPLF/XRPL-Standards/discussions/78)
+* Updated to include latest updates to `definitions.json`.
+
+### Fixed
+* Fix source-maps not finding their designated source
+
+## 1.8.0 (2023-08-07)
+
+### Added
+* Added Clawback transaction type
+
+## 1.7.1 (2023-07-18)
+### Fixed
+* Passing Definitions from `STObject` to `STArray` back to `STObject`, both for signing & decoding (to JSON)
+
+## 1.7.0 (2023-07-12)
+### Added
+* `NetworkId` field support
+
+## 1.6.0 (2023-06-13)
 ### Added
 - Allow custom type definitions to be used for encoding/decoding transactions at runtime (e.g. for sidechains/new amendments)
+- Adds support for npm v9
 
 ## 1.5.0 (2023-03-08)
 ### Changed

@@ -1,31 +1,34 @@
 {
   "name": "@transia/ripple-binary-codec",
-  "version": "1.4.6-alpha.10",
+  "version": "2.1.0-alpha.10",
   "description": "XRP Ledger binary codec",
   "files": [
     "dist/*",
-    "bin/*",
-    "test/*"
+    "src/*"
   ],
   "main": "dist/",
   "directories": {
     "test": "test"
   },
   "dependencies": {
-    "@transia/ripple-address-codec": "^4.2.8-alpha.0",
-    "assert": "^2.0.0",
-    "big-integer": "^1.6.48",
-    "buffer": "5.6.0",
-    "create-hash": "^1.2.0",
-    "decimal.js": "^10.2.0"
+    "@xrplf/isomorphic": "^1.0.1",
+    "bignumber.js": "^9.0.0",
+    "ripple-address-codec": "npm:@transia/ripple-address-codec@^5.0.0-alpha.0"
   },
   "scripts": {
-    "build": "tsc -b && copyfiles ./src/enums/definitions.json ./dist/enums/",
-    "clean": "rm -rf ./dist && rm -rf tsconfig.tsbuildinfo",
-    "prepare": "npm run build && npm test",
-    "test": "jest --verbose false --silent=false ./test/*.test.js",
+    "build": "tsc --build tsconfig.build.json && copyfiles ./src/enums/definitions.json ./dist/enums/",
+    "clean": "rm -rf ./dist ./coverage ./test/testCompiledForWeb tsconfig.build.tsbuildinfo",
+    "prepublishOnly": "npm test",
+    "test": "npm run build && jest --verbose false --silent=false ./test/*.test.ts",
+    "test:browser": "npm run build && karma start ./karma.config.js",
     "lint": "eslint . --ext .ts --ext .test.js"
   },
+  "keywords": [
+    "ripple",
+    "xrp",
+    "xrp ledger",
+    "xrpl"
+  ],
   "repository": {
     "type": "git",
     "url": "git@github.com/Transia-RnD/xrpl.js/tree/beta"
@@ -38,6 +41,6 @@
   "readmeFilename": "README.md",
   "prettier": "@xrplf/prettier-config",
   "engines": {
-    "node": ">= 10"
+    "node": ">= 18"
   }
 }

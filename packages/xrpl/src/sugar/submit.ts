@@ -1,10 +1,17 @@
-import { decode, encode } from '@transia/ripple-binary-codec'
+import { decode, encode } from 'ripple-binary-codec'
 
-import type { Client, SubmitRequest, SubmitResponse, Wallet } from '..'
+import type {
+  Client,
+  SubmitRequest,
+  SubmitResponse,
+  SubmittableTransaction,
+  Transaction,
+  Wallet,
+} from '..'
 import { ValidationError, XrplError } from '../errors'
+import { Signer } from '../models/common'
 import { TxResponse } from '../models/methods'
-import { Transaction } from '../models/transactions'
-import { hashes } from '../utils'
+import { BaseTransaction } from '../models/transactions/common'
 
 /** Approximate time for a ledger to close, in milliseconds */
 const LEDGER_CLOSE_TIME = 1000
@@ -15,89 +22,33 @@ async function sleep(ms: number): Promise<void> {
   })
 }
 
-/**
- * Submits a signed/unsigned transaction.
- * Steps performed on a transaction:
- *    1. Autofill.
- *    2. Sign & Encode.
- *    3. Submit.
- *
- * @param this - A Client.
- * @param transaction - A transaction to autofill, sign & encode, and submit.
- * @param opts - (Optional) Options used to sign and submit a transaction.
- * @param opts.autofill - If true, autofill a transaction.
- * @param opts.failHard - If true, and the transaction fails locally, do not retry or relay the transaction to other servers.
- * @param opts.wallet - A wallet to sign a transaction. It must be provided when submitting an unsigned transaction.
- * @returns A promise that contains SubmitResponse.
- * @throws RippledError if submit request fails.
- */
-async function submit(
-  this: Client,
-  transaction: Transaction | string,
-  opts?: {
-    // If true, autofill a transaction.
-    autofill?: boolean
-    // If true, and the transaction fails locally, do not retry or relay the transaction to other servers.
-    failHard?: boolean
-    // A wallet to sign a transaction. It must be provided when submitting an unsigned transaction.
-    wallet?: Wallet
-  },
-): Promise<SubmitResponse> {
-  const signedTx = await getSignedTx(this, transaction, opts)
-  return submitRequest(this, signedTx, opts?.failHard)
-}
-
-/**
- * Asynchronously submits a transaction and verifies that it has been included in a
- * validated ledger (or has errored/will not be included for some reason).
- * See [Reliable Transaction Submission](https://xrpl.org/reliable-transaction-submission.html).
- *
- * @param this - A Client.
- * @param transaction - A transaction to autofill, sign & encode, and submit.
- * @param opts - (Optional) Options used to sign and submit a transaction.
- * @param opts.autofill - If true, autofill a transaction.
- * @param opts.failHard - If true, and the transaction fails locally, do not retry or relay the transaction to other servers.
- * @param opts.wallet - A wallet to sign a transaction. It must be provided when submitting an unsigned transaction.
- * @returns A promise that contains TxResponse, that will return when the transaction has been validated.
- */
-async function submitAndWait(
-  this: Client,
-  transaction: Transaction | string,
-  opts?: {
-    // If true, autofill a transaction.
-    autofill?: boolean
-    // If true, and the transaction fails locally, do not retry or relay the transaction to other servers.
-    failHard?: boolean
-    // A wallet to sign a transaction. It must be provided when submitting an unsigned transaction.
-    wallet?: Wallet
-  },
-): Promise<TxResponse> {
-  const signedTx = await getSignedTx(this, transaction, opts)
-
-  const lastLedger = getLastLedgerSequence(signedTx)
-  if (lastLedger == null) {
-    throw new ValidationError(
-      'Transaction must contain a LastLedgerSequence value for reliable submission.',
-    )
-  }
-
-  const response = await submitRequest(this, signedTx, opts?.failHard)
-
-  const txHash = hashes.hashSignedTx(signedTx)
-  return waitForFinalTransactionOutcome(
-    this,
-    txHash,
-    lastLedger,
-    response.result.engine_result,
-  )
-}
-
 // Helper functions
 
-// Encodes and submits a signed transaction.
-async function submitRequest(
+/**
+ * Submits a request to the client with a signed transaction.
+ *
+ * @param client - The client to submit the request to.
+ * @param signedTransaction - The signed transaction to submit. It can be either a Transaction object or a
+ * string (encode from ripple-binary-codec) representation of the transaction.
+ * @param [failHard=false] - Optional. Determines whether the submission should fail hard (true) or not (false). Default is false.
+ * @returns A promise that resolves with the response from the client.
+ * @throws {ValidationError} If the signed transaction is not valid (not signed).
+ *
+ * @example
+ * import { Client } from "xrpl"
+ * const client = new Client("wss://s.altnet.rippletest.net:51233");
+ * await client.connect();
+ * const signedTransaction = createSignedTransaction();
+ * // Example 1: Submitting a Transaction object
+ * const response1 = await submitRequest(client, signedTransaction);
+ *
+ * // Example 2: Submitting a string representation of the transaction
+ * const signedTransactionString = encode(signedTransaction);
+ * const response2 = await submitRequest(client, signedTransactionString, true);
+ */
+export async function submitRequest(
   client: Client,
-  signedTransaction: Transaction | string,
+  signedTransaction: SubmittableTransaction | string,
   failHard = false,
 ): Promise<SubmitResponse> {
   if (!isSigned(signedTransaction)) {
@@ -116,19 +67,56 @@ async function submitRequest(
   return client.request(request)
 }
 
-/*
- * The core logic of reliable submission.  This polls the ledger until the result of the
- * transaction can be considered final, meaning it has either been included in a
- * validated ledger, or the transaction's lastLedgerSequence has been surpassed by the
- * latest ledger sequence (meaning it will never be included in a validated ledger).
+/**
+ * Waits for the final outcome of a transaction by polling the ledger until the result can be considered final,
+ * meaning it has either been included in a validated ledger, or the transaction's lastLedgerSequence has been
+ * surpassed by the latest ledger sequence (meaning it will never be included in a validated ledger).
+ *
+ * @template T - The type of the transaction. Defaults to `Transaction`.
+ * @param client - The client to use for requesting transaction information.
+ * @param txHash - The hash of the transaction to wait for.
+ * @param lastLedger - The last ledger sequence of the transaction.
+ * @param submissionResult - The preliminary result of the transaction.
+ * @returns A promise that resolves with the final transaction response.
+ *
+ * @throws {XrplError} If the latest ledger sequence surpasses the transaction's lastLedgerSequence.
+ *
+ * @example
+ * import { hashes, Client } from "xrpl"
+ * const client = new Client("wss://s.altnet.rippletest.net:51233")
+ * await client.connect()
+ *
+ * const transaction = createTransaction() // your transaction function
+ *
+ * const signedTx = await getSignedTx(this, transaction)
+ *
+ * const lastLedger = getLastLedgerSequence(signedTx)
+ *
+ * if (lastLedger == null) {
+ *   throw new ValidationError(
+ *     'Transaction must contain a LastLedgerSequence value for reliable submission.',
+ *   )
+ * }
+ *
+ * const response = await submitRequest(this, signedTx, opts?.failHard)
+ *
+ * const txHash = hashes.hashSignedTx(signedTx)
+ * return waitForFinalTransactionOutcome(
+ *   this,
+ *   txHash,
+ *   lastLedger,
+ *   response.result.engine_result,
+ * )
  */
 // eslint-disable-next-line max-params, max-lines-per-function -- this function needs to display and do with more information.
-async function waitForFinalTransactionOutcome(
+export async function waitForFinalTransactionOutcome<
+  T extends BaseTransaction = SubmittableTransaction,
+>(
   client: Client,
   txHash: string,
   lastLedger: number,
   submissionResult: string,
-): Promise<TxResponse> {
+): Promise<TxResponse<T>> {
   await sleep(LEDGER_CLOSE_TIME)
 
   const latestLedger = await client.getLedgerIndex()
@@ -150,7 +138,7 @@ async function waitForFinalTransactionOutcome(
       // eslint-disable-next-line @typescript-eslint/consistent-type-assertions,@typescript-eslint/no-unsafe-member-access -- ^
       const message = error?.data?.error as string
       if (message === 'txnNotFound') {
-        return waitForFinalTransactionOutcome(
+        return waitForFinalTransactionOutcome<T>(
           client,
           txHash,
           lastLedger,
@@ -165,10 +153,12 @@ async function waitForFinalTransactionOutcome(
     })
 
   if (txResponse.result.validated) {
-    return txResponse
+    // TODO: resolve the type assertion below
+    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions -- we know that txResponse is of type TxResponse
+    return txResponse as TxResponse<T>
   }
 
-  return waitForFinalTransactionOutcome(
+  return waitForFinalTransactionOutcome<T>(
     client,
     txHash,
     lastLedger,
@@ -177,30 +167,76 @@ async function waitForFinalTransactionOutcome(
 }
 
 // checks if the transaction has been signed
-function isSigned(transaction: Transaction | string): boolean {
+function isSigned(transaction: SubmittableTransaction | string): boolean {
   const tx = typeof transaction === 'string' ? decode(transaction) : transaction
-  return (
-    typeof tx !== 'string' &&
-    (tx.SigningPubKey != null || tx.TxnSignature != null)
-  )
+  if (typeof tx === 'string') {
+    return false
+  }
+  if (tx.Signers != null) {
+    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions -- we know that tx.Signers is an array of Signers
+    const signers = tx.Signers as Signer[]
+    for (const signer of signers) {
+      // eslint-disable-next-line max-depth -- necessary for checking if signer is signed
+      if (
+        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- necessary check
+        signer.Signer.SigningPubKey == null ||
+        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- necessary check
+        signer.Signer.TxnSignature == null
+      ) {
+        return false
+      }
+    }
+    return true
+  }
+  return tx.SigningPubKey != null && tx.TxnSignature != null
 }
 
-// initializes a transaction for a submit request
-async function getSignedTx(
+/**
+ * Updates a transaction with `autofill` then signs it if it is unsigned.
+ *
+ * @param client - The client from which to retrieve the signed transaction.
+ * @param transaction - The transaction to retrieve. It can be either a Transaction object or
+ * a string (encode from ripple-binary-codec) representation of the transaction.
+ * @param [options={}] - Optional. Additional options for retrieving the signed transaction.
+ * @param [options.autofill=true] - Optional. Determines whether the transaction should be autofilled (true)
+ * or not (false). Default is true.
+ * @param [options.wallet] - Optional. A wallet to sign the transaction. It must be provided when submitting
+ * an unsigned transaction. Default is undefined.
+ * @returns A promise that resolves with the signed transaction.
+ *
+ * @throws {ValidationError} If the transaction is not signed and no wallet is provided.
+ *
+ * @example
+ * import { Client } from "xrpl"
+ * import { encode } from "ripple-binary-codec"
+ *
+ * const client = new Client("wss://s.altnet.rippletest.net:51233");
+ * await client.connect():
+ * const transaction = createTransaction(); // createTransaction is your function to create a transaction
+ * const options = {
+ *   autofill: true,
+ *   wallet: myWallet,
+ * };
+ *
+ * // Example 1: Retrieving a signed Transaction object
+ * const signedTx1 = await getSignedTx(client, transaction, options);
+ *
+ * // Example 2: Retrieving a string representation of the signed transaction
+ * const signedTxString = await getSignedTx(client, encode(transaction), options);
+ */
+export async function getSignedTx(
   client: Client,
-  transaction: Transaction | string,
+  transaction: SubmittableTransaction | string,
   {
     autofill = true,
     wallet,
   }: {
     // If true, autofill a transaction.
     autofill?: boolean
-    // If true, and the transaction fails locally, do not retry or relay the transaction to other servers.
-    failHard?: boolean
     // A wallet to sign a transaction. It must be provided when submitting an unsigned transaction.
     wallet?: Wallet
   } = {},
-): Promise<Transaction | string> {
+): Promise<SubmittableTransaction | string> {
   if (isSigned(transaction)) {
     return transaction
   }
@@ -214,7 +250,7 @@ async function getSignedTx(
   let tx =
     typeof transaction === 'string'
       ? // eslint-disable-next-line @typescript-eslint/consistent-type-assertions -- converts JsonObject to correct Transaction type
-        (decode(transaction) as unknown as Transaction)
+        (decode(transaction) as unknown as SubmittableTransaction)
       : transaction
 
   if (autofill) {
@@ -225,7 +261,26 @@ async function getSignedTx(
 }
 
 // checks if there is a LastLedgerSequence as a part of the transaction
-function getLastLedgerSequence(
+/**
+ * Retrieves the last ledger sequence from a transaction.
+ *
+ * @param transaction - The transaction to retrieve the last ledger sequence from. It can be either a Transaction object or
+ * a string (encode from ripple-binary-codec) representation of the transaction.
+ * @returns The last ledger sequence of the transaction, or null if not available.
+ *
+ * @example
+ * const transaction = createTransaction(); // your function to create a transaction
+ *
+ * // Example 1: Retrieving the last ledger sequence from a Transaction object
+ * const lastLedgerSequence1 = getLastLedgerSequence(transaction);
+ * console.log(lastLedgerSequence1); // Output: 12345
+ *
+ * // Example 2: Retrieving the last ledger sequence from a string representation of the transaction
+ * const transactionString = encode(transaction);
+ * const lastLedgerSequence2 = getLastLedgerSequence(transactionString);
+ * console.log(lastLedgerSequence2); // Output: 67890
+ */
+export function getLastLedgerSequence(
   transaction: Transaction | string,
 ): number | null {
   const tx = typeof transaction === 'string' ? decode(transaction) : transaction
@@ -238,5 +293,3 @@ function isAccountDelete(transaction: Transaction | string): boolean {
   const tx = typeof transaction === 'string' ? decode(transaction) : transaction
   return tx.TransactionType === 'AccountDelete'
 }
-
-export { submit, submitAndWait }

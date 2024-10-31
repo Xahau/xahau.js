@@ -1,6 +1,6 @@
 import { Transaction } from '../transactions'
 
-import BaseLedgerEntry from './BaseLedgerEntry'
+import { BaseLedgerEntry } from './BaseLedgerEntry'
 
 /**
  * The EmittedTxn object type contains the

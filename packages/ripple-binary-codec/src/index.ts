@@ -1,4 +1,3 @@
-import * as assert from 'assert'
 import { quality, binary, HashPrefix } from './coretypes'
 import { decodeLedgerData } from './ledger-hashes'
 import { ClaimObject } from './binary'
@@ -11,6 +10,7 @@ import {
 } from './enums'
 import { XrplDefinitions } from './enums/xrpl-definitions'
 import { coreTypes } from './types'
+import { bytesToHex } from '@xrplf/isomorphic/utils'
 
 const {
   signingData,
@@ -28,7 +28,9 @@ const {
  * @returns the JSON representation of the transaction
  */
 function decode(binary: string, definitions?: XrplDefinitionsBase): JsonObject {
-  assert.ok(typeof binary === 'string', 'binary must be a hex string')
+  if (typeof binary !== 'string') {
+    throw new Error('binary must be a hex string')
+  }
   return binaryToJSON(binary, definitions)
 }
 
@@ -41,10 +43,10 @@ function decode(binary: string, definitions?: XrplDefinitionsBase): JsonObject {
  * @returns A hex-string of the encoded transaction
  */
 function encode(json: object, definitions?: XrplDefinitionsBase): string {
-  assert.ok(typeof json === 'object')
-  return serializeObject(json as JsonObject, { definitions })
-    .toString('hex')
-    .toUpperCase()
+  if (typeof json !== 'object') {
+    throw new Error()
+  }
+  return bytesToHex(serializeObject(json as JsonObject, { definitions }))
 }
 
 /**
@@ -59,12 +61,14 @@ function encodeForSigning(
   json: object,
   definitions?: XrplDefinitionsBase,
 ): string {
-  assert.ok(typeof json === 'object')
-  return signingData(json as JsonObject, HashPrefix.transactionSig, {
-    definitions,
-  })
-    .toString('hex')
-    .toUpperCase()
+  if (typeof json !== 'object') {
+    throw new Error()
+  }
+  return bytesToHex(
+    signingData(json as JsonObject, HashPrefix.transactionSig, {
+      definitions,
+    }),
+  )
 }
 
 /**
@@ -76,10 +80,10 @@ function encodeForSigning(
  * @returns a hex string of the encoded transaction
  */
 function encodeForSigningClaim(json: object): string {
-  assert.ok(typeof json === 'object')
-  return signingClaimData(json as ClaimObject)
-    .toString('hex')
-    .toUpperCase()
+  if (typeof json !== 'object') {
+    throw new Error()
+  }
+  return bytesToHex(signingClaimData(json as ClaimObject))
 }
 
 /**
@@ -95,12 +99,16 @@ function encodeForMultisigning(
   signer: string,
   definitions?: XrplDefinitionsBase,
 ): string {
-  assert.ok(typeof json === 'object')
-  assert.equal(json['SigningPubKey'], '')
+  if (typeof json !== 'object') {
+    throw new Error()
+  }
+  if (json['SigningPubKey'] !== '') {
+    throw new Error()
+  }
   const definitionsOpt = definitions ? { definitions } : undefined
-  return multiSigningData(json as JsonObject, signer, definitionsOpt)
-    .toString('hex')
-    .toUpperCase()
+  return bytesToHex(
+    multiSigningData(json as JsonObject, signer, definitionsOpt),
+  )
 }
 
 /**
@@ -110,8 +118,10 @@ function encodeForMultisigning(
  * @returns a hex-string representing the quality
  */
 function encodeQuality(value: string): string {
-  assert.ok(typeof value === 'string')
-  return quality.encode(value).toString('hex').toUpperCase()
+  if (typeof value !== 'string') {
+    throw new Error()
+  }
+  return bytesToHex(quality.encode(value))
 }
 
 /**
@@ -121,7 +131,9 @@ function encodeQuality(value: string): string {
  * @returns a string representing the quality
  */
 function decodeQuality(value: string): string {
-  assert.ok(typeof value === 'string')
+  if (typeof value !== 'string') {
+    throw new Error()
+  }
   return quality.decode(value).toString()
 }
 

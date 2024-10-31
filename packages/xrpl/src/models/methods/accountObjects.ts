@@ -1,32 +1,12 @@
-import { LedgerIndex } from '../common'
-import {
-  Check,
-  DepositPreauth,
-  Escrow,
-  Hook,
-  Offer,
-  PayChannel,
-  RippleState,
-  SignerList,
-  Ticket,
-  URIToken,
-} from '../ledger'
+import { Amendments, FeeSettings, LedgerHashes } from '../ledger'
+import { LedgerEntry, LedgerEntryFilter } from '../ledger/LedgerEntry'
 
-import { BaseRequest, BaseResponse } from './baseMethod'
+import { BaseRequest, BaseResponse, LookupByLedgerRequest } from './baseMethod'
 
-type AccountObjectType =
-  | 'check'
-  | 'deposit_preauth'
-  | 'escrow'
-  | 'hook'
-  | 'nft_offer'
-  | 'offer'
-  | 'payment_channel'
-  | 'signer_list'
-  | 'state'
-  | 'ticket'
-  | 'uritoken'
-
+export type AccountObjectType = Exclude<
+  LedgerEntryFilter,
+  'amendments' | 'fee' | 'hashes'
+>
 /**
  * The account_objects command returns the raw ledger format for all objects
  * owned by an account. For a higher-level view of an account's trust lines and
@@ -35,14 +15,14 @@ type AccountObjectType =
  *
  * @category Requests
  */
-export interface AccountObjectsRequest extends BaseRequest {
+export interface AccountObjectsRequest
+  extends BaseRequest,
+    LookupByLedgerRequest {
   command: 'account_objects'
   /** A unique identifier for the account, most commonly the account's address. */
   account: string
   /**
    * If included, filter results to include only this type of ledger object.
-   * The valid types are: Check , DepositPreauth, Escrow, Offer, PayChannel,
-   * SignerList, Ticket, and RippleState (trust line).
    */
   type?: AccountObjectType
   /**
@@ -50,13 +30,6 @@ export interface AccountObjectsRequest extends BaseRequest {
    * from being deleted. The default is false.
    */
   deletion_blockers_only?: boolean
-  /** A 20-byte hex string for the ledger version to use. */
-  ledger_hash?: string
-  /**
-   * The ledger index of the ledger to use, or a shortcut string to choose a
-   * Ledger automatically.
-   */
-  ledger_index?: LedgerIndex
   /**
    * The maximum number of objects to include in the results. Must be within
    * the inclusive range 10 to 400 on non-admin connections. The default is 200.
@@ -73,17 +46,10 @@ export interface AccountObjectsRequest extends BaseRequest {
  * Account Objects can be a Check, a DepositPreauth, an Escrow, an Offer, a
  * PayChannel, a SignerList, a Ticket, or a RippleState.
  */
-type AccountObject =
-  | Check
-  | DepositPreauth
-  | Escrow
-  | Hook
-  | Offer
-  | PayChannel
-  | SignerList
-  | RippleState
-  | Ticket
-  | URIToken
+export type AccountObject = Exclude<
+  LedgerEntry,
+  Amendments | FeeSettings | LedgerHashes
+>
 
 /**
  * Response expected from an {@link AccountObjectsRequest}.

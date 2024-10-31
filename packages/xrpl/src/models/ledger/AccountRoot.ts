@@ -1,4 +1,4 @@
-import BaseLedgerEntry from './BaseLedgerEntry'
+import { BaseLedgerEntry, HasPreviousTxnID } from './BaseLedgerEntry'
 
 /**
  * The AccountRoot object type describes a single account, its settings, and
@@ -6,7 +6,7 @@ import BaseLedgerEntry from './BaseLedgerEntry'
  *
  * @category Ledger Entries
  */
-export default interface AccountRoot extends BaseLedgerEntry {
+export default interface AccountRoot extends BaseLedgerEntry, HasPreviousTxnID {
   LedgerEntryType: 'AccountRoot'
   /** The identifying (classic) address of this account. */
   Account: string
@@ -19,16 +19,6 @@ export default interface AccountRoot extends BaseLedgerEntry {
    * to its owner reserve.
    */
   OwnerCount: number
-  /**
-   * The identifying hash of the transaction that most recently modified this
-   * object.
-   */
-  PreviousTxnID: string
-  /**
-   * The index of the ledger that contains the transaction that most recently
-   * modified this object.
-   */
-  PreviousTxnLgrSeq: number
   /** The sequence number of the next valid transaction for this account. */
   Sequence: number
   /**
@@ -38,6 +28,12 @@ export default interface AccountRoot extends BaseLedgerEntry {
    * `asfAccountTxnID` flag enabled.
    */
   AccountTxnID?: string
+  /**
+   * The ledger entry ID of the corresponding AMM ledger entry.
+   * Set during account creation; cannot be modified.
+   * If present, indicates that this is a special AMM AccountRoot; always omitted on non-AMM accounts.
+   */
+  AMMID?: string
   /**
    * A domain associated with this account. In JSON, this is the hexadecimal
    * for the ASCII representation of the domain.
@@ -72,9 +68,17 @@ export default interface AccountRoot extends BaseLedgerEntry {
    * account to each other.
    */
   TransferRate?: number
-  NFTokenMinter?: string
-  MintedNFTokens?: number
+  /** An arbitrary 256-bit value that users can set. */
+  WalletLocator?: string
+  /** Total NFTokens this account's issued that have been burned. This number is always equal or less than MintedNFTokens. */
   BurnedNFTokens?: number
+  /** The sequence that the account first minted an NFToken */
+  FirstNFTSequence: number
+  /** Total NFTokens have been minted by and on behalf of this account. */
+  MintedNFTokens?: number
+  /** Another account that can mint NFTokens on behalf of this account. */
+  NFTokenMinter?: string
+
   HookStateCount?: number
   HookNamespaces?: string[]
   RewardLgrFirst?: number
@@ -131,6 +135,10 @@ export interface AccountRootFlagsInterface {
    */
   lsfDepositAuth?: boolean
   /**
+   * This account is an Automated Market Maker (AMM) instance.
+   */
+  lsfAMM?: boolean
+  /**
    * Disallow incoming NFTOffers from other accounts.
    */
   lsfDisallowIncomingNFTokenOffer?: boolean
@@ -146,6 +154,10 @@ export interface AccountRootFlagsInterface {
    * Disallow incoming Trustlines from other accounts.
    */
   lsfDisallowIncomingTrustline?: boolean
+  /**
+   * This address can claw back issued IOUs. Once enabled, cannot be disabled.
+   */
+  // lsfAllowTrustLineClawback?: boolean
   /**
    * Disallow incoming Trustlines from other accounts.
    */
@@ -191,6 +203,10 @@ export enum AccountRootFlags {
    */
   lsfDepositAuth = 0x01000000,
   /**
+   * This account is an Automated Market Maker (AMM) instance.
+   */
+  lsfAMM = 0x02000000,
+  /**
    * Disallow incoming NFTOffers from other accounts.
    */
   lsfDisallowIncomingNFTokenOffer = 0x04000000,
@@ -206,6 +222,10 @@ export enum AccountRootFlags {
    * Disallow incoming Trustlines from other accounts.
    */
   lsfDisallowIncomingTrustline = 0x20000000,
+  /**
+   * This address can claw back issued IOUs. Once enabled, cannot be disabled.
+   */
+  // lsfAllowTrustLineClawback = 0x80000000,
   /**
    * The account has issued a URIToken.
    */

@@ -15,8 +15,12 @@ async function sendEscrow(): Promise<void> {
   await client.connect()
 
   // creating wallets as prerequisite
-  const { wallet: wallet1 } = await client.fundWallet()
-  const { wallet: wallet2 } = await client.fundWallet()
+  const { wallet: wallet1 } = await client.fundWallet(null, {
+    usageContext: 'code snippets',
+  })
+  const { wallet: wallet2 } = await client.fundWallet(null, {
+    usageContext: 'code snippets',
+  })
 
   console.log('Balances of wallets before Escrow tx was created:')
   console.log(
@@ -59,7 +63,7 @@ async function sendEscrow(): Promise<void> {
     TransactionType: 'EscrowFinish',
     Account: wallet1.classicAddress,
     Owner: wallet1.classicAddress,
-    OfferSequence: Number(createEscrowResponse.result.Sequence),
+    OfferSequence: Number(createEscrowResponse.result.tx_json.Sequence),
   }
 
   await client.submit(finishTx, {

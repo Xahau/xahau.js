@@ -1,28 +1,34 @@
 {
   "name": "@transia/ripple-keypairs",
-  "version": "1.1.8-alpha.0",
+  "version": "2.0.0-alpha.0",
   "description": "Cryptographic key pairs for the XRP Ledger",
   "scripts": {
-    "build": "tsc -b",
+    "build": "tsc --build tsconfig.build.json",
     "test": "jest --verbose false --silent=false ./test/*.test.ts",
-    "clean": "rm -rf ./dist && rm -rf tsconfig.tsbuildinfo",
+    "test:browser": "npm run build && karma start ./karma.config.js",
+    "clean": "rm -rf ./dist ./coverage ./test/testCompiledForWeb tsconfig.build.tsbuildinfo",
     "lint": "eslint . --ext .ts",
     "prepublish": "npm run lint && npm test"
   },
   "files": [
-    "dist/*"
+    "dist/*",
+    "src/*"
   ],
   "main": "dist/",
   "directories": {
     "test": "test"
   },
   "dependencies": {
-    "@transia/ripple-address-codec": "^4.2.8-alpha.0",
-    "bn.js": "^5.1.1",
-    "brorand": "^1.0.5",
-    "elliptic": "^6.5.4",
-    "hash.js": "^1.0.3"
+    "@noble/curves": "^1.0.0",
+    "@xrplf/isomorphic": "^1.0.0",
+    "ripple-address-codec": "npm:@transia/ripple-address-codec@^5.0.0-alpha.0"
   },
+  "keywords": [
+    "ripple",
+    "xrp",
+    "xrp ledger",
+    "xrpl"
+  ],
   "repository": {
     "type": "git",
     "url": "git@github.com/Transia-RnD/xrpl.js/tree/beta"
@@ -30,6 +36,6 @@
   "license": "ISC",
   "prettier": "@xrplf/prettier-config",
   "engines": {
-    "node": ">= 10"
+    "node": ">= 18"
   }
 }

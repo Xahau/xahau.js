@@ -1,10 +1,11 @@
-import assert from 'assert'
+import { assert } from 'chai'
 
 import {
   Client,
   isValidClassicAddress,
   isValidXAddress,
   dropsToXrp,
+  XRPLFaucetError,
 } from '../../src'
 
 async function generate_faucet_wallet_and_fund_again(
@@ -19,8 +20,9 @@ async function generate_faucet_wallet_and_fund_again(
   const { wallet, balance } = await api.fundWallet(null, {
     faucetHost,
     faucetPath,
+    usageContext: 'integration-test',
   })
-  assert.notEqual(wallet, undefined)
+  assert.notStrictEqual(wallet, undefined)
   assert(isValidClassicAddress(wallet.classicAddress))
   assert(isValidXAddress(wallet.getXAddress()))
 
@@ -34,6 +36,7 @@ async function generate_faucet_wallet_and_fund_again(
   const { balance: newBalance } = await api.fundWallet(wallet, {
     faucetHost,
     faucetPath,
+    usageContext: 'integration-test',
   })
 
   const afterSent = await api.request({
@@ -41,8 +44,8 @@ async function generate_faucet_wallet_and_fund_again(
     account: wallet.classicAddress,
   })
 
-  assert.equal(dropsToXrp(afterSent.result.account_data.Balance), newBalance)
   assert(newBalance > balance)
+  assert.equal(dropsToXrp(afterSent.result.account_data.Balance), newBalance)
 
   await api.disconnect()
 }
@@ -81,56 +84,17 @@ describe('fundWallet', function () {
   // })
 
   it(
-    'can generate and fund wallets on AMM devnet',
-    async function () {
-      await generate_faucet_wallet_and_fund_again(
-        'wss://amm.devnet.rippletest.net:51233',
-      )
-    },
-    TIMEOUT,
-  )
-
-  it(
-    'can generate wallet on hooks v2 testnet',
-    async function () {
-      const api = new Client('wss://hooks-testnet-v2.xrpl-labs.com')
-
-      await api.connect()
-
-      const { wallet, balance } = await api.fundWallet()
-
-      assert.notEqual(wallet, undefined)
-      assert(isValidClassicAddress(wallet.classicAddress))
-      assert(isValidXAddress(wallet.getXAddress()))
-
-      const info = await api.request({
-        command: 'account_info',
-        account: wallet.classicAddress,
-      })
-
-      assert.equal(dropsToXrp(info.result.account_data.Balance), balance)
-      assert.equal(balance, 10000)
-
-      /*
-       * No test for fund given wallet because the hooks v2 testnet faucet
-       * requires 10 seconds between requests. Would significantly slow down
-       * the test suite.
-       */
-
-      await api.disconnect()
-    },
-    TIMEOUT,
-  )
-
-  it(
     'submit funds wallet with custom amount',
     async function () {
       const api = new Client('wss://s.altnet.rippletest.net:51233')
 
       await api.connect()
-      const { wallet, balance } = await api.fundWallet(null, { amount: '2000' })
-      assert.equal(balance, '2000')
-      assert.notEqual(wallet, undefined)
+      const { wallet, balance } = await api.fundWallet(null, {
+        amount: '1000',
+        usageContext: 'integration-test',
+      })
+      assert.equal(balance, 1000)
+      assert.notStrictEqual(wallet, undefined)
       assert(isValidClassicAddress(wallet.classicAddress))
       assert(isValidXAddress(wallet.getXAddress()))
 
@@ -143,4 +107,26 @@ describe('fundWallet', function () {
     },
     TIMEOUT,
   )
+
+  it('handles errors', async () => {
+    const api = new Client('wss://s.altnet.rippletest.net:51233')
+    await api.connect()
+
+    // jasmine and jest handle async differently so need to use try catch approach instead of `expect.rejects` or `expectAsync`
+    try {
+      await api.fundWallet(null, {
+        amount: '-1000',
+        usageContext: 'integration-test',
+      })
+
+      throw new Error('Error not thrown')
+    } catch (error) {
+      await api.disconnect()
+      expect(error).toEqual(
+        new XRPLFaucetError(
+          'Request failed: {"body":{"error":"Invalid amount","detail":"Must be an integer"},"contentType":"application/json; charset=utf-8","statusCode":400}',
+        ),
+      )
+    }
+  })
 })

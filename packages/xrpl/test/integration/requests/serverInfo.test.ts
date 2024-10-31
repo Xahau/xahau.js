@@ -56,16 +56,30 @@ describe('server_info (rippled)', function () {
             peer_disconnects: '0',
             peer_disconnects_resources: '0',
             peers: 0,
+            ports: [
+              {
+                port: '5005',
+                protocol: ['http'],
+              },
+              {
+                port: '80',
+                protocol: ['ws'],
+              },
+              {
+                port: '6006',
+                protocol: ['ws'],
+              },
+            ],
             pubkey_node: 'n9K6DaaReKkCjb9sEfXh5xP3BV9JisrJ9biKB3CSSFXancBnv5cW',
             pubkey_validator: 'none',
             server_state: 'full',
             server_state_duration_us: '8752395105',
             state_accounting: {
-              connected: { duration_us: '0', transitions: 0 },
-              disconnected: { duration_us: '41860', transitions: 1 },
-              full: { duration_us: '20723121268', transitions: 1 },
-              syncing: { duration_us: '0', transitions: 0 },
-              tracking: { duration_us: '0', transitions: 0 },
+              connected: { duration_us: '0', transitions: '0' },
+              disconnected: { duration_us: '41860', transitions: '1' },
+              full: { duration_us: '20723121268', transitions: '1' },
+              syncing: { duration_us: '0', transitions: '0' },
+              tracking: { duration_us: '0', transitions: '0' },
             },
             time: '2021-Sep-23 22:56:55.320858 UTC',
             uptime: 8752,
@@ -108,6 +122,9 @@ describe('server_info (rippled)', function () {
         'pubkey_node',
         'server_state_duration_us',
         'validated_ledger',
+        'build_version',
+        'node_size',
+        'initial_sync_duration_us',
       ]
       assert.deepEqual(
         omit(response.result.info, removeKeys),
@@ -129,7 +146,7 @@ describe('server_info (rippled)', function () {
         )
         assert.equal(
           typeof response.result.info.state_accounting[key].transitions,
-          'number',
+          'string',
         )
       })
 

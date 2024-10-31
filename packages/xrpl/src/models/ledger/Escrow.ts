@@ -1,6 +1,6 @@
 import { Amount } from '../common'
 
-import BaseLedgerEntry from './BaseLedgerEntry'
+import { BaseLedgerEntry, HasPreviousTxnID } from './BaseLedgerEntry'
 
 /**
  * The Escrow object type represents a held payment waiting to be
@@ -8,7 +8,7 @@ import BaseLedgerEntry from './BaseLedgerEntry'
  *
  * @category Ledger Entries
  */
-export default interface Escrow extends BaseLedgerEntry {
+export default interface Escrow extends BaseLedgerEntry, HasPreviousTxnID {
   LedgerEntryType: 'Escrow'
   /**
    * The address of the owner (sender) of this held payment. This is the

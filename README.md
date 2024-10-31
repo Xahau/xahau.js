@@ -19,13 +19,13 @@ See the full reference documentation for all classes, methods, and utilities.
 4. Subscribing to changes in the ledger ([Ex. ledger, transactions, & more...](https://xrpl.org/subscribe.html))
 5. Parsing ledger data into more convenient formats ([`xrpToDrops`](https://js.xrpl.org/functions/xrpToDrops.html) and [`rippleTimeToISOTime`](https://js.xrpl.org/functions/rippleTimeToISOTime.html))
 
-All of which works in Node.js (tested for v14+) & web browsers (tested for Chrome).
+All of which works in Node.js (tested for v18+) & web browsers (tested for Chrome).
 
 # Quickstart
 
 ### Requirements
 
-+ **[Node.js v14](https://nodejs.org/)** is recommended. We also support v16 and v18. Other versions may work but are not frequently tested.
++ **[Node.js v18](https://nodejs.org/)** is recommended. We also support v20. Other versions may work but are not frequently tested.
 
 ### Installing xrpl.js
 
@@ -56,7 +56,7 @@ async function main() {
   });
   console.log(response);
 
-  client.disconnect();
+  await client.disconnect();
 }
 main();
 ```
@@ -74,10 +74,11 @@ It goes through:
 
 If you're using xrpl.js with React or Deno, you'll need to do a couple extra steps to set it up:
 
-- [Using xrpl.js with `create-react-app`](./UNIQUE_SETUPS.md#using-xrpljs-with-create-react-app)
-- [Using xrpl.js with `React Native`](./UNIQUE_SETUPS.md#using-xrpljs-with-react-native)
-- [Using xrpl.js with `Vite React`](./UNIQUE_SETUPS.md#using-xrpljs-with-vite-react)
-- [Using xrpl.js with `Deno`](./UNIQUE_SETUPS.md#using-xrpljs-with-deno)
+- [Using xrpl.js with a CDN](https://github.com/XRPLF/xrpl.js/blob/main/UNIQUE_SETUPS.md#using-xrpljs-from-a-cdn)
+- [Using xrpl.js with `create-react-app`](https://github.com/XRPLF/xrpl.js/blob/main/UNIQUE_SETUPS.md#using-xrpljs-with-create-react-app)
+- [Using xrpl.js with `React Native`](https://github.com/XRPLF/xrpl.js/blob/main/UNIQUE_SETUPS.md#using-xrpljs-with-react-native)
+- [Using xrpl.js with `Vite React`](https://github.com/XRPLF/xrpl.js/blob/main/UNIQUE_SETUPS.md#using-xrpljs-with-vite-react)
+- [Using xrpl.js with `Deno`](https://github.com/XRPLF/xrpl.js/blob/main/UNIQUE_SETUPS.md#using-xrpljs-with-deno)
 
 ## Documentation
 

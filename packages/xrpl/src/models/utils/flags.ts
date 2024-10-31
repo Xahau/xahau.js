@@ -7,23 +7,19 @@ import {
   AccountRootFlagsInterface,
   AccountRootFlags,
 } from '../ledger/AccountRoot'
-import {
-  AccountSetFlagsInterface,
-  AccountSetTfFlags,
-} from '../transactions/accountSet'
+import { AccountSetTfFlags } from '../transactions/accountSet'
+import { AMMDepositFlags } from '../transactions/AMMDeposit'
+import { AMMWithdrawFlags } from '../transactions/AMMWithdraw'
 import { GlobalFlags } from '../transactions/common'
-import {
-  OfferCreateFlagsInterface,
-  OfferCreateFlags,
-} from '../transactions/offerCreate'
-import { PaymentFlagsInterface, PaymentFlags } from '../transactions/payment'
-import {
-  PaymentChannelClaimFlagsInterface,
-  PaymentChannelClaimFlags,
-} from '../transactions/paymentChannelClaim'
-import { SetHookFlagsInterface, SetHookFlags } from '../transactions/setHook'
+import { NFTokenCreateOfferFlags } from '../transactions/NFTokenCreateOffer'
+import { NFTokenMintFlags } from '../transactions/NFTokenMint'
+import { OfferCreateFlags } from '../transactions/offerCreate'
+import { PaymentFlags } from '../transactions/payment'
+import { PaymentChannelClaimFlags } from '../transactions/paymentChannelClaim'
+import { SetHookFlags, SetHookFlagsInterface } from '../transactions/setHook'
 import type { Transaction } from '../transactions/transaction'
-import { TrustSetFlagsInterface, TrustSetFlags } from '../transactions/trustSet'
+import { TrustSetFlags } from '../transactions/trustSet'
+import { XChainModifyBridgeFlags } from '../transactions/XChainModifyBridge'
 
 import { isFlagEnabled } from '.'
 
@@ -38,13 +34,31 @@ export function parseAccountRootFlags(
 ): AccountRootFlagsInterface {
   const flagsInterface: AccountRootFlagsInterface = {}
 
-  Object.keys(AccountRootFlags).forEach((flag) => {
-    if (isFlagEnabled(flags, AccountRootFlags[flag])) {
+  // If we use keys all will be strings and enums are reversed during transpilation
+  Object.values(AccountRootFlags).forEach((flag) => {
+    if (
+      typeof flag === 'string' &&
+      isFlagEnabled(flags, AccountRootFlags[flag])
+    ) {
       flagsInterface[flag] = true
     }
   })
 
   return flagsInterface
+}
+
+const txToFlag = {
+  AccountSet: AccountSetTfFlags,
+  AMMDeposit: AMMDepositFlags,
+  AMMWithdraw: AMMWithdrawFlags,
+  NFTokenCreateOffer: NFTokenCreateOfferFlags,
+  NFTokenMint: NFTokenMintFlags,
+  OfferCreate: OfferCreateFlags,
+  PaymentChannelClaim: PaymentChannelClaimFlags,
+  Payment: PaymentFlags,
+  TrustSet: TrustSetFlags,
+  XChainModifyBridge: XChainModifyBridgeFlags,
+  SetHook: SetHookFlags,
 }
 
 /**
@@ -61,66 +75,35 @@ export function setTransactionFlagsToNumber(tx: Transaction): void {
     return
   }
 
-  switch (tx.TransactionType) {
-    case 'AccountSet':
-      tx.Flags = convertAccountSetFlagsToNumber(tx.Flags)
-      return
-    case 'OfferCreate':
-      tx.Flags = convertOfferCreateFlagsToNumber(tx.Flags)
-      return
-    case 'PaymentChannelClaim':
-      tx.Flags = convertPaymentChannelClaimFlagsToNumber(tx.Flags)
-      return
-    case 'Payment':
-      tx.Flags = convertPaymentTransactionFlagsToNumber(tx.Flags)
-      return
-    case 'TrustSet':
-      tx.Flags = convertTrustSetFlagsToNumber(tx.Flags)
-      return
-    case 'SetHook':
-      tx.Flags = convertSetHookFlagsToNumber(tx.Flags)
-      tx.Hooks.forEach((hook: Hook) => {
-        hook.Hook.Flags = convertSetHookFlagsToNumber(
-          // eslint-disable-next-line @typescript-eslint/consistent-type-assertions -- idk
-          hook.Hook.Flags as SetHookFlagsInterface,
-        )
-      })
-      return
-    default:
-      tx.Flags = 0
+  tx.Flags = txToFlag[tx.TransactionType]
+    ? convertFlagsToNumber(tx.Flags, txToFlag[tx.TransactionType])
+    : 0
+  if (tx.TransactionType === 'SetHook') {
+    tx.Hooks.forEach((hook: Hook) => {
+      hook.Hook.Flags = convertSetHookFlagsToNumber(
+        // eslint-disable-next-line @typescript-eslint/consistent-type-assertions -- idk
+        hook.Hook.Flags as SetHookFlagsInterface,
+      )
+    })
   }
-}
-
-function convertAccountSetFlagsToNumber(
-  flags: AccountSetFlagsInterface,
-): number {
-  return reduceFlags(flags, AccountSetTfFlags)
-}
-
-function convertOfferCreateFlagsToNumber(
-  flags: OfferCreateFlagsInterface,
-): number {
-  return reduceFlags(flags, OfferCreateFlags)
-}
-
-function convertPaymentChannelClaimFlagsToNumber(
-  flags: PaymentChannelClaimFlagsInterface,
-): number {
-  return reduceFlags(flags, PaymentChannelClaimFlags)
-}
-
-function convertPaymentTransactionFlagsToNumber(
-  flags: PaymentFlagsInterface,
-): number {
-  return reduceFlags(flags, PaymentFlags)
-}
-
-function convertTrustSetFlagsToNumber(flags: TrustSetFlagsInterface): number {
-  return reduceFlags(flags, TrustSetFlags)
 }
 
 function convertSetHookFlagsToNumber(flags: SetHookFlagsInterface): number {
   return reduceFlags(flags, SetHookFlags)
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any -- added ValidationError check for flagEnum
+function convertFlagsToNumber(flags: GlobalFlags, flagEnum: any): number {
+  return Object.keys(flags).reduce((resultFlags, flag) => {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- safe member access
+    if (flagEnum[flag] == null) {
+      throw new ValidationError(
+        `flag ${flag} doesn't exist in flagEnum: ${JSON.stringify(flagEnum)}`,
+      )
+    }
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- safe member access
+    return flags[flag] ? resultFlags | flagEnum[flag] : resultFlags
+  }, 0)
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any -- added ValidationError check for flagEnum

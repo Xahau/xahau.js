@@ -55,7 +55,6 @@ export interface Remit extends BaseTransaction {
  * @param tx - A Remit Transaction.
  * @throws When the Remit is malformed.
  */
-// eslint-disable-next-line complexity -- ignore
 export function validateRemit(tx: Record<string, unknown>): void {
   validateBaseTransaction(tx)
 
@@ -167,7 +166,6 @@ function checkURITokenIDs(tx: Record<string, unknown>): void {
   }
 }
 
-// eslint-disable-next-line complexity -- ignore
 function checkMintURIToken(tx: Record<string, unknown>): void {
   function isRecord(value: unknown): value is Record<string, unknown> {
     return value !== null && typeof value === 'object'

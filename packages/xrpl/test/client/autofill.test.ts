@@ -7,6 +7,7 @@ import {
   Payment,
   Transaction,
 } from '../../src'
+import { ValidationError } from '../../src/errors'
 import rippled from '../fixtures/rippled'
 import {
   setupClient,
@@ -15,32 +16,191 @@ import {
 } from '../setupClient'
 import { assertRejects } from '../testUtils'
 
+const NetworkID = 1025
 const Fee = '10'
 const Sequence = 1432
 const LastLedgerSequence = 2908734
 
 describe('client.autofill', function () {
   let testContext: XrplTestContext
+  const AMOUNT = '1234'
+  let paymentTx: Payment
 
-  beforeEach(async () => {
+  async function setupMockRippledVersionAndID(
+    buildVersion: string,
+    networkID: number,
+  ): Promise<void> {
+    await testContext.client.disconnect()
+    rippled.server_info.withNetworkId.result.info.build_version = buildVersion
+    rippled.server_info.withNetworkId.result.info.network_id = networkID
+    rippled.fee.normal.result.drops.open_ledger_fee = '12'
+    testContext.client.connection.on('connected', () => {
+      testContext.mockRippled?.addResponse(
+        'server_info',
+        rippled.server_info.withNetworkId,
+      )
+      testContext.mockRippled?.addResponse('fee', rippled.fee.normal)
+    })
+
+    await testContext.client.connect()
+  }
+
+  beforeAll(async () => {
     testContext = await setupClient()
   })
-  afterEach(async () => teardownClient(testContext))
+  afterAll(async () => teardownClient(testContext))
+
+  beforeEach(async () => {
+    paymentTx = {
+      TransactionType: 'Payment',
+      Account: 'rUn84CUYbNjRoTQ6mSW7BVJPSVJNLb1QLo',
+      Amount: AMOUNT,
+      Destination: 'rfkE1aSy9G8Upk4JssnwBxhEv5p4mn2KTy',
+      DestinationTag: 1,
+      Fee: '12',
+      Flags: 2147483648,
+      LastLedgerSequence: 65953073,
+      Sequence: 65923914,
+      SigningPubKey:
+        '02F9E33F16DF9507705EC954E3F94EB5F10D1FC4A354606DBE6297DBB1096FE654',
+      TxnSignature:
+        '3045022100E3FAE0EDEC3D6A8FF6D81BC9CF8288A61B7EEDE8071E90FF9314CB4621058D10022043545CF631706D700CEE65A1DB83EFDD185413808292D9D90F14D87D3DC2D8CB',
+      InvoiceID:
+        '6F1DFD1D0FE8A32E40E1F2C05CF1C15545BAB56B617F9C6C2D63A6B704BEF59B',
+      Paths: [
+        [{ currency: 'BTC', issuer: 'r9vbV3EHvXWjSkeQ6CAcYVPGeq7TuiXY2X' }],
+      ],
+      SendMax: '100000000',
+    }
+  })
+
+  it('Validate Payment transaction API v2: Payment Transaction: Specify Only Amount field', async function () {
+    const txResult = await testContext.client.autofill(paymentTx)
+
+    assert.strictEqual(txResult.Amount, AMOUNT)
+  })
+
+  it('Validate Payment transaction API v2: Payment Transaction: Specify Only DeliverMax field', async function () {
+    // @ts-expect-error -- DeliverMax is a non-protocol, RPC level field in Payment transactions
+    paymentTx.DeliverMax = paymentTx.Amount
+    // @ts-expect-error -- DeliverMax is a non-protocol, RPC level field in Payment transactions
+    delete paymentTx.Amount
+    const txResult = await testContext.client.autofill(paymentTx)
+
+    assert.strictEqual(txResult.Amount, AMOUNT)
+  })
+
+  it('Validate Payment transaction API v2: Payment Transaction: identical DeliverMax and Amount fields', async function () {
+    // @ts-expect-error -- DeliverMax is a non-protocol, RPC level field in Payment transactions
+    paymentTx.DeliverMax = paymentTx.Amount
+
+    const txResult = await testContext.client.autofill(paymentTx)
+
+    assert.strictEqual(txResult.Amount, AMOUNT)
+    assert.strictEqual('DeliverMax' in txResult, false)
+  })
+
+  it('Validate Payment transaction API v2: Payment Transaction: differing DeliverMax and Amount fields', async function () {
+    // @ts-expect-error -- DeliverMax is a non-protocol, RPC level field in Payment transactions
+    paymentTx.DeliverMax = '6789'
+    paymentTx.Amount = '1234'
+
+    await assertRejects(testContext.client.autofill(paymentTx), ValidationError)
+  })
 
   it('should not autofill if fields are present', async function () {
     const tx: Transaction = {
       TransactionType: 'DepositPreauth',
       Account: 'rGWrZyQqhTp9Xu7G5Pkayo7bXjH4k4QYpf',
       Authorize: 'rpZc4mVfWUif9CRoHRKKcmhu1nx2xktxBo',
+      NetworkID,
       Fee,
       Sequence,
       LastLedgerSequence,
     }
     const txResult = await testContext.client.autofill(tx)
 
+    assert.strictEqual(txResult.NetworkID, NetworkID)
     assert.strictEqual(txResult.Fee, Fee)
     assert.strictEqual(txResult.Sequence, Sequence)
     assert.strictEqual(txResult.LastLedgerSequence, LastLedgerSequence)
+  })
+
+  it('ignores network ID if missing', async function () {
+    const tx: Payment = {
+      TransactionType: 'Payment',
+      Account: 'XVLhHMPHU98es4dbozjVtdWzVrDjtV18pX8yuPT7y4xaEHi',
+      Amount: '1234',
+      Destination: 'X7AcgcsBL6XDcUb289X4mJ8djcdyKaB5hJDWMArnXr61cqZ',
+      Fee,
+      Sequence,
+      LastLedgerSequence,
+    }
+    testContext.mockRippled!.addResponse('ledger', rippled.ledger.normal)
+
+    const txResult = await testContext.client.autofill(tx)
+
+    assert.strictEqual(txResult.NetworkID, undefined)
+  })
+
+  // NetworkID is required in transaction for network > 1024 and from version 1.11.0 or later.
+  // More context: https://github.com/XRPLF/rippled/pull/4370
+  it('overrides network ID if > 1024 and version is later than 1.11.0', async function () {
+    await setupMockRippledVersionAndID('1.11.1', 1025)
+    const tx: Payment = {
+      TransactionType: 'Payment',
+      Account: 'XVLhHMPHU98es4dbozjVtdWzVrDjtV18pX8yuPT7y4xaEHi',
+      Amount: '1234',
+      Destination: 'X7AcgcsBL6XDcUb289X4mJ8djcdyKaB5hJDWMArnXr61cqZ',
+      Fee,
+      Sequence,
+      LastLedgerSequence,
+    }
+    testContext.mockRippled!.addResponse('ledger', rippled.ledger.normal)
+
+    const txResult = await testContext.client.autofill(tx)
+
+    assert.strictEqual(txResult.NetworkID, 1025)
+  })
+
+  // NetworkID is only required in transaction for version 1.11.0 or later.
+  // More context: https://github.com/XRPLF/rippled/pull/4370
+  it('ignores network ID if > 1024 but version is earlier than 1.11.0', async function () {
+    await setupMockRippledVersionAndID('1.10.0', 1025)
+    const tx: Payment = {
+      TransactionType: 'Payment',
+      Account: 'XVLhHMPHU98es4dbozjVtdWzVrDjtV18pX8yuPT7y4xaEHi',
+      Amount: '1234',
+      Destination: 'X7AcgcsBL6XDcUb289X4mJ8djcdyKaB5hJDWMArnXr61cqZ',
+      Fee,
+      Sequence,
+      LastLedgerSequence,
+    }
+    testContext.mockRippled!.addResponse('ledger', rippled.ledger.normal)
+
+    const txResult = await testContext.client.autofill(tx)
+
+    assert.strictEqual(txResult.NetworkID, undefined)
+  })
+
+  // NetworkID <= 1024 does not require a newtorkID in transaction.
+  // More context: https://github.com/XRPLF/rippled/pull/4370
+  it('ignores network ID if <= 1024', async function () {
+    await setupMockRippledVersionAndID('1.11.1', 1023)
+    const tx: Payment = {
+      TransactionType: 'Payment',
+      Account: 'XVLhHMPHU98es4dbozjVtdWzVrDjtV18pX8yuPT7y4xaEHi',
+      Amount: '1234',
+      Destination: 'X7AcgcsBL6XDcUb289X4mJ8djcdyKaB5hJDWMArnXr61cqZ',
+      Fee,
+      Sequence,
+      LastLedgerSequence,
+    }
+    testContext.mockRippled!.addResponse('ledger', rippled.ledger.normal)
+
+    const txResult = await testContext.client.autofill(tx)
+
+    assert.strictEqual(txResult.NetworkID, undefined)
   })
 
   it('converts Account & Destination X-address to their classic address', async function () {

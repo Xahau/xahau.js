@@ -3,8 +3,9 @@
 /* eslint-disable no-bitwise  -- this file mimics behavior in rippled. It uses
    bitwise operators for and-ing numbers with a mask and bit shifting. */
 
-import { decodeAccountID } from '@transia/ripple-address-codec'
+import { bytesToHex } from '@xrplf/isomorphic/utils'
 import BigNumber from 'bignumber.js'
+import { decodeAccountID } from 'ripple-address-codec'
 
 import { convertStringToHex } from '../stringConversion'
 
@@ -22,7 +23,7 @@ const HEX = 16
 const BYTE_LENGTH = 4
 
 function addressToHex(address: string): string {
-  return Buffer.from(decodeAccountID(address)).toString('hex')
+  return bytesToHex(decodeAccountID(address))
 }
 
 function ledgerSpaceHex(name: keyof typeof ledgerSpaces): string {
@@ -39,7 +40,7 @@ function currencyToHex(currency: string): string {
   bytes[12] = currency.charCodeAt(0) & MASK
   bytes[13] = currency.charCodeAt(1) & MASK
   bytes[14] = currency.charCodeAt(2) & MASK
-  return Buffer.from(bytes).toString('hex')
+  return bytesToHex(Uint8Array.from(bytes))
 }
 
 /**

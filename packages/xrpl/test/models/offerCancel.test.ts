@@ -38,31 +38,31 @@ describe('OfferCancel', function () {
     assert.doesNotThrow(() => validate(offer))
   })
 
-  it(`throws w/ OfferSequence must be a number`, function () {
+  it(`throws w/ invalid OfferSequence`, function () {
     offer.OfferSequence = '99'
     assert.throws(
       () => validateOfferCancel(offer),
       ValidationError,
-      'OfferCancel: OfferSequence must be a number',
+      'OfferCancel: invalid OfferSequence',
     )
     assert.throws(
       () => validate(offer),
       ValidationError,
-      'OfferCancel: OfferSequence must be a number',
+      'OfferCancel: invalid OfferSequence',
     )
   })
 
-  it(`throws w/ missing OfferSequence`, function () {
+  it(`throws w/ must include OfferSequence or OfferID"`, function () {
     delete offer.OfferSequence
     assert.throws(
       () => validateOfferCancel(offer),
       ValidationError,
-      'OfferCancel: missing field OfferSequence',
+      'OfferCancel: must include OfferSequence or OfferID',
     )
     assert.throws(
       () => validate(offer),
       ValidationError,
-      'OfferCancel: missing field OfferSequence',
+      'OfferCancel: must include OfferSequence or OfferID',
     )
   })
 })

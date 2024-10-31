@@ -1,16 +1,29 @@
-/* eslint-disable complexity -- verifies 19 tx types hence a lot of checks needed */
+/* eslint-disable max-lines -- need to work with a lot of transactions in a switch statement */
 /* eslint-disable max-lines-per-function -- need to work with a lot of Tx verifications */
 
 import { ValidationError } from '../../errors'
+import { IssuedCurrencyAmount, Memo } from '../common'
+import { isHex } from '../utils'
 import { setTransactionFlagsToNumber } from '../utils/flags'
 
 import { AccountDelete, validateAccountDelete } from './accountDelete'
 import { AccountSet, validateAccountSet } from './accountSet'
+import { AMMBid, validateAMMBid } from './AMMBid'
+import { AMMCreate, validateAMMCreate } from './AMMCreate'
+import { AMMDelete, validateAMMDelete } from './AMMDelete'
+import { AMMDeposit, validateAMMDeposit } from './AMMDeposit'
+import { AMMVote, validateAMMVote } from './AMMVote'
+import { AMMWithdraw, validateAMMWithdraw } from './AMMWithdraw'
 import { CheckCancel, validateCheckCancel } from './checkCancel'
 import { CheckCash, validateCheckCash } from './checkCash'
 import { CheckCreate, validateCheckCreate } from './checkCreate'
 import { ClaimReward, validateClaimReward } from './claimReward'
+import { Clawback, validateClawback } from './clawback'
+import { BaseTransaction, isIssuedCurrency } from './common'
 import { DepositPreauth, validateDepositPreauth } from './depositPreauth'
+import { DIDDelete, validateDIDDelete } from './DIDDelete'
+import { DIDSet, validateDIDSet } from './DIDSet'
+import { EnableAmendment } from './enableAmendment'
 import { EscrowCancel, validateEscrowCancel } from './escrowCancel'
 import { EscrowCreate, validateEscrowCreate } from './escrowCreate'
 import { EscrowFinish, validateEscrowFinish } from './escrowFinish'
@@ -33,6 +46,8 @@ import {
 import { NFTokenMint, validateNFTokenMint } from './NFTokenMint'
 import { OfferCancel, validateOfferCancel } from './offerCancel'
 import { OfferCreate, validateOfferCreate } from './offerCreate'
+import { OracleDelete, validateOracleDelete } from './oracleDelete'
+import { OracleSet, validateOracleSet } from './oracleSet'
 import { Payment, validatePayment } from './payment'
 import {
   PaymentChannelClaim,
@@ -47,11 +62,13 @@ import {
   validatePaymentChannelFund,
 } from './paymentChannelFund'
 import { Remit, validateRemit } from './remit'
+import { SetFee } from './setFee'
 import { SetHook, validateSetHook } from './setHook'
 import { SetRegularKey, validateSetRegularKey } from './setRegularKey'
 import { SignerListSet, validateSignerListSet } from './signerListSet'
 import { TicketCreate, validateTicketCreate } from './ticketCreate'
 import { TrustSet, validateTrustSet } from './trustSet'
+import { UNLModify } from './UNLModify'
 import { URITokenBurn, validateURITokenBurn } from './uriTokenBurn'
 import { URITokenBuy, validateURITokenBuy } from './uriTokenBuy'
 import {
@@ -63,17 +80,54 @@ import {
   validateURITokenCreateSellOffer,
 } from './uriTokenCreateSellOffer'
 import { URITokenMint, validateURITokenMint } from './uriTokenMint'
+import {
+  XChainAccountCreateCommit,
+  validateXChainAccountCreateCommit,
+} from './XChainAccountCreateCommit'
+import {
+  XChainAddAccountCreateAttestation,
+  validateXChainAddAccountCreateAttestation,
+} from './XChainAddAccountCreateAttestation'
+import {
+  XChainAddClaimAttestation,
+  validateXChainAddClaimAttestation,
+} from './XChainAddClaimAttestation'
+import { XChainClaim, validateXChainClaim } from './XChainClaim'
+import { XChainCommit, validateXChainCommit } from './XChainCommit'
+import {
+  XChainCreateBridge,
+  validateXChainCreateBridge,
+} from './XChainCreateBridge'
+import {
+  XChainCreateClaimID,
+  validateXChainCreateClaimID,
+} from './XChainCreateClaimID'
+import {
+  XChainModifyBridge,
+  validateXChainModifyBridge,
+} from './XChainModifyBridge'
 
 /**
+ * Transactions that can be submitted by clients
+ *
  * @category Transaction Models
  */
-export type Transaction =
+export type SubmittableTransaction =
+  | AMMBid
+  | AMMCreate
+  | AMMDelete
+  | AMMDeposit
+  | AMMVote
+  | AMMWithdraw
   | AccountDelete
   | AccountSet
   | CheckCancel
   | CheckCash
   | CheckCreate
   | ClaimReward
+  | Clawback
+  | DIDDelete
+  | DIDSet
   | DepositPreauth
   | EscrowCancel
   | EscrowCreate
@@ -87,6 +141,8 @@ export type Transaction =
   | NFTokenMint
   | OfferCancel
   | OfferCreate
+  | OracleDelete
+  | OracleSet
   | Payment
   | PaymentChannelClaim
   | PaymentChannelCreate
@@ -102,13 +158,37 @@ export type Transaction =
   | URITokenCancelSellOffer
   | URITokenMint
   | URITokenCreateSellOffer
+  | XChainAccountCreateCommit
+  | XChainAddAccountCreateAttestation
+  | XChainAddClaimAttestation
+  | XChainClaim
+  | XChainCommit
+  | XChainCreateBridge
+  | XChainCreateClaimID
+  | XChainModifyBridge
+
+/**
+ * Transactions that can only be created by validators.
+ *
+ * @category Transaction Models
+ */
+export type PseudoTransaction = EnableAmendment | SetFee | UNLModify
+
+/**
+ * All transactions that can live on the XRPL
+ *
+ * @category Transaction Models
+ */
+export type Transaction = SubmittableTransaction | PseudoTransaction
 
 /**
  * @category Transaction Models
  */
-export interface TransactionAndMetadata {
-  transaction: Transaction
-  metadata: TransactionMetadata
+export interface TransactionAndMetadata<
+  T extends BaseTransaction = Transaction,
+> {
+  transaction: T
+  metadata: TransactionMetadata<T>
 }
 
 /**
@@ -127,9 +207,83 @@ export function validate(transaction: Record<string, unknown>): void {
   if (typeof tx.TransactionType !== 'string') {
     throw new ValidationError("Object's `TransactionType` is not a string")
   }
+
+  /*
+   * - Memos have exclusively hex data.
+   */
+  if (tx.Memos != null && typeof tx.Memos !== 'object') {
+    throw new ValidationError('Memo must be array')
+  }
+  if (tx.Memos != null) {
+    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions -- needed here
+    ;(tx.Memos as Array<Memo | null>).forEach((memo) => {
+      if (memo?.Memo == null) {
+        throw new ValidationError('Memo data must be in a `Memo` field')
+      }
+      if (memo.Memo.MemoData) {
+        if (!isHex(memo.Memo.MemoData)) {
+          throw new ValidationError('MemoData field must be a hex value')
+        }
+      }
+
+      if (memo.Memo.MemoType) {
+        if (!isHex(memo.Memo.MemoType)) {
+          throw new ValidationError('MemoType field must be a hex value')
+        }
+      }
+
+      if (memo.Memo.MemoFormat) {
+        if (!isHex(memo.Memo.MemoFormat)) {
+          throw new ValidationError('MemoFormat field must be a hex value')
+        }
+      }
+    })
+  }
+
+  Object.keys(tx).forEach((key) => {
+    const standard_currency_code_len = 3
+    if (tx[key] && isIssuedCurrency(tx[key])) {
+      // eslint-disable-next-line @typescript-eslint/consistent-type-assertions -- needed
+      const txCurrency = (tx[key] as IssuedCurrencyAmount).currency
+
+      if (
+        txCurrency.length === standard_currency_code_len &&
+        txCurrency.toUpperCase() === 'XAH'
+      ) {
+        throw new ValidationError(
+          `Cannot have an issued currency with a similar standard code to XAH (received '${txCurrency}'). XAH is not an issued currency.`,
+        )
+      }
+    }
+  })
+
   // eslint-disable-next-line @typescript-eslint/consistent-type-assertions -- okay here
   setTransactionFlagsToNumber(tx as unknown as Transaction)
   switch (tx.TransactionType) {
+    case 'AMMBid':
+      validateAMMBid(tx)
+      break
+
+    case 'AMMCreate':
+      validateAMMCreate(tx)
+      break
+
+    case 'AMMDelete':
+      validateAMMDelete(tx)
+      break
+
+    case 'AMMDeposit':
+      validateAMMDeposit(tx)
+      break
+
+    case 'AMMVote':
+      validateAMMVote(tx)
+      break
+
+    case 'AMMWithdraw':
+      validateAMMWithdraw(tx)
+      break
+
     case 'AccountDelete':
       validateAccountDelete(tx)
       break
@@ -152,6 +306,18 @@ export function validate(transaction: Record<string, unknown>): void {
 
     case 'ClaimReward':
       validateClaimReward(tx)
+      break
+
+    case 'Clawback':
+      validateClawback(tx)
+      break
+
+    case 'DIDDelete':
+      validateDIDDelete(tx)
+      break
+
+    case 'DIDSet':
+      validateDIDSet(tx)
       break
 
     case 'DepositPreauth':
@@ -204,6 +370,14 @@ export function validate(transaction: Record<string, unknown>): void {
 
     case 'OfferCreate':
       validateOfferCreate(tx)
+      break
+
+    case 'OracleDelete':
+      validateOracleDelete(tx)
+      break
+
+    case 'OracleSet':
+      validateOracleSet(tx)
       break
 
     case 'Payment':
@@ -264,6 +438,38 @@ export function validate(transaction: Record<string, unknown>): void {
 
     case 'URITokenCancelSellOffer':
       validateURITokenCancelSellOffer(tx)
+      break
+
+    case 'XChainAccountCreateCommit':
+      validateXChainAccountCreateCommit(tx)
+      break
+
+    case 'XChainAddAccountCreateAttestation':
+      validateXChainAddAccountCreateAttestation(tx)
+      break
+
+    case 'XChainAddClaimAttestation':
+      validateXChainAddClaimAttestation(tx)
+      break
+
+    case 'XChainClaim':
+      validateXChainClaim(tx)
+      break
+
+    case 'XChainCommit':
+      validateXChainCommit(tx)
+      break
+
+    case 'XChainCreateBridge':
+      validateXChainCreateBridge(tx)
+      break
+
+    case 'XChainCreateClaimID':
+      validateXChainCreateClaimID(tx)
+      break
+
+    case 'XChainModifyBridge':
+      validateXChainModifyBridge(tx)
       break
 
     default:

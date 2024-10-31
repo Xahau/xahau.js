@@ -1,3 +1,5 @@
+import { assert } from 'chai'
+
 import { SignerListSet } from '../../../src'
 import serverUrl from '../serverUrl'
 import {
@@ -40,6 +42,37 @@ describe('SignerListSet', function () {
           },
         ],
         SignerQuorum: 2,
+      }
+      await testTransaction(testContext.client, tx, testContext.wallet)
+
+      const accountInfoResponse = await testContext.client.request({
+        command: 'account_info',
+        account: testContext.wallet.classicAddress,
+        signer_lists: true,
+      })
+      const signerListInfo = accountInfoResponse.result.signer_lists?.[0]
+      assert.deepEqual(
+        signerListInfo?.SignerEntries,
+        tx.SignerEntries,
+        'SignerEntries were not set properly',
+      )
+      assert.equal(
+        signerListInfo?.SignerQuorum,
+        tx.SignerQuorum,
+        'SignerQuorum was not set properly',
+      )
+    },
+    TIMEOUT,
+  )
+
+  // Remove signerlist
+  it(
+    'remove',
+    async () => {
+      const tx: SignerListSet = {
+        TransactionType: 'SignerListSet',
+        Account: testContext.wallet.classicAddress,
+        SignerQuorum: 0,
       }
       await testTransaction(testContext.client, tx, testContext.wallet)
     },

@@ -31,12 +31,10 @@ Please check relevant options, delete irrelevant ones.
 - [ ] Documentation Updates
 - [ ] Release
 
-## Before / After
+### Did you update HISTORY.md?
 
-<!--
-If just refactoring / back-end changes, this can be just an in-English description of the change at a technical level.
-If a UI change, screenshots should be included.
--->
+- [ ] Yes
+- [ ] No, this change does not impact library users
 
 ## Test Plan
 

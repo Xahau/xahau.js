@@ -2,6 +2,27 @@
 
 ## Unreleased
 
+## 5.0.0 (2024-02-01)
+
+### BREAKING CHANGES
+* Bump typescript to 5.x
+* Remove Node 14 support
+* Remove `assert` dependency. If you were catching `AssertionError` you need to change to `Error`.
+* Remove `create-hash` in favor of `@noble/hashes`
+* `Buffer` has been replaced with `UInt8Array` for both params and return values. `Buffer` may continue to work with params since they extend `UInt8Arrays`.
+
+### Non-Breaking Changes
+* Eliminates 4 runtime dependencies: `base-x`, `base64-js`, `buffer`, and `ieee754`.
+* Execute test in a browser in addition to node
+
+## 4.3.1 (2023-09-27)
+### Fixed
+* Fix source-maps not finding their designated source
+
+## 4.3.0 (2023-06-13)
+### Added
+* Adds support for npm v9
+
 ## 4.2.5 (2023-03-08)
 ### Changed
 - All tests now use the Jest test runner and have been refactored for consistency across all packages

@@ -14,15 +14,11 @@ export interface FaucetWallet {
 export enum FaucetNetwork {
   Testnet = 'faucet.altnet.rippletest.net',
   Devnet = 'faucet.devnet.rippletest.net',
-  AMMDevnet = 'ammfaucet.devnet.rippletest.net',
-  HooksV2Testnet = 'hooks-testnet-v2.xrpl-labs.com',
 }
 
 export const FaucetNetworkPaths: Record<string, string> = {
   [FaucetNetwork.Testnet]: '/accounts',
   [FaucetNetwork.Devnet]: '/accounts',
-  [FaucetNetwork.AMMDevnet]: '/accounts',
-  [FaucetNetwork.HooksV2Testnet]: '/accounts',
 }
 
 /**
@@ -35,17 +31,15 @@ export const FaucetNetworkPaths: Record<string, string> = {
 export function getFaucetHost(client: Client): FaucetNetwork | undefined {
   const connectionUrl = client.url
 
-  if (connectionUrl.includes('hooks-testnet-v2')) {
-    return FaucetNetwork.HooksV2Testnet
-  }
-
   // 'altnet' for Ripple Testnet server and 'testnet' for XRPL Labs Testnet server
   if (connectionUrl.includes('altnet') || connectionUrl.includes('testnet')) {
     return FaucetNetwork.Testnet
   }
 
-  if (connectionUrl.includes('amm')) {
-    return FaucetNetwork.AMMDevnet
+  if (connectionUrl.includes('sidechain-net2')) {
+    throw new XRPLFaucetError(
+      'Cannot fund an account on an issuing chain. Accounts must be created via the bridge.',
+    )
   }
 
   if (connectionUrl.includes('devnet')) {

@@ -1,6 +1,12 @@
 import { ValidationError } from '../../errors'
 
-import { BaseTransaction, validateBaseTransaction } from './common'
+import {
+  Account,
+  BaseTransaction,
+  isAccount,
+  validateBaseTransaction,
+  validateRequiredField,
+} from './common'
 
 /**
  * Return escrowed amount to the sender.
@@ -10,12 +16,12 @@ import { BaseTransaction, validateBaseTransaction } from './common'
 export interface EscrowCancel extends BaseTransaction {
   TransactionType: 'EscrowCancel'
   /** Address of the source account that funded the escrow payment. */
-  Owner: string
+  Owner: Account
   /**
    * Transaction sequence (or Ticket  number) of EscrowCreate transaction that.
    * created the escrow to cancel.
    */
-  OfferSequence?: number
+  OfferSequence?: number | string
   /**
    * The ID of the Escrow ledger object to cancel as a 64-character hexadecimal
    * string.
@@ -32,25 +38,24 @@ export interface EscrowCancel extends BaseTransaction {
 export function validateEscrowCancel(tx: Record<string, unknown>): void {
   validateBaseTransaction(tx)
 
-  if (tx.Owner === undefined) {
-    throw new ValidationError('EscrowCancel: missing Owner')
-  }
+  validateRequiredField(tx, 'Owner', isAccount)
 
-  if (typeof tx.Owner !== 'string') {
-    throw new ValidationError('EscrowCancel: Owner must be a string')
-  }
-
-  if (tx.OfferSequence === undefined && tx.EscrowID === undefined) {
+  if (tx.OfferSequence == null && tx.EscrowID == null) {
     throw new ValidationError(
       'EscrowCancel: must include OfferSequence or EscrowID',
     )
   }
 
-  if (tx.OfferSequence !== undefined && typeof tx.OfferSequence !== 'number') {
-    throw new ValidationError('EscrowCancel: invalid OfferSequence')
+  if (tx.EscrowID != null && typeof tx.EscrowID !== 'string') {
+    throw new ValidationError('EscrowCancel: invalid EscrowID')
   }
 
-  if (tx.EscrowID !== undefined && typeof tx.EscrowID !== 'string') {
-    throw new ValidationError('EscrowCancel: invalid EscrowID')
+  if (
+    (tx.OfferSequence != null &&
+      typeof tx.OfferSequence !== 'number' &&
+      typeof tx.OfferSequence !== 'string') ||
+    Number.isNaN(Number(tx.OfferSequence))
+  ) {
+    throw new ValidationError('EscrowCancel: OfferSequence must be a number')
   }
 }

@@ -58,6 +58,10 @@ Warning: Use at your own risk.
 
   XRP Ledger explorer, API, metrics, and analytics using a graph database that is synchronized live with the XRPL.
 
+- **[XRPLWin](https://xrplwin.com)**
+
+  XRP Ledger and Xahau explorer, Hooks explorer, metrics, and analytics using a XWA backend that is synchronized live with the XRPL and Xahau.
+
 ## Data monitoring
 
 - **[zerptracker](https://zerptracker.com)**
@@ -73,6 +77,10 @@ Warning: Use at your own risk.
   3D Globe written in three.js connected to a Node.js websocket server that is listening to exchanges and the XRPL. The visualization aims to show trading, ODL, and liquidity at exchanges, intra-exchange volume, and flows.
 
 ## Wallets and wallet tools
+
+- **[GemWallet](https://gemwallet.app/)**
+
+  Users can use the GemWallet (non-custodial) web extension to interact with the XRPL from their browser. The documentation is available at [https://gemwallet.app/](https://gemwallet.app/docs/user-guide/introduction).
 
 - **[XUMM](https://xumm.app/)**
 
@@ -109,7 +117,7 @@ Warning: Use at your own risk.
 - **[XRP Account Mnemonic Recovery](https://github.com/WietseWind/xrp-mnemonic-recovery)** (uses `ripple-keypairs`)
 
   Recover a 24 word mnemonic if one word is wrong or one word is missing.
-  
+
 - **[Trustline](https://trustline.co)**
 
   A decentralized stablecoin wallet that runs on the XRP Ledger.

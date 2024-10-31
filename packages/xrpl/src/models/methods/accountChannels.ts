@@ -1,19 +1,82 @@
-import { Amount, LedgerIndex } from '../common'
+import { Amount } from '../common'
 
-import { BaseRequest, BaseResponse } from './baseMethod'
+import { BaseRequest, BaseResponse, LookupByLedgerRequest } from './baseMethod'
 
-interface Channel {
+/**
+ * Represents a payment channel in the XRP Ledger.
+ */
+export interface Channel {
+  /** The owner of the channel, as an Address. */
   account: string
+
+  /** The total amount of XRP, in drops allocated to this channel. */
   amount: Amount
+
+  /**
+   * The total amount of XRP, in drops, paid out from this channel,
+   * as of the ledger version used. (You can calculate the amount of
+   * XRP left in the channel by subtracting balance from amount.)
+   */
   balance: string
+
+  /**
+   * A unique ID for this channel, as a 64-character hexadecimal string.
+   * This is also the ID of the channel object in the ledger's state data.
+   */
   channel_id: string
+
+  /**
+   * The destination account of the channel, as an Address.
+   * Only this account can receive the XRP in the channel while it is open.
+   */
   destination_account: string
+
+  /**
+   * The number of seconds the payment channel must stay open after the owner
+   * of the channel requests to close it.
+   */
   settle_delay: number
+
+  /**
+   * The public key for the payment channel in the XRP Ledger's base58 format.
+   * Signed claims against this channel must be redeemed with the matching key pair.
+   */
   public_key?: string
+
+  /**
+   * The public key for the payment channel in hexadecimal format, if one was
+   * specified at channel creation. Signed claims against this channel must be
+   * redeemed with the matching key pair.
+   */
   public_key_hex?: string
+
+  /**
+   * Time, in seconds since the Ripple Epoch, when this channel is set to expire.
+   * This expiration date is mutable. If this is before the close time of the most
+   * recent validated ledger, the channel is expired.
+   */
   expiration?: number
+
+  /**
+   * Time, in seconds since the Ripple Epoch, of this channel's immutable expiration,
+   * if one was specified at channel creation. If this is before the close time of the
+   * most recent validated ledger, the channel is expired.
+   */
   cancel_after?: number
-  source_tab?: number
+
+  /**
+   * A 32-bit unsigned integer to use as a source tag for payments through this payment channel,
+   * if one was specified at channel creation. This indicates the payment channel's originator or
+   * other purpose at the source account. Conventionally, if you bounce payments from this channel,
+   * you should specify this value in the DestinationTag of the return payment.
+   */
+  source_tag?: number
+
+  /**
+   * A 32-bit unsigned integer to use as a destination tag for payments through this channel,
+   * if one was specified at channel creation. This indicates the payment channel's beneficiary
+   * or other purpose at the destination account.
+   */
   destination_tag?: number
   transfer_rate?: number
 }
@@ -27,7 +90,9 @@ interface Channel {
  *
  * @category Requests
  */
-export interface AccountChannelsRequest extends BaseRequest {
+export interface AccountChannelsRequest
+  extends BaseRequest,
+    LookupByLedgerRequest {
   command: 'account_channels'
   /**
    * The unique identifier of an account, typically the account's address. The
@@ -41,13 +106,6 @@ export interface AccountChannelsRequest extends BaseRequest {
    * account.
    */
   destination_account?: string
-  /** 20-byte hex string for the ledger version to use. */
-  ledger_hash?: string
-  /**
-   * The ledger index of the ledger to use, or a shortcut string to choose a
-   * ledger automatically.
-   */
-  ledger_index?: LedgerIndex
   /**
    * Limit the number of transactions to retrieve. Cannot be less than 10 or
    * more than 400. The default is 200.

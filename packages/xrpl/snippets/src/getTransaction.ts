@@ -1,10 +1,10 @@
-import { Client, LedgerResponse, TxResponse } from '../../src'
+import { Client } from '../../src'
 
-const client = new Client('wss://s.altnet.rippletest.net:51233')
+const client = new Client('wss://s2.ripple.com:51233')
 
 async function getTransaction(): Promise<void> {
   await client.connect()
-  const ledger: LedgerResponse = await client.request({
+  const ledger = await client.request({
     command: 'ledger',
     transactions: true,
     ledger_index: 'validated',
@@ -12,17 +12,18 @@ async function getTransaction(): Promise<void> {
   console.log(ledger)
 
   const transactions = ledger.result.ledger.transactions
-  if (transactions) {
-    const tx: TxResponse = await client.request({
+  if (transactions && transactions.length > 0) {
+    const tx = await client.request({
       command: 'tx',
       transaction: transactions[0],
     })
     console.log(tx)
 
-    // The meta field would be a string(hex) when the `binary` parameter is `true` for the `tx` request.
+    // The meta field can be undefined if the transaction has not been validated yet (and so has not changed the ledger).
     if (tx.result.meta == null) {
       throw new Error('meta not included in the response')
     }
+
     /*
      * delivered_amount is the amount actually received by the destination account.
      * Use this field to determine how much was delivered, regardless of whether the transaction is a partial payment.

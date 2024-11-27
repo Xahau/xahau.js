@@ -1,0 +1,7 @@
+{
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "rootDir": "../../xahau"
+  },
+  "include": ["./src/**/*.ts", "../src/**/*.ts", "../src/**/*.json"]
+}

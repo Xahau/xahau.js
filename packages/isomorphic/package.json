@@ -5,7 +5,7 @@
   "keywords": [
     "crypto",
     "isomorphic",
-    "xrpl"
+    "xahau"
   ],
   "scripts": {
     "build": "tsc --build ./tsconfig.build.json",

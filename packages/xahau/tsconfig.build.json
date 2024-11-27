@@ -1,0 +1,21 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "rootDir": "./src",
+  },
+  "include": ["./src/**/*.ts", "./src/**/*.json"],
+  "references": [
+    {
+      "path": "../isomorphic/tsconfig.build.json"
+    },
+    {
+      "path": "../xahau-address-codec/tsconfig.build.json"
+    },
+    {
+      "path": "../xahau-binary-codec/tsconfig.json"
+    },
+    {
+      "path": "../xahau-keypairs/tsconfig.json"
+    }
+  ]
+}

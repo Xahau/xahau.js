@@ -1,5 +1,5 @@
 import { hexToBytes } from '@xrplf/isomorphic/utils'
-import { deriveAddress, deriveKeypair, generateSeed } from 'ripple-keypairs'
+import { deriveAddress, deriveKeypair, generateSeed } from 'xahau-keypairs'
 
 import { Account, secretToEntropy } from '../src'
 

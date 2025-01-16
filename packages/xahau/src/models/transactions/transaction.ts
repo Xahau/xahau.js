@@ -3,7 +3,7 @@
 import { ValidationError } from '../../errors'
 import { IssuedCurrencyAmount, Memo } from '../common'
 import { isHex } from '../utils'
-import { setTransactionFlagsToNumber } from '../utils/flags'
+import { convertTxFlagsToNumber, setNestedFlagsToNumber } from '../utils/flags'
 
 import { AccountSet, validateAccountSet } from './accountSet'
 import { CheckCancel, validateCheckCancel } from './checkCancel'
@@ -199,7 +199,9 @@ export function validate(transaction: Record<string, unknown>): void {
   })
 
   // eslint-disable-next-line @typescript-eslint/consistent-type-assertions -- okay here
-  setTransactionFlagsToNumber(tx as unknown as Transaction)
+  tx.Flags = convertTxFlagsToNumber(tx as unknown as Transaction)
+  // eslint-disable-next-line @typescript-eslint/consistent-type-assertions -- okay here
+  setNestedFlagsToNumber(tx as unknown as Transaction)
   switch (tx.TransactionType) {
     case 'AccountSet':
       validateAccountSet(tx)

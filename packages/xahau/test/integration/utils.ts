@@ -398,7 +398,7 @@ export async function createAMMPool(
     const accountSetTx2: AccountSet = {
       TransactionType: 'AccountSet',
       Account: issuerWallet.classicAddress,
-      // SetFlag: AccountSetAsfFlags.asfAllowTrustLineClawback,
+      SetFlag: AccountSetAsfFlags.asfAllowTrustLineClawback,
     }
 
     await testTransaction(client, accountSetTx2, issuerWallet)

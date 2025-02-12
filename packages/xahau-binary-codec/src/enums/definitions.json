@@ -3012,6 +3012,7 @@
     "NFTokenCreateOffer": 27,
     "NFTokenCancelOffer": 28,
     "NFTokenAcceptOffer": 29,
+    "AMMClawback": 31,
     "AMMCreate": 35,
     "AMMDeposit": 36,
     "AMMWithdraw": 37,

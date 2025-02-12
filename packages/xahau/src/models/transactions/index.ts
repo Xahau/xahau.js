@@ -14,6 +14,11 @@ export {
   AccountSet,
 } from './accountSet'
 export { AMMBid } from './AMMBid'
+export {
+  AMMClawbackFlags,
+  AMMClawbackFlagsInterface,
+  AMMClawback,
+} from './AMMClawback'
 export { AMMCreate } from './AMMCreate'
 export { AMMDelete } from './AMMDelete'
 export {

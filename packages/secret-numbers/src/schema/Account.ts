@@ -1,4 +1,4 @@
-import { deriveAddress, deriveKeypair, generateSeed } from 'ripple-keypairs'
+import { deriveAddress, deriveKeypair, generateSeed } from 'xahau-keypairs'
 
 import {
   entropyToSecret,

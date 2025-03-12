@@ -1,5 +1,5 @@
 {
-  "name": "xrpl.js",
+  "name": "xahau.js",
   "private": true,
   "scripts": {
     "analyze": "lerna run analyze --stream",
@@ -16,10 +16,10 @@
   "dependencies": {
     "@xrplf/isomorphic": "file:packages/isomorphic",
     "@xrplf/secret-numbers": "file:packages/secret-numbers",
-    "ripple-address-codec": "file:packages/ripple-address-codec",
-    "ripple-binary-codec": "file:packages/ripple-binary-codec",
-    "ripple-keypairs": "file:packages/ripple-keypairs",
-    "xrpl": "file:packages/xrpl"
+    "xahau-address-codec": "file:packages/xahau-address-codec",
+    "xahau-binary-codec": "file:packages/xahau-binary-codec",
+    "xahau-keypairs": "file:packages/xahau-keypairs",
+    "xahau": "file:packages/xahau"
   },
   "devDependencies": {
     "@types/chai": "^4.2.21",

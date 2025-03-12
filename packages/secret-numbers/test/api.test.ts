@@ -1,9 +1,9 @@
 import { hexToBytes } from '@xrplf/isomorphic/utils'
-import { deriveAddress, deriveKeypair, generateSeed } from 'ripple-keypairs'
+import { deriveAddress, deriveKeypair, generateSeed } from 'xahau-keypairs'
 
 import { Account, secretToEntropy } from '../src'
 
-describe('API: XRPL Secret Numbers', () => {
+describe('API: XAHL Secret Numbers', () => {
   describe('Generate new account', () => {
     const account = new Account()
     it('Output sanity checks', () => {

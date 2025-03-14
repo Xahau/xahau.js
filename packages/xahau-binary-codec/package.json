@@ -31,12 +31,12 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git@github.com:XRPLF/xrpl.js.git"
+    "url": "git@github.com:Xahau/xahau.js.git"
   },
   "bugs": {
-    "url": "https://github.com/XRPLF/xrpl.js/issues"
+    "url": "https://github.com/Xahau/xahau.js/issues"
   },
-  "homepage": "https://github.com/XRPLF/xrpl.js/tree/main/packages/xahau-binary-codec#readme",
+  "homepage": "https://github.com/Xahau/xahau.js/tree/main/packages/xahau-binary-codec#readme",
   "license": "ISC",
   "readmeFilename": "README.md",
   "prettier": "@xrplf/prettier-config",

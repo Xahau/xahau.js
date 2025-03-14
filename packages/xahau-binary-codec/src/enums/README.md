@@ -43,7 +43,7 @@ If true, the field is Variable Length encoded and [length-prefixed](https://xrpl
 
 Fields are serialized if they are not [one of these](https://github.com/ripple/rippled/blob/eaff9a0e6aec0ad077f118501791c7684debcfd5/src/ripple/protocol/impl/SField.cpp#L71-L78) or if they are not an SField.
 
-- https://github.com/ripple/ripple-binary-codec/blob/14e76e68ead7e4bcd83c942dbdc9064d5a66869b/src/enums/definitions.json#L832
+- https://github.com/ripple/xahau-binary-codec/blob/14e76e68ead7e4bcd83c942dbdc9064d5a66869b/src/enums/definitions.json#L832
 - https://github.com/ripple/rippled/search?utf8=%E2%9C%93&q=taker_gets_funded&type=
 
 ### isSigningField
@@ -69,7 +69,7 @@ If you're building your own sidechain or writing an amendment for the XRPL, you 
 
 To do that there are a couple things you need to do:
 
-1. Generate your own `definitions.json` file from rippled source code using [this tool](https://github.com/RichardAH/xrpl-codec-gen) (The default `definitions.json` for mainnet can be found [here](https://github.com/XRPLF/xrpl.js/blob/main/packages/ripple-binary-codec/src/enums/definitions.json))
+1. Generate your own `definitions.json` file from rippled source code using [this tool](https://github.com/RichardAH/xrpl-codec-gen) (The default `definitions.json` for mainnet can be found [here](https://github.com/Xahau/xahau.js/blob/main/packages/xahau-binary-codec/src/enums/definitions.json))
 2. Create new SerializedType classes for any new Types (So that encode/decode behavior is defined). The SerializedType classes correspond to "ST..." classes in Rippled. Note: This is very rarely required.
 
 - For examples of how to implement that you can look at objects in the [`types` folder](../types/), such as `Amount`, `UInt8`, or `STArray`.
@@ -141,4 +141,4 @@ const decoded = decode(encoded, newDefs)
 
 ## Other examples
 
-You can find other examples of how to modify `definitions.json` in `definition.test.js` which contains tests for this feature, and uses various example modified `definition` files. You can find the tests and the corresponding example `definition` files in [this folder of test cases](https://github.com/XRPLF/xrpl.js/tree/main/packages/ripple-binary-codec/test)
+You can find other examples of how to modify `definitions.json` in `definition.test.js` which contains tests for this feature, and uses various example modified `definition` files. You can find the tests and the corresponding example `definition` files in [this folder of test cases](https://github.com/Xahau/xahau.js/tree/main/packages/xahau-binary-codec/test)

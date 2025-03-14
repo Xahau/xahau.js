@@ -71,7 +71,7 @@
   "prettier": "@xrplf/prettier-config",
   "repository": {
     "type": "git",
-    "url": "git@github.com:XRPLF/xrpl.js.git"
+    "url": "git@github.com:Xahau/xahau.js.git"
   },
   "readmeFilename": "README.md",
   "keywords": [

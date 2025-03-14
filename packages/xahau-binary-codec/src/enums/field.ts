@@ -4,7 +4,7 @@ import { TYPE_WIDTH } from './constants'
 
 /**
  * Encoding information for a xahaud field, often used in transactions.
- * See the enums [README.md](https://github.com/XRPLF/xrpl.js/tree/main/packages/xahau-binary-codec/src/enums) for more details on what each means.
+ * See the enums [README.md](https://github.com/Xahau/xahau.js/tree/main/packages/xahau-binary-codec/src/enums) for more details on what each means.
  */
 export interface FieldInfo {
   nth: number

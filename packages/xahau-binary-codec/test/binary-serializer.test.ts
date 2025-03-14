@@ -247,13 +247,13 @@ function NegativeUNLTest() {
 }
 
 function UNLReportTest() {
-  test('can serialize UNLReport', () => {
+  it('can serialize UNLReport', () => {
     expect(encode(UNLReport.tx)).toEqual(UNLReport.binary)
   })
-  test('can serialize UNLReport metadata', () => {
+  it('can serialize UNLReport metadata', () => {
     expect(encode(UNLReport.tx.meta)).toEqual(UNLReport.meta)
   })
-  test('can deserialize UNLReport metadata', () => {
+  it('can deserialize UNLReport metadata', () => {
     expect(decode(UNLReport.meta)).toEqual(UNLReport.tx.meta)
   })
 }
@@ -274,7 +274,7 @@ function ticketTest() {
 }
 
 function remitTest() {
-  test('can serialize Remit', () => {
+  it('can serialize Remit', () => {
     expect(encode(Remit.tx)).toEqual(Remit.binary)
   })
 }

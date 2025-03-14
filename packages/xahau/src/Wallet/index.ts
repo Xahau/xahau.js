@@ -135,7 +135,7 @@ export class Wallet {
    *
    * @example
    * ```ts
-   * const { Wallet } = require('xah')
+   * const { Wallet } = require('xahau')
    * const wallet = Wallet.generate()
    * ```
    *
@@ -320,7 +320,7 @@ export class Wallet {
    * @example
    *
    * ```ts
-   * const { Client, Wallet } = require('xah')
+   * const { Client, Wallet } = require('xahau')
    * const client = new Client('wss://xahau-test.net')
    *
    * async function signTransaction() {

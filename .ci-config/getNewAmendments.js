@@ -1,4 +1,4 @@
-const xrpl = require("xrpl");
+const xahau = require("xahau");
 const fs = require("fs");
 const path = require("path");
 
@@ -12,7 +12,7 @@ const amendmentsToIgnore = [
 ];
 
 async function main() {
-  const client = new xrpl.Client(networkToEmulate);
+  const client = new xahau.Client(networkToEmulate);
   await client.connect();
 
   // Looks up what amendments have been enabled via their hash

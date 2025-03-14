@@ -1,7 +1,7 @@
 {
   "name": "@xrplf/isomorphic",
   "version": "1.0.1",
-  "description": "A collection of isomorphic and tree-shakeable crypto hashes and utils for xrpl.js",
+  "description": "A collection of isomorphic and tree-shakeable crypto hashes and utils for xahau.js",
   "keywords": [
     "crypto",
     "isomorphic",

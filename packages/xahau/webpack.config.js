@@ -3,6 +3,6 @@ const { merge } = require('webpack-merge')
 const { getDefaultConfiguration, wrapForEnv } = require('../../webpack.config')
 
 module.exports = wrapForEnv(
-  'xah',
+  'xahau',
   merge(getDefaultConfiguration(), require('./webpack.base.config')),
 )

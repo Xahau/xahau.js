@@ -505,7 +505,7 @@ class Client extends EventEmitter<EventTypes> {
    * @returns void
    * @example
    * ```ts
-   * const { Client } = require('xah')
+   * const { Client } = require('xahau')
    * const client = new Client('wss://xahau-test.net')
    * await client.getServerInfo()
    * console.log(client.networkID)
@@ -533,7 +533,7 @@ class Client extends EventEmitter<EventTypes> {
    * Client.connect() establishes a connection between a Client object and the server.
    *
    * ```ts
-   * const { Client } = require('xah')
+   * const { Client } = require('xahau')
    * const client = new Client('wss://xahau-test.net')
    * await client.connect()
    * // do something with the client
@@ -546,7 +546,7 @@ class Client extends EventEmitter<EventTypes> {
    *
    * @example
    * ```ts
-   * const { Client } = require('xah')
+   * const { Client } = require('xahau')
    * const client = new Client('wss://xahau-test.net')
    * await client.connect()
    * // do something with the client
@@ -570,7 +570,7 @@ class Client extends EventEmitter<EventTypes> {
    * To use the disconnect() method, you first need to create a new Client object and connect it to a server:
    *
    * ```ts
-   * const { Client } = require('xah')
+   * const { Client } = require('xahau')
    * const client = new Client('wss://xahau-test.net')
    * await client.connect()
    * // do something with the client
@@ -595,7 +595,7 @@ class Client extends EventEmitter<EventTypes> {
    * @category Network
    * @example
    * ```ts
-   * const { Client } = require('xah')
+   * const { Client } = require('xahau')
    * const client = new Client('wss://xahau-test.net')
    * await client.connect()
    * console.log(client.isConnected())
@@ -620,7 +620,7 @@ class Client extends EventEmitter<EventTypes> {
    * @example
    *
    * ```ts
-   * const { Client } = require('xah')
+   * const { Client } = require('xahau')
    *
    * const client = new Client('wss://xahau-test.net')
    *
@@ -705,7 +705,7 @@ class Client extends EventEmitter<EventTypes> {
    *
    * @example
    * ```ts
-   * const { Client, Wallet } = require('xah')
+   * const { Client, Wallet } = require('xahau')
    * const client = new Client('wss://xahau-test.net')
    * await client.connect()
    * const wallet = Wallet.generate()
@@ -744,7 +744,7 @@ class Client extends EventEmitter<EventTypes> {
    * @example
    *
    * ```ts
-   * const { Client, Wallet } = require('xah')
+   * const { Client, Wallet } = require('xahau')
    * const client = new Client('wss://xahau-test.net')
    *
    * async function submitTransaction() {
@@ -884,7 +884,7 @@ class Client extends EventEmitter<EventTypes> {
    *
    * @example
    * ```ts
-   * const { Client } = require('xah')
+   * const { Client } = require('xahau')
    * const client = new Client('wss://xahau-test.net')
    * await client.connect()
    *
@@ -895,7 +895,7 @@ class Client extends EventEmitter<EventTypes> {
    *       limit: 10
    *     };
    *
-   *     const balances = await xrplClient.getBalances(address, options);
+   *     const balances = await xahauClient.getBalances(address, options);
    *
    *     console.log('Account Balances:');
    *     balances.forEach((balance) => {
@@ -1045,7 +1045,7 @@ class Client extends EventEmitter<EventTypes> {
    *
    * @example
    * ```ts
-   * const { Client } = require('xah')
+   * const { Client } = require('xahau')
    * const client = new Client('wss://xahau-test.net')
    * await client.connect()
    * const ledgerIndex = await client.getLedgerIndex()
@@ -1070,7 +1070,7 @@ class Client extends EventEmitter<EventTypes> {
    * @example
    *
    * Example 1: Fund a randomly generated wallet
-   * const { Client, Wallet } = require('xah')
+   * const { Client, Wallet } = require('xahau')
    *
    * const client = new Client('wss://xahau-test.net')
    * await client.connect()
@@ -1081,7 +1081,7 @@ class Client extends EventEmitter<EventTypes> {
    * Along with the Wallet object to track the keys for that account. If you'd like, you can also re-fill an existing
    * Account by passing in a Wallet you already have.
    * ```ts
-   * const api = new xrpl.Client("wss://xahau-test.net")
+   * const api = new xahau.Client("wss://xahau-test.net")
    * await api.connect()
    * const { wallet, balance } = await api.fundWallet()
    * ```

@@ -221,7 +221,7 @@ export async function verifySubmittedTransaction(
  * @param client - The XAHL client
  * @param transaction - The transaction object to send.
  * @param wallet - The wallet to send the transaction from.
- * @param retry - As of Sep 2022, xrpl.js does not track requests sent in parallel. Our sequence numbers can get off from
+ * @param retry - As of Sep 2022, xahau.js does not track requests sent in parallel. Our sequence numbers can get off from
  *               the server's sequence numbers. This is a fix to retry the transaction if it fails due to tefPAST_SEQ.
  * @param retry.count - How many times the request should be retried.
  * @param retry.delayMs - How long to wait between retries.

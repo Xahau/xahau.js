@@ -7,8 +7,8 @@ module.exports = merge(getDefaultConfiguration(), {
   entry: './dist/npm/index.js',
   // overriding the output path and filename
   output: {
-    library: 'xah',
+    library: 'xahau',
     path: path.join(__dirname, 'build/'),
-    filename: `xrpl.default.js`,
-  }
+    filename: `xahau.default.js`,
+  },
 })

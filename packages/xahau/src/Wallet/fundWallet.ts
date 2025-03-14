@@ -63,7 +63,7 @@ export interface FaucetRequestBody {
   usageContext?: string
   /**
    * Information about the context of where the faucet is being called from.
-   * Ex: xrpl.js or xrpl-py
+   * Ex: xahau.js or xahau-py
    */
   userAgent: string
 }
@@ -110,7 +110,7 @@ export interface FundWalletOptions {
 
 /**
  *
- * Helper function to request funding from a faucet. Should not be called directly from outside the xrpl.js library.
+ * Helper function to request funding from a faucet. Should not be called directly from outside the xahau.js library.
  *
  * @param options - See below
  * @param options.faucetHost - A custom host for a faucet server. On devnet,

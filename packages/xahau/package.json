@@ -4,16 +4,16 @@
   "license": "ISC",
   "description": "A TypeScript/JavaScript API for interacting with the XAH Ledger in Node.js and the browser",
   "files": [
-    "build/xrpl-latest-min.js",
-    "build/xrpl-latest-min.js.map",
-    "build/xrpl-latest.js",
-    "build/xrpl-latest.js.map",
+    "build/xahau-latest-min.js",
+    "build/xahau-latest-min.js.map",
+    "build/xahau-latest.js",
+    "build/xahau-latest.js.map",
     "dist/npm/*",
     "src/*"
   ],
   "main": "dist/npm/",
-  "unpkg": "build/xrpl-latest-min.js",
-  "jsdelivr": "build/xrpl-latest-min.js",
+  "unpkg": "build/xahau-latest-min.js",
+  "jsdelivr": "build/xahau-latest-min.js",
   "types": "dist/npm/index.d.ts",
   "directories": {
     "test": "test"
@@ -57,8 +57,8 @@
     "analyze": "webpack --analyze",
     "watch": "run-s build:lib --watch",
     "clean": "rm -rf ./dist ./coverage ./test/testCompiledForWeb tsconfig.build.tsbuildinfo",
-    "docgen": "tsc --build tsconfig.docs.json && typedoc && echo js.xrpl.org >> ../../docs/CNAME",
-    "prepare": "copyfiles ../../README.md xrpl/README.md",
+    "docgen": "tsc --build tsconfig.docs.json && typedoc && echo js.xahau.org >> ../../docs/CNAME",
+    "prepare": "copyfiles ../../README.md xahau/README.md",
     "prepublish": "run-s clean build",
     "test": "jest --config=jest.config.unit.js --verbose false --silent=false",
     "test:integration": "TS_NODE_PROJECT=tsconfig.build.json jest --config=jest.config.integration.js --verbose false --silent=false --runInBand",

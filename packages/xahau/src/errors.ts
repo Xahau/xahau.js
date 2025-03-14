@@ -1,6 +1,6 @@
 /* eslint-disable max-classes-per-file -- Errors can be defined in the same file */
 /**
- * Base Error class for xrpl.js. All Errors thrown by xrpl.js should throw
+ * Base Error class for xahau.js. All Errors thrown by xahau.js should throw
  * XahlErrors.
  *
  * @category Errors
@@ -62,28 +62,28 @@ class XahlError extends Error {
 class XahaudError extends XahlError {}
 
 /**
- * Error thrown when xrpl.js cannot specify error type.
+ * Error thrown when xahau.js cannot specify error type.
  *
  * @category Errors
  */
 class UnexpectedError extends XahlError {}
 
 /**
- * Error thrown when xrpl.js has an error with connection to xahaud.
+ * Error thrown when xahau.js has an error with connection to xahaud.
  *
  * @category Errors
  */
 class ConnectionError extends XahlError {}
 
 /**
- * Error thrown when xrpl.js is not connected to xahaud server.
+ * Error thrown when xahau.js is not connected to xahaud server.
  *
  * @category Errors
  */
 class NotConnectedError extends ConnectionError {}
 
 /**
- * Error thrown when xrpl.js has disconnected from xahaud server.
+ * Error thrown when xahau.js has disconnected from xahaud server.
  *
  * @category Errors
  */
@@ -97,21 +97,21 @@ class DisconnectedError extends ConnectionError {}
 class XahaudNotInitializedError extends ConnectionError {}
 
 /**
- * Error thrown when xrpl.js times out.
+ * Error thrown when xahau.js times out.
  *
  * @category Errors
  */
 class TimeoutError extends ConnectionError {}
 
 /**
- * Error thrown when xrpl.js sees a response in the wrong format.
+ * Error thrown when xahau.js sees a response in the wrong format.
  *
  * @category Errors
  */
 class ResponseFormatError extends ConnectionError {}
 
 /**
- * Error thrown when xrpl.js sees a malformed transaction.
+ * Error thrown when xahau.js sees a malformed transaction.
  *
  * @category Errors
  */
@@ -127,7 +127,7 @@ class ValidationError extends XahlError {}
 class XRPLFaucetError extends XahlError {}
 
 /**
- * Error thrown when xrpl.js cannot retrieve a transaction, ledger, account, etc.
+ * Error thrown when xahau.js cannot retrieve a transaction, ledger, account, etc.
  * From xahaud.
  *
  * @category Errors

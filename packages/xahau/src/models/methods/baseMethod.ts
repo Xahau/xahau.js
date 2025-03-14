@@ -41,7 +41,7 @@ export interface BaseResponse {
 }
 
 /**
- * The shape of an error response from xahaud. xrpl.js handles rejections by
+ * The shape of an error response from xahaud. xahau.js handles rejections by
  * throwing, and allowing the user to handle in the catch block of a promise.
  *
  * @category Responses

@@ -7,7 +7,7 @@ module.exports = function (config) {
     webpack: webpackConfig,
 
     // list of files / patterns to load in the browser
-    files: ['build/xrpl-latest.js', 'test/integration/**/*.test.ts'],
+    files: ['build/xahau-latest.js', 'test/integration/**/*.test.ts'],
   })
 
   baseKarmaConfig(config)

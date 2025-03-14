@@ -91,7 +91,7 @@ class XrplDefinitionsBase {
    * Associates each Field to a corresponding class that TypeScript can recognize.
    *
    * @param types a list of type objects with the same name as the fields defined.
-   *              Defaults to xrpl.js's core type definitions.
+   *              Defaults to xahau.js's core type definitions.
    */
   public associateTypes(types: Record<string, typeof SerializedType>): void {
     // Overwrite any existing type definitions with the given types

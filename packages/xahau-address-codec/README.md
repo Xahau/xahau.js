@@ -1,4 +1,4 @@
-# ripple-address-codec
+# xahau-address-codec
 
 [![NPM Version][npm-version-image]][npm-url]
 [![NPM Downloads][npm-downloads-image]][npm-url]
@@ -7,9 +7,9 @@
 
 Functions for encoding and decoding XRP Ledger addresses and seeds.
 
-Also includes support for encoding/decoding [rippled validator (node) public keys](https://xrpl.org/run-rippled-as-a-validator.html).
+Also includes support for encoding/decoding [xahaud validator (node) public keys](https://xrpl.org/run-rippled-as-a-validator.html).
 
-[![NPM](https://nodei.co/npm/ripple-address-codec.png)](https://www.npmjs.org/package/ripple-address-codec)
+[![NPM](https://nodei.co/npm/xahau-address-codec.png)](https://www.npmjs.org/package/xahau-address-codec)
 
 ## X-address Conversion
 
@@ -22,15 +22,13 @@ All tools and apps in the XRP Ledger ecosystem are encouraged to adopt support f
 Convert a classic address and (optional) tag to an X-address. If `tag` is `false`, the returned X-address explicitly indicates that the recipient does not want a tag to be used. If `test` is `true`, consumers of the address will know that the address is intended for use on test network(s) and the address will start with `T`.
 
 ```js
-> const api = require('ripple-address-codec')
+> const api = require('xahau-address-codec')
 > api.classicAddressToXAddress('rGWrZyQqhTp9Xu7G5Pkayo7bXjH4k4QYpf', 4294967295)
 'XVLhHMPHU98es4dbozjVtdWzVrDjtV18pX8yuPT7y4xaEHi'
 ```
 
-Encode a test address e.g. for use with [Testnet or Devnet](https://xrpl.org/xrp-testnet-faucet.html):
-
 ```js
-> const api = require('ripple-address-codec')
+> const api = require('xahau-address-codec')
 > api.classicAddressToXAddress('r3SVzk8ApofDJuVBPKdmbbLjWGCCXpBQ2g', 123, true)
 'T7oKJ3q7s94kDH6tpkBowhetT1JKfcfdSCmAXbS75iATyLD'
 ```
@@ -40,7 +38,7 @@ Encode a test address e.g. for use with [Testnet or Devnet](https://xrpl.org/xrp
 Convert an X-address to a classic address and tag. If the X-address did not have a tag, the returned object's `tag` will be `false`. (Since `0` is a valid tag, instead of `if (tag)`, use `if (tag !== false)` if you want to check for a tag.) If the X-address is intended for use on test network(s), `test` will be `true`; if it is intended for use on the main network (mainnet), `test` will be `false`.
 
 ```js
-> const api = require('ripple-address-codec')
+> const api = require('xahau-address-codec')
 > api.xAddressToClassicAddress('XVLhHMPHU98es4dbozjVtdWzVrDjtV18pX8yuPT7y4xaEHi')
 {
   classicAddress: 'rGWrZyQqhTp9Xu7G5Pkayo7bXjH4k4QYpf',
@@ -54,7 +52,7 @@ Convert an X-address to a classic address and tag. If the X-address did not have
 Returns `true` if the provided X-address is valid, or `false` otherwise.
 
 ```js
-> const api = require('ripple-address-codec')
+> const api = require('xahau-address-codec')
 > api.isValidXAddress('XVLhHMPHU98es4dbozjVtdWzVrDjtV18pX8yuPT7y4xaEHi')
 true
 ```
@@ -127,7 +125,7 @@ Convert an X-address to its classic address, tag, and network ID.
 ### Other functions
 
 ```js
-> var api = require('ripple-address-codec');
+> var api = require('xahau-address-codec');
 > api.decodeSeed('sEdTM1uX8pu2do5XvTnutH6HsouMaM2')
 { version: [ 1, 225, 75 ],
   bytes: [ 76, 58, 29, 33, 63, 189, 251, 20, 199, 194, 141, 96, 148, 105, 179, 65 ],
@@ -177,7 +175,7 @@ This tells jest to output code coverage info in the `./coverage` directory, in a
 
 ## Releases
 
-Use the [xrpl.js release process](https://github.com/XRPLF/xrpl.js/blob/main/CONTRIBUTING.md#release).
+Use the [xahau.js release process](https://github.com/Xahau/xahau.js/blob/main/CONTRIBUTING.md#release).
 
 ## Acknowledgements
 
@@ -187,10 +185,10 @@ This library references and adopts code and standards from the following sources
 - [XRPL Tagged Address Codec](https://github.com/xrp-community/xrpl-tagged-address-codec) by @WietseWind
 - [X-Address transaction functions](https://github.com/codetsunami/xrpl-tools/tree/master/xaddress-functions) by @codetsunami
 
-[coveralls-image]: https://badgen.net/coveralls/c/github/ripple/ripple-address-codec/master
+[coveralls-image]: https://badgen.net/coveralls/c/github/ripple/xahau-address-codec/master
 [coveralls-url]: https://coveralls.io/r/ripple/ripple-address/codec?branch=master
-[npm-downloads-image]: https://badgen.net/npm/dm/ripple-address-codec
-[npm-url]: https://npmjs.org/package/ripple-address-codec
-[npm-version-image]: https://badgen.net/npm/v/ripple-address-codec
-[travis-image]: https://badgen.net/travis/ripple/ripple-address-codec/master
-[travis-url]: https://travis-ci.org/github/ripple/ripple-address-codec
+[npm-downloads-image]: https://badgen.net/npm/dm/xahau-address-codec
+[npm-url]: https://npmjs.org/package/xahau-address-codec
+[npm-version-image]: https://badgen.net/npm/v/xahau-address-codec
+[travis-image]: https://badgen.net/travis/ripple/xahau-address-codec/master
+[travis-url]: https://travis-ci.org/github/ripple/xahau-address-codec

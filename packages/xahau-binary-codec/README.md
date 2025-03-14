@@ -1,12 +1,12 @@
-# ripple-binary-codec [![NPM](https://img.shields.io/npm/v/ripple-binary-codec.svg)](https://npmjs.org/package/ripple-binary-codec)
+# xahau-binary-codec [![NPM](https://img.shields.io/npm/v/xahau-binary-codec.svg)](https://npmjs.org/package/xahau-binary-codec)
 
 Functions to encode/decode to/from the ripple [binary serialization format](https://xrpl.org/serialization.html)
 
-[![NPM](https://nodei.co/npm/ripple-binary-codec.png)](https://www.npmjs.org/package/ripple-binary-codec)
+[![NPM](https://nodei.co/npm/xahau-binary-codec.png)](https://www.npmjs.org/package/xahau-binary-codec)
 
 ## API
 ```js
-> const api = require('ripple-binary-codec')
+> const api = require('xahau-binary-codec')
 ```
 
 
@@ -37,22 +37,22 @@ Encode a transaction object into a hex-string. Note that encode filters out fiel
   OwnerCount: 0,
   PreviousTxnID: 'DF530FB14C5304852F20080B0A8EEF3A6BDD044F41F4EBBD68B8B321145FE4FF',
   Balance: '10000000000',
-  Account: 'rLs1MzkFWCxTbuAHgjeTZK4fcCDDnf2KRv' 
+  Account: 'rLs1MzkFWCxTbuAHgjeTZK4fcCDDnf2KRv'
 })
 '1100612200000000240000000125000000072D0000000055DF530FB14C5304852F20080B0A8EEF3A6BDD044F41F4EBBD68B8B321145FE4FF6240000002540BE4008114D0F5430B66E06498D4CEEC816C7B3337F9982337'
 ```
 
-#### X-Address Compatibility 
-  * ripple-binary-codec handles X-addresses by looking for a few specific files (Account/SourceTag, Destination/DestinationTag).
+#### X-Address Compatibility
+  * xahau-binary-codec handles X-addresses by looking for a few specific files (Account/SourceTag, Destination/DestinationTag).
   * If other fields (in the future) must to support X-addresses with tags, this library will need to be updated.
   * When decoding rippled binary, the output will always output classic address + tag, with no X-addresses. X-address support only applies when encoding to binary.
 
 #### Encoding Currency Codes
   * The standard format for currency codes is a three-letter string such as `USD`. This is intended for use with ISO 4217 Currency Codes.
   * Currency codes must be exactly 3 ASCII characters in length and there are [a few other rules](https://xrpl.org/currency-formats.html#currency-codes).
-  * ripple-binary-codec allows any 3-character ASCII string to be encoded as a currency code, although rippled may enforce tighter restrictions.
+  * xahau-binary-codec allows any 3-character ASCII string to be encoded as a currency code, although rippled may enforce tighter restrictions.
   * When _decoding_, if a currency code is three uppercase letters or numbers (`/^[A-Z0-9]{3}$/`), then it will be decoded into that string. For example,`0000000000000000000000004142430000000000` decodes as `ABC`.
-  * When decoding, if a currency code is does not match the regex, then it is not considered to be an ISO 4217 or pseudo-ISO currency. ripple-binary-codec will return a 160-bit hex-string (40 hex characters). For example, `0000000000000000000000006142430000000000` (`aBC`) decodes as `0000000000000000000000006142430000000000` because it contains a lowercase letter.
+  * When decoding, if a currency code is does not match the regex, then it is not considered to be an ISO 4217 or pseudo-ISO currency. xahau-binary-codec will return a 160-bit hex-string (40 hex characters). For example, `0000000000000000000000006142430000000000` (`aBC`) decodes as `0000000000000000000000006142430000000000` because it contains a lowercase letter.
 
 ### encodeForSigning(json: object): string
 
@@ -72,7 +72,7 @@ Encode the transaction object for multi-signing.
 '5D06F4C3362FE1D0'
 ```
 
-### decodeQuality(value: string): string 
+### decodeQuality(value: string): string
 ```js
 > api.decodeQuality('5D06F4C3362FE1D0')
 '195796912.5171664'

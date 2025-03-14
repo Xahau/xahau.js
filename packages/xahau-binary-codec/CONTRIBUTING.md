@@ -24,6 +24,6 @@ To add a new serializable type, first read through `enum`'s [README.md](src/enum
 After that, if you need to add a new type of data to be serialized / deserialized (for example adding a bigger int than [uint-64.ts](src/types/uint-64.ts)) you can follow these steps:
 1. Create a new class that extends `SerializedType`
   - If your type is intended to be comparable to native values like `number`, you should extend `Comparable<YourObjectType | nativeValue>`. See [uint-64.ts](src/types/uint-64.ts) for an example of this.
-2. Add your new subclass of `SerializableType` to `coreTypes` in [packages/ripple-binary-codec/src/types/index.ts](packages/ripple-binary-codec/src/types/index.ts)
+2. Add your new subclass of `SerializableType` to `coreTypes` in [packages/xahau-binary-codec/src/types/index.ts](packages/xahau-binary-codec/src/types/index.ts)
   - The `coreTypes` variable is used by `BinaryParser` and `BinarySerializer` to understand what possible types exist when reading / writing binary data.
 3. Write a unit tests for this type that demonstrates it can properly serialize / deserialize and throw the proper errors (see [Adding Tests](#adding-tests))

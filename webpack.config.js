@@ -24,7 +24,7 @@ function getDefaultConfiguration() {
     resolve: {
       extensions: [".js", ".json"],
       // We don't want to webpack any of the local dependencies:
-      // ripple-address-codec, ripple-binary-codec, ripple-keypairs, which are
+      // xahau-address-codec, xahau-binary-codec, xahau-keypairs, which are
       // symlinked together via lerna
       symlinks: false,
     },
@@ -57,7 +57,7 @@ module.exports = {
             new BundleAnalyzerPlugin({
               analyzerPort: `auto`,
               analyzerMode: "static",
-            }),
+            })
           );
         }
         return localConfig;

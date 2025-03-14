@@ -29,6 +29,7 @@ const ledgerSpaces = {
   paychan: 'x',
   check: 'C',
   depositPreauth: 'p',
+  uriToken: 'U',
 }
 
 export default ledgerSpaces

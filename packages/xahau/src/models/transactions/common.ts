@@ -2,14 +2,8 @@ import { isValidClassicAddress, isValidXAddress } from 'xahau-address-codec'
 import { TRANSACTION_TYPES } from 'xahau-binary-codec'
 
 import { ValidationError } from '../../errors'
-import {
-  Amount,
-  Currency,
-  IssuedCurrencyAmount,
-  Memo,
-  Signer,
-  XChainBridge,
-} from '../common'
+import { Amount, Currency, IssuedCurrencyAmount, Memo, Signer } from '../common'
+import { EmitDetails, HookParameter } from '../common/xahau'
 import { onlyHasFields } from '../utils'
 
 const MEMO_SIZE = 3
@@ -58,7 +52,6 @@ function isSigner(obj: unknown): boolean {
 const XAH_CURRENCY_SIZE = 1
 const ISSUE_SIZE = 2
 const ISSUED_CURRENCY_SIZE = 3
-const XCHAIN_BRIDGE_SIZE = 4
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return value !== null && typeof value === 'object'
@@ -145,23 +138,6 @@ export function isAccount(account: unknown): account is Account {
  */
 export function isAmount(amount: unknown): amount is Amount {
   return typeof amount === 'string' || isIssuedCurrency(amount)
-}
-
-/**
- * Verify the form and type of an XChainBridge at runtime.
- *
- * @param input - The input to check the form and type of.
- * @returns Whether the XChainBridge is properly formed.
- */
-export function isXChainBridge(input: unknown): input is XChainBridge {
-  return (
-    isRecord(input) &&
-    Object.keys(input).length === XCHAIN_BRIDGE_SIZE &&
-    typeof input.LockingChainDoor === 'string' &&
-    isCurrency(input.LockingChainIssue) &&
-    typeof input.IssuingChainDoor === 'string' &&
-    isCurrency(input.IssuingChainIssue)
-  )
 }
 
 /* eslint-disable @typescript-eslint/restrict-template-expressions -- tx.TransactionType is checked before any calls */
@@ -291,6 +267,18 @@ export interface BaseTransaction {
    * The network id of the transaction.
    */
   NetworkID?: number
+  /**
+   *
+   */
+  FirstLedgerSequence?: number
+  /**
+   * The hook parameters of the transaction.
+   */
+  HookParameters?: HookParameter[]
+  /**
+   * The hook parameters of the transaction.
+   */
+  EmitDetails?: EmitDetails
 }
 
 /**

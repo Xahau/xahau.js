@@ -104,6 +104,17 @@ let json_omitted = {
 
 const NegativeUNL = require('./fixtures/negative-unl.json')
 
+const UNLReport = {
+  tx: require('./fixtures/unl-report.json'),
+  binary: require('./fixtures/unl-report-binary.json'),
+  meta: require('./fixtures/unl-report-meta-binary.json'),
+}
+
+const Remit = {
+  tx: require('./fixtures/remit-tx.json'),
+  binary: require('./fixtures/remit-binary.json'),
+}
+
 function bytesListTest() {
   const list = new BytesList()
     .put(Uint8Array.from([0]))
@@ -235,6 +246,18 @@ function NegativeUNLTest() {
   })
 }
 
+function UNLReportTest() {
+  test('can serialize UNLReport', () => {
+    expect(encode(UNLReport.tx)).toEqual(UNLReport.binary)
+  })
+  test('can serialize UNLReport metadata', () => {
+    expect(encode(UNLReport.tx.meta)).toEqual(UNLReport.meta)
+  })
+  test('can deserialize UNLReport metadata', () => {
+    expect(decode(UNLReport.meta)).toEqual(UNLReport.tx.meta)
+  })
+}
+
 function omitUndefinedTest() {
   it('omits fields with undefined value', () => {
     let encodedOmitted = encode(json_omitted)
@@ -250,34 +273,10 @@ function ticketTest() {
   })
 }
 
-function nfTokenTest() {
-  const fixtures = require('./fixtures/nf-token.json')
-
-  for (const txName of Object.keys(fixtures)) {
-    it(`can serialize transaction ${txName}`, () => {
-      expect(encode(fixtures[txName].tx.json)).toEqual(
-        fixtures[txName].tx.binary,
-      )
-    })
-
-    it(`can deserialize transaction ${txName}`, () => {
-      expect(decode(fixtures[txName].tx.binary)).toEqual(
-        fixtures[txName].tx.json,
-      )
-    })
-
-    it(`can serialize meta ${txName}`, () => {
-      expect(encode(fixtures[txName].meta.json)).toEqual(
-        fixtures[txName].meta.binary,
-      )
-    })
-
-    it(`can deserialize meta ${txName}`, () => {
-      expect(decode(fixtures[txName].meta.binary)).toEqual(
-        fixtures[txName].meta.json,
-      )
-    })
-  }
+function remitTest() {
+  test('can serialize Remit', () => {
+    expect(encode(Remit.tx)).toEqual(Remit.binary)
+  })
 }
 
 describe('Binary Serialization', function () {
@@ -289,7 +288,8 @@ describe('Binary Serialization', function () {
   describe('Escrow', EscrowTest)
   describe('PaymentChannel', PaymentChannelTest)
   describe('NegativeUNLTest', NegativeUNLTest)
+  describe('UNLReportTest', UNLReportTest)
   describe('OmitUndefined', omitUndefinedTest)
+  describe('RemitTest', remitTest)
   describe('TicketTest', ticketTest)
-  describe('NFToken', nfTokenTest)
 })

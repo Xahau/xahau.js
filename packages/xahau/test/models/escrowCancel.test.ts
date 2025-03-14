@@ -25,8 +25,8 @@ describe('EscrowCancel', function () {
     assert.doesNotThrow(() => validate(cancel))
   })
 
-  it(`Valid EscrowCancel with string OfferSequence`, function () {
-    cancel.OfferSequence = '7'
+  it(`Valid EscrowCancel with string EscrowID`, function () {
+    cancel.EscrowID = '7'
 
     assert.doesNotThrow(() => validateEscrowCancel(cancel))
     assert.doesNotThrow(() => validate(cancel))
@@ -53,12 +53,12 @@ describe('EscrowCancel', function () {
     assert.throws(
       () => validateEscrowCancel(cancel),
       ValidationError,
-      'EscrowCancel: missing OfferSequence',
+      'EscrowCancel: must include OfferSequence or EscrowID',
     )
     assert.throws(
       () => validate(cancel),
       ValidationError,
-      'EscrowCancel: missing OfferSequence',
+      'EscrowCancel: must include OfferSequence or EscrowID',
     )
   })
 
@@ -89,6 +89,20 @@ describe('EscrowCancel', function () {
       () => validate(cancel),
       ValidationError,
       'EscrowCancel: OfferSequence must be a number',
+    )
+  })
+  it(`Invalid EscrowID`, function () {
+    cancel.EscrowID = 1
+
+    assert.throws(
+      () => validateEscrowCancel(cancel),
+      ValidationError,
+      'EscrowCancel: EscrowID must be a string',
+    )
+    assert.throws(
+      () => validate(cancel),
+      ValidationError,
+      'EscrowCancel: EscrowID must be a string',
     )
   })
 })

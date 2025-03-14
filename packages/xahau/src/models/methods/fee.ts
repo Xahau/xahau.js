@@ -16,6 +16,7 @@ import { BaseRequest, BaseResponse } from './baseMethod'
  */
 export interface FeeRequest extends BaseRequest {
   command: 'fee'
+  tx_blob?: string
 }
 
 /**
@@ -35,6 +36,11 @@ export interface FeeResponse extends BaseResponse {
        * included in a ledger under minimum load, represented in drops of XAH.
        */
       base_fee: string
+      /**
+       * The transaction cost required for a reference transaction to be
+       * included in a ledger under minimum load, represented in drops of XAH.
+       */
+      base_fee_no_hooks: string
       /**
        * An approximation of the median transaction cost among transactions.
        * Included in the previous validated ledger, represented in drops of XAH.

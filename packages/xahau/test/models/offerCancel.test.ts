@@ -52,17 +52,31 @@ describe('OfferCancel', function () {
     )
   })
 
-  it(`throws w/ missing OfferSequence`, function () {
-    delete offer.OfferSequence
+  it(`throws w/ OfferID must be a string`, function () {
+    offer.OfferID = 99
     assert.throws(
       () => validateOfferCancel(offer),
       ValidationError,
-      'OfferCancel: missing field OfferSequence',
+      'OfferCancel: OfferID must be a string',
     )
     assert.throws(
       () => validate(offer),
       ValidationError,
-      'OfferCancel: missing field OfferSequence',
+      'OfferCancel: OfferID must be a string',
+    )
+  })
+
+  it(`throws w/ missing OfferSequence and OfferID`, function () {
+    delete offer.OfferSequence
+    assert.throws(
+      () => validateOfferCancel(offer),
+      ValidationError,
+      'OfferCancel: must include OfferSequence or OfferID',
+    )
+    assert.throws(
+      () => validate(offer),
+      ValidationError,
+      'OfferCancel: must include OfferSequence or OfferID',
     )
   })
 })

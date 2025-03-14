@@ -29,12 +29,6 @@ export default interface AccountRoot extends BaseLedgerEntry, HasPreviousTxnID {
    */
   AccountTxnID?: string
   /**
-   * The ledger entry ID of the corresponding AMM ledger entry.
-   * Set during account creation; cannot be modified.
-   * If present, indicates that this is a special AMM AccountRoot; always omitted on non-AMM accounts.
-   */
-  AMMID?: string
-  /**
    * A domain associated with this account. In JSON, this is the hexadecimal
    * for the ASCII representation of the domain.
    */
@@ -78,6 +72,17 @@ export default interface AccountRoot extends BaseLedgerEntry, HasPreviousTxnID {
   MintedNFTokens?: number
   /** Another account that can mint NFTokens on behalf of this account. */
   NFTokenMinter?: string
+  HookStateCount?: number
+  HookNamespaces?: string[]
+  RewardLgrFirst?: number
+  RewardLgrLast?: number
+  RewardTime?: number
+  RewardAccumulator?: number
+  FirstNFTokenSequence?: number
+  ImportSequence?: string
+  GovernanceFlags?: string
+  GovernanceMarks?: string
+  AccountIndex?: number
 }
 
 /**
@@ -143,9 +148,9 @@ export interface AccountRootFlagsInterface {
    */
   lsfDisallowIncomingTrustline?: boolean
   /**
-   * This address can claw back issued IOUs. Once enabled, cannot be disabled.
+   * Disallow incoming Remit from other accounts.
    */
-  lsfAllowTrustLineClawback?: boolean
+  lsfDisallowIncomingRemit?: boolean
 }
 
 export enum AccountRootFlags {
@@ -187,10 +192,6 @@ export enum AccountRootFlags {
    */
   lsfDepositAuth = 0x01000000,
   /**
-   * This account is an Automated Market Maker (AMM) instance.
-   */
-  lsfAMM = 0x02000000,
-  /**
    * Disallow incoming NFTOffers from other accounts.
    */
   lsfDisallowIncomingNFTokenOffer = 0x04000000,
@@ -207,7 +208,11 @@ export enum AccountRootFlags {
    */
   lsfDisallowIncomingTrustline = 0x20000000,
   /**
-   * This address can claw back issued IOUs. Once enabled, cannot be disabled.
+   * The account has issued a URIToken.
    */
-  lsfAllowTrustLineClawback = 0x80000000,
+  lsfURITokenIssuer = 0x40000000,
+  /**
+   * Disallow incoming Remits from other accounts.
+   */
+  lsfDisallowIncomingRemit = 0x80000000,
 }

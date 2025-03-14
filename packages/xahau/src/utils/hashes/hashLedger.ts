@@ -82,6 +82,7 @@ export function hashSignedTx(tx: Transaction | string): string {
   }
 
   if (
+    !txObject.EmitDetails &&
     txObject.TxnSignature === undefined &&
     txObject.Signers === undefined &&
     txObject.SigningPubKey === undefined

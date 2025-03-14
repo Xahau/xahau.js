@@ -1,3 +1,5 @@
+import { Amount } from '../common'
+
 import { BaseRequest, BaseResponse, LookupByLedgerRequest } from './baseMethod'
 
 /**
@@ -8,7 +10,7 @@ export interface Channel {
   account: string
 
   /** The total amount of XAH, in drops allocated to this channel. */
-  amount: string
+  amount: Amount
 
   /**
    * The total amount of XAH, in drops, paid out from this channel,
@@ -76,6 +78,8 @@ export interface Channel {
    * or other purpose at the destination account.
    */
   destination_tag?: number
+
+  transfer_rate?: number
 }
 
 /**

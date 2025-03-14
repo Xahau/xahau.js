@@ -5,6 +5,8 @@ import normalAccountTx from './accountTx.json'
 import fabric from './bookOffers'
 import usd_xrp from './bookOffersUsdXrp.json'
 import xrp_usd from './bookOffersXrpUsd.json'
+import feeBase from './feeBase.json'
+import feeFinish from './feeFinish.json'
 import normalLedger from './ledger.json'
 import firstPage from './ledgerDataFirstPage.json'
 import firstPageEmpty from './ledgerDataFirstPageEmpty.json'
@@ -78,6 +80,11 @@ const book_offers = {
   xrp_usd,
 }
 
+const fee = {
+  feeBase,
+  feeFinish,
+}
+
 const ledger_data = {
   firstPage,
   firstPageEmpty,
@@ -100,6 +107,7 @@ const xahaud = {
   account_objects,
   account_tx,
   book_offers,
+  fee,
   ledger,
   ledger_data,
   partial_payments,

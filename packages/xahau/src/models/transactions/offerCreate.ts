@@ -102,6 +102,11 @@ export interface OfferCreate extends BaseTransaction {
   Expiration?: number
   /** An offer to delete first, specified in the same way as OfferCancel. */
   OfferSequence?: number
+  /**
+   * The ID of the Offer ledger object to cancel as a 64-character hexadecimal
+   * string.
+   */
+  OfferID?: string
   /** The amount and type of currency being provided by the offer creator. */
   TakerGets: Amount
   /** The amount and type of currency being requested by the offer creator. */
@@ -138,6 +143,10 @@ export function validateOfferCreate(tx: Record<string, unknown>): void {
   }
 
   if (tx.OfferSequence !== undefined && typeof tx.OfferSequence !== 'number') {
-    throw new ValidationError('OfferCreate: invalid OfferSequence')
+    throw new ValidationError('OfferCreate: OfferSequence must be a number')
+  }
+
+  if (tx.OfferID !== undefined && typeof tx.OfferID !== 'string') {
+    throw new ValidationError('OfferCreate: OfferID must be a string')
   }
 }

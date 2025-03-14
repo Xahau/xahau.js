@@ -1,7 +1,9 @@
+import { Amount } from '../common'
+
 import { BaseLedgerEntry, HasPreviousTxnID } from './BaseLedgerEntry'
 
 /**
- * The Escrow object type represents a held payment of XAH waiting to be
+ * The Escrow object type represents a held payment waiting to be
  * executed or canceled.
  *
  * @category Ledger Entries
@@ -10,17 +12,17 @@ export default interface Escrow extends BaseLedgerEntry, HasPreviousTxnID {
   LedgerEntryType: 'Escrow'
   /**
    * The address of the owner (sender) of this held payment. This is the
-   * account that provided the XAH, and gets it back if the held payment is
+   * account that provided the amounts, and gets it back if the held payment is
    * canceled.
    */
   Account: string
   /**
-   * The destination address where the XAH is paid if the held payment is
+   * The destination address where the amounts are paid if the held payment is
    * successful.
    */
   Destination: string
-  /** The amount of XAH, in drops, to be delivered by the held payment. */
-  Amount: string
+  /** The amount to be delivered by the held payment. */
+  Amount: Amount
   /**
    * A PREIMAGE-SHA-256 crypto-condition, as hexadecimal. If present, the
    * EscrowFinish transaction must contain a fulfillment that satisfies this
@@ -61,4 +63,9 @@ export default interface Escrow extends BaseLedgerEntry, HasPreviousTxnID {
    * this object, in case the directory consists of multiple pages.
    */
   DestinationNode?: string
+  /**
+   * The fee to charge when users finish an escrow, initially set on the
+   * creation of an escrow contract, and updated on subsequent finish transactions
+   */
+  TransferRate?: number
 }

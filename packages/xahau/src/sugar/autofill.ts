@@ -1,13 +1,12 @@
-import BigNumber from 'bignumber.js'
 import { xAddressToClassicAddress, isValidXAddress } from 'xahau-address-codec'
+import { encode } from 'xahau-binary-codec'
 
 import { type Client } from '..'
 import { ValidationError } from '../errors'
 import { AccountInfoRequest } from '../models/methods'
 import { Transaction } from '../models/transactions'
-import { xahToDrops } from '../utils'
 
-import getFeeXrp from './getFeeXah'
+import { getFeeEstimateXrp } from './getFeeXah'
 
 // Expire unconfirmed transactions after 20 ledger versions, approximately 1 minute, by default
 const LEDGER_OFFSET = 20
@@ -16,73 +15,6 @@ const LEDGER_OFFSET = 20
 // in every transaction to that chain to prevent replay attacks.
 // Mainnet and testnet are exceptions. More context: https://github.com/XRPLF/xahaud/pull/4370
 const RESTRICTED_NETWORKS = 1024
-const REQUIRED_NETWORKID_VERSION = '1.11.0'
-
-/**
- * Determines whether the source xahaud version is not later than the target xahaud version.
- * Example usage: isNotLaterRippledVersion('1.10.0', '1.11.0') returns true.
- *                isNotLaterRippledVersion('1.10.0', '1.10.0-b1') returns false.
- *
- * @param source -- The source xahaud version.
- * @param target -- The target xahaud version.
- * @returns True if source is earlier than target, false otherwise.
- */
-// eslint-disable-next-line max-lines-per-function, max-statements -- Disable for this helper functions.
-function isNotLaterRippledVersion(source: string, target: string): boolean {
-  if (source === target) {
-    return true
-  }
-  const sourceDecomp = source.split('.')
-  const targetDecomp = target.split('.')
-  const sourceMajor = parseInt(sourceDecomp[0], 10)
-  const sourceMinor = parseInt(sourceDecomp[1], 10)
-  const targetMajor = parseInt(targetDecomp[0], 10)
-  const targetMinor = parseInt(targetDecomp[1], 10)
-  // Compare major version
-  if (sourceMajor !== targetMajor) {
-    return sourceMajor < targetMajor
-  }
-  // Compare minor version
-  if (sourceMinor !== targetMinor) {
-    return sourceMinor < targetMinor
-  }
-  const sourcePatch = sourceDecomp[2].split('-')
-  const targetPatch = targetDecomp[2].split('-')
-
-  const sourcePatchVersion = parseInt(sourcePatch[0], 10)
-  const targetPatchVersion = parseInt(targetPatch[0], 10)
-
-  // Compare patch version
-  if (sourcePatchVersion !== targetPatchVersion) {
-    return sourcePatchVersion < targetPatchVersion
-  }
-
-  // Compare release version
-  if (sourcePatch.length !== targetPatch.length) {
-    return sourcePatch.length > targetPatch.length
-  }
-
-  if (sourcePatch.length === 2) {
-    // Compare different release types
-    if (!sourcePatch[1][0].startsWith(targetPatch[1][0])) {
-      return sourcePatch[1] < targetPatch[1]
-    }
-    // Compare beta version
-    if (sourcePatch[1].startsWith('b')) {
-      return (
-        parseInt(sourcePatch[1].slice(1), 10) <
-        parseInt(targetPatch[1].slice(1), 10)
-      )
-    }
-    // Compare rc version
-    return (
-      parseInt(sourcePatch[1].slice(2), 10) <
-      parseInt(targetPatch[1].slice(2), 10)
-    )
-  }
-
-  return false
-}
 
 /**
  * Determine if the transaction required a networkID to be valid.
@@ -96,12 +28,7 @@ export function txNeedsNetworkID(client: Client): boolean {
     client.networkID !== undefined &&
     client.networkID > RESTRICTED_NETWORKS
   ) {
-    if (
-      client.buildVersion &&
-      isNotLaterRippledVersion(REQUIRED_NETWORKID_VERSION, client.buildVersion)
-    ) {
-      return true
-    }
+    return true
   }
   return false
 }
@@ -242,47 +169,12 @@ export async function calculateFeePerTransactionType(
   tx: Transaction,
   signersCount = 0,
 ): Promise<void> {
-  // netFee is usually 0.00001 XAH (10 drops)
-  const netFeeXAH = await getFeeXrp(client)
-  const netFeeDrops = xahToDrops(netFeeXAH)
-  let baseFee = new BigNumber(netFeeDrops)
-
-  // EscrowFinish Transaction with Fulfillment
-  if (tx.TransactionType === 'EscrowFinish' && tx.Fulfillment != null) {
-    const fulfillmentBytesSize: number = Math.ceil(tx.Fulfillment.length / 2)
-    // 10 drops × (33 + (Fulfillment size in bytes / 16))
-    const product = new BigNumber(
-      // eslint-disable-next-line @typescript-eslint/no-magic-numbers -- expected use of magic numbers
-      scaleValue(netFeeDrops, 33 + fulfillmentBytesSize / 16),
-    )
-    baseFee = product.dp(0, BigNumber.ROUND_CEIL)
-  }
-
-  /*
-   * Multi-signed Transaction
-   * 10 drops × (1 + Number of Signatures Provided)
-   */
-  if (signersCount > 0) {
-    baseFee = BigNumber.sum(baseFee, scaleValue(netFeeDrops, 1 + signersCount))
-  }
-
-  const maxFeeDrops = xahToDrops(client.maxFeeXAH)
-  const totalFee = BigNumber.min(baseFee, maxFeeDrops)
-
-  // Round up baseFee and return it as a string
-  // eslint-disable-next-line no-param-reassign, @typescript-eslint/no-magic-numbers -- param reassign is safe, base 10 magic num
-  tx.Fee = totalFee.dp(0, BigNumber.ROUND_CEIL).toString(10)
-}
-
-/**
- * Scales the given value by multiplying it with the provided multiplier.
- *
- * @param value - The value to be scaled.
- * @param multiplier - The multiplier to scale the value.
- * @returns The scaled value as a string.
- */
-function scaleValue(value, multiplier): string {
-  return new BigNumber(value).times(multiplier).toString()
+  const copyTx = { ...tx }
+  copyTx.SigningPubKey = ``
+  copyTx.Fee = `0`
+  const tx_blob = encode(copyTx)
+  // eslint-disable-next-line require-atomic-updates, no-param-reassign -- ignore
+  tx.Fee = await getFeeEstimateXrp(client, tx_blob, signersCount)
 }
 
 /**

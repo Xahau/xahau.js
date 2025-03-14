@@ -3,7 +3,7 @@
 /* eslint-disable no-bitwise  -- this file mimics behavior in xahaud. It uses
    bitwise operators for and-ing numbers with a mask and bit shifting. */
 
-import { bytesToHex } from '@xrplf/isomorphic/utils'
+import { bytesToHex, stringToHex } from '@xrplf/isomorphic/utils'
 import BigNumber from 'bignumber.js'
 import { decodeAccountID } from 'xahau-address-codec'
 
@@ -182,6 +182,20 @@ export function hashPaymentChannel(
       addressToHex(address) +
       addressToHex(dstAddress) +
       sequence.toString(HEX).padStart(BYTE_LENGTH * 2, '0'),
+  )
+}
+
+/**
+ * Compute the Hash of an URIToken LedgerEntry.
+ *
+ * @param issuer - Address of the issuer of the URIToken.
+ * @param uri - string uri of the URIToken (not the hex).
+ * @returns The hash of the URIToken LedgerEntry.
+ * @category Utilities
+ */
+export function hashURIToken(issuer: string, uri: string): string {
+  return sha512Half(
+    ledgerSpaceHex('uriToken') + addressToHex(issuer) + stringToHex(uri),
   )
 }
 

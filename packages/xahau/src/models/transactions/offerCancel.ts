@@ -16,6 +16,11 @@ export interface OfferCancel extends BaseTransaction {
    * specified does not exist.
    */
   OfferSequence: number
+  /**
+   * The ID of the Escrow ledger object to cancel as a 64-character hexadecimal
+   * string.
+   */
+  OfferID?: string
 }
 
 /**
@@ -27,11 +32,17 @@ export interface OfferCancel extends BaseTransaction {
 export function validateOfferCancel(tx: Record<string, unknown>): void {
   validateBaseTransaction(tx)
 
-  if (tx.OfferSequence === undefined) {
-    throw new ValidationError('OfferCancel: missing field OfferSequence')
+  if (tx.OfferSequence === undefined && tx.OfferID === undefined) {
+    throw new ValidationError(
+      'OfferCancel: must include OfferSequence or OfferID',
+    )
   }
 
-  if (typeof tx.OfferSequence !== 'number') {
+  if (tx.OfferSequence !== undefined && typeof tx.OfferSequence !== 'number') {
     throw new ValidationError('OfferCancel: OfferSequence must be a number')
+  }
+
+  if (tx.OfferID !== undefined && typeof tx.OfferID !== 'string') {
+    throw new ValidationError('OfferCancel: OfferID must be a string')
   }
 }

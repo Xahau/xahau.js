@@ -9,12 +9,15 @@ import { AccountSet, validateAccountSet } from './accountSet'
 import { CheckCancel, validateCheckCancel } from './checkCancel'
 import { CheckCash, validateCheckCash } from './checkCash'
 import { CheckCreate, validateCheckCreate } from './checkCreate'
+import { ClaimReward, validateClaimReward } from './claimReward'
 import { BaseTransaction, isIssuedCurrency } from './common'
 import { DepositPreauth, validateDepositPreauth } from './depositPreauth'
 import { EnableAmendment } from './enableAmendment'
 import { EscrowCancel, validateEscrowCancel } from './escrowCancel'
 import { EscrowCreate, validateEscrowCreate } from './escrowCreate'
 import { EscrowFinish, validateEscrowFinish } from './escrowFinish'
+import { Import, validateImport } from './import'
+import { Invoke, validateInvoke } from './invoke'
 import { TransactionMetadata } from './metadata'
 import { OfferCancel, validateOfferCancel } from './offerCancel'
 import { OfferCreate, validateOfferCreate } from './offerCreate'
@@ -31,12 +34,25 @@ import {
   PaymentChannelFund,
   validatePaymentChannelFund,
 } from './paymentChannelFund'
+import { Remit, validateRemit } from './remit'
 import { SetFee } from './setFee'
+import { SetHook, validateSetHook } from './setHook'
 import { SetRegularKey, validateSetRegularKey } from './setRegularKey'
 import { SignerListSet, validateSignerListSet } from './signerListSet'
 import { TicketCreate, validateTicketCreate } from './ticketCreate'
 import { TrustSet, validateTrustSet } from './trustSet'
 import { UNLModify } from './UNLModify'
+import { URITokenBurn, validateURITokenBurn } from './uriTokenBurn'
+import { URITokenBuy, validateURITokenBuy } from './uriTokenBuy'
+import {
+  URITokenCancelSellOffer,
+  validateURITokenCancelSellOffer,
+} from './uriTokenCancelSellOffer'
+import {
+  URITokenCreateSellOffer,
+  validateURITokenCreateSellOffer,
+} from './uriTokenCreateSellOffer'
+import { URITokenMint, validateURITokenMint } from './uriTokenMint'
 
 /**
  * Transactions that can be submitted by clients
@@ -48,20 +64,30 @@ export type SubmittableTransaction =
   | CheckCancel
   | CheckCash
   | CheckCreate
+  | ClaimReward
   | DepositPreauth
   | EscrowCancel
   | EscrowCreate
   | EscrowFinish
+  | Import
+  | Invoke
   | OfferCancel
   | OfferCreate
   | Payment
   | PaymentChannelClaim
   | PaymentChannelCreate
   | PaymentChannelFund
+  | Remit
+  | SetHook
   | SetRegularKey
   | SignerListSet
   | TicketCreate
   | TrustSet
+  | URITokenBurn
+  | URITokenBuy
+  | URITokenCancelSellOffer
+  | URITokenMint
+  | URITokenCreateSellOffer
 
 /**
  * Transactions that can only be created by validators.
@@ -172,6 +198,10 @@ export function validate(transaction: Record<string, unknown>): void {
       validateCheckCreate(tx)
       break
 
+    case 'ClaimReward':
+      validateClaimReward(tx)
+      break
+
     case 'DepositPreauth':
       validateDepositPreauth(tx)
       break
@@ -186,6 +216,14 @@ export function validate(transaction: Record<string, unknown>): void {
 
     case 'EscrowFinish':
       validateEscrowFinish(tx)
+      break
+
+    case 'Import':
+      validateImport(tx)
+      break
+
+    case 'Invoke':
+      validateInvoke(tx)
       break
 
     case 'OfferCancel':
@@ -212,6 +250,14 @@ export function validate(transaction: Record<string, unknown>): void {
       validatePaymentChannelFund(tx)
       break
 
+    case 'Remit':
+      validateRemit(tx)
+      break
+
+    case 'SetHook':
+      validateSetHook(tx)
+      break
+
     case 'SetRegularKey':
       validateSetRegularKey(tx)
       break
@@ -226,6 +272,26 @@ export function validate(transaction: Record<string, unknown>): void {
 
     case 'TrustSet':
       validateTrustSet(tx)
+      break
+
+    case 'URITokenMint':
+      validateURITokenMint(tx)
+      break
+
+    case 'URITokenBurn':
+      validateURITokenBurn(tx)
+      break
+
+    case 'URITokenCreateSellOffer':
+      validateURITokenCreateSellOffer(tx)
+      break
+
+    case 'URITokenBuy':
+      validateURITokenBuy(tx)
+      break
+
+    case 'URITokenCancelSellOffer':
+      validateURITokenCancelSellOffer(tx)
       break
 
     default:

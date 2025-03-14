@@ -34,6 +34,8 @@ export interface FeeSettingsBase
    * A bit-map of boolean flags for this object. No flags are defined for this type.
    */
   Flags: 0
+  XahauActivationLgrSeq?: number
+  AccountCount?: number
 }
 
 /**

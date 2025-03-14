@@ -2,17 +2,17 @@ import { BaseRequest, BaseResponse } from './baseMethod'
 
 /**
  * The `channel_verify` method checks the validity of a signature that can be
- * used to redeem a specific amount of XAH from a payment channel. Expects a
+ * used to redeem a specific amount from a payment channel. Expects a
  * response in the form of a {@link ChannelVerifyResponse}.
  *
  * @category Requests
  */
 export interface ChannelVerifyRequest extends BaseRequest {
   command: 'channel_verify'
-  /** The amount of XAH, in drops, the provided signature authorizes. */
+  /** The amount the provided signature authorizes. */
   amount: string
   /**
-   * The Channel ID of the channel that provides the XAH. This is a
+   * The Channel ID of the channel that provides the amount. This is a
    * 64-character hexadecimal string.
    */
   channel_id: string

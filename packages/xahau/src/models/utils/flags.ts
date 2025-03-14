@@ -1,6 +1,7 @@
 /* eslint-disable no-param-reassign -- param reassign is safe */
 /* eslint-disable no-bitwise -- flags require bitwise operations */
 import { ValidationError } from '../../errors'
+import { Hook } from '../common/xahau'
 import {
   AccountRootFlagsInterface,
   AccountRootFlags,
@@ -10,6 +11,7 @@ import { GlobalFlags } from '../transactions/common'
 import { OfferCreateFlags } from '../transactions/offerCreate'
 import { PaymentFlags } from '../transactions/payment'
 import { PaymentChannelClaimFlags } from '../transactions/paymentChannelClaim'
+import { SetHookFlagsInterface, SetHookFlags } from '../transactions/setHook'
 import type { Transaction } from '../transactions/transaction'
 import { TrustSetFlags } from '../transactions/trustSet'
 
@@ -59,6 +61,17 @@ export function setTransactionFlagsToNumber(tx: Transaction): void {
   }
   if (typeof tx.Flags === 'number') {
     return
+  }
+
+  if (tx.TransactionType === 'SetHook') {
+    tx.Flags = convertFlagsToNumber(tx.Flags, SetHookFlags)
+    tx.Hooks.forEach((hook: Hook) => {
+      hook.Hook.Flags = convertFlagsToNumber(
+        // eslint-disable-next-line @typescript-eslint/consistent-type-assertions -- idk
+        hook.Hook.Flags as SetHookFlagsInterface,
+        SetHookFlags,
+      )
+    })
   }
 
   tx.Flags = txToFlag[tx.TransactionType]

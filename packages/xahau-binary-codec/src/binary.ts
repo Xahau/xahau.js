@@ -14,6 +14,7 @@ import {
 } from './enums'
 import { STObject } from './types/st-object'
 import { JsonObject } from './types/serialized-type'
+import { AmountObject } from './types/amount'
 
 /**
  * Construct a BinaryParser
@@ -128,7 +129,7 @@ function signingData(
  */
 interface ClaimObject extends JsonObject {
   channel: string
-  amount: string | number
+  amount: AmountObject
 }
 
 /**
@@ -139,16 +140,21 @@ interface ClaimObject extends JsonObject {
  * @returns the serialized object with appropriate prefix
  */
 function signingClaimData(claim: ClaimObject): Uint8Array {
-  const num = BigInt(String(claim.amount))
   const prefix = HashPrefix.paymentChannelClaim
   const channel = coreTypes.Hash256.from(claim.channel).toBytes()
-  const amount = coreTypes.UInt64.from(num).toBytes()
 
   const bytesList = new BytesList()
 
   bytesList.put(prefix)
   bytesList.put(channel)
-  bytesList.put(amount)
+  if (typeof claim.amount === 'string') {
+    const num = BigInt(String(claim.amount))
+    const amount = coreTypes.UInt64.from(num).toBytes()
+    bytesList.put(amount)
+  } else {
+    const amount = coreTypes.Amount.from(claim.amount).toBytes()
+    bytesList.put(amount)
+  }
   return bytesList.toBytes()
 }
 

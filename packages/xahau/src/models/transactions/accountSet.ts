@@ -50,6 +50,7 @@ export enum AccountSetAsfFlags {
    */
   asfAuthorizedNFTokenMinter = 10,
   /** asf 11 is reserved for Hooks amendment */
+  asfTshCollect = 11,
   /** Disallow other accounts from creating incoming NFTOffers */
   asfDisallowIncomingNFTokenOffer = 12,
   /** Disallow other accounts from creating incoming Checks */
@@ -58,8 +59,8 @@ export enum AccountSetAsfFlags {
   asfDisallowIncomingPayChan = 14,
   /** Disallow other accounts from creating incoming Trustlines */
   asfDisallowIncomingTrustline = 15,
-  /** Permanently gain the ability to claw back issued IOUs */
-  asfAllowTrustLineClawback = 16,
+  /** Disallow other accounts from sending incoming Remits */
+  asfDisallowIncomingRemit = 16,
 }
 
 /**

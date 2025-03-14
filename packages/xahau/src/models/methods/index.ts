@@ -26,6 +26,10 @@ import {
   AccountLinesTrustline,
 } from './accountLines'
 import {
+  AccountNamespaceRequest,
+  AccountNamespaceResponse,
+} from './accountNamespace'
+import {
   AccountObject,
   AccountObjectsRequest,
   AccountObjectsResponse,
@@ -171,6 +175,7 @@ type Request =
   | AccountCurrenciesRequest
   | AccountInfoRequest
   | AccountLinesRequest
+  | AccountNamespaceRequest
   | AccountObjectsRequest
   | AccountOffersRequest
   | AccountTxRequest
@@ -217,6 +222,7 @@ type Response<Version extends APIVersion = typeof DEFAULT_API_VERSION> =
   | AccountCurrenciesResponse
   | AccountInfoVersionResponseMap<Version>
   | AccountLinesResponse
+  | AccountNamespaceResponse
   | AccountObjectsResponse
   | AccountOffersResponse
   | AccountTxVersionResponseMap<Version>

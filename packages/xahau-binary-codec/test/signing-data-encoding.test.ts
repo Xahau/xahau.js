@@ -240,4 +240,25 @@ describe('Signing data', function () {
       ].join(''),
     )
   })
+  it('can create claim blob iou', function () {
+    const channel =
+      '43904CBFCDCEC530B4037871F86EE90BF799DF8D2E0EA564BC8A3F332E4F5FB1'
+    const amount = {
+      currency: 'USD',
+      issuer: 'r9LqNeG6qHxjeUocjvVki2XR35weJ9mZgQ',
+      value: '1000',
+    }
+    const json = { channel, amount }
+    const actual = encodeForSigningClaim(json)
+    expect(actual).toBe(
+      [
+        // hash prefix
+        '434C4D00',
+        // channel ID
+        '43904CBFCDCEC530B4037871F86EE90BF799DF8D2E0EA564BC8A3F332E4F5FB1',
+        // amount as a iou
+        'D5438D7EA4C6800000000000000000000000000055534400000000005B812C9D57731E27A2DA8B1830195F88EF32A3B6',
+      ].join(''),
+    )
+  })
 })

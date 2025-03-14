@@ -1,11 +1,25 @@
-import { Amendments, FeeSettings, LedgerHashes } from '../ledger'
+import {
+  Amendments,
+  FeeSettings,
+  HookDefinition,
+  HookState,
+  ImportVLSequence,
+  LedgerHashes,
+  UNLReport,
+} from '../ledger'
 import { LedgerEntry, LedgerEntryFilter } from '../ledger/LedgerEntry'
 
 import { BaseRequest, BaseResponse, LookupByLedgerRequest } from './baseMethod'
 
 export type AccountObjectType = Exclude<
   LedgerEntryFilter,
-  'amendments' | 'fee' | 'hashes'
+  | 'amendments'
+  | 'fee'
+  | 'hashes'
+  | 'hook_definition'
+  | 'hook_state'
+  | 'import_vl_sequence'
+  | 'unl_report'
 >
 /**
  * The account_objects command returns the raw ledger format for all objects
@@ -48,7 +62,13 @@ export interface AccountObjectsRequest
  */
 export type AccountObject = Exclude<
   LedgerEntry,
-  Amendments | FeeSettings | LedgerHashes
+  | Amendments
+  | FeeSettings
+  | LedgerHashes
+  | HookDefinition
+  | HookState
+  | ImportVLSequence
+  | UNLReport
 >
 
 /**

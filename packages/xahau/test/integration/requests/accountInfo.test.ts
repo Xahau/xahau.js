@@ -72,7 +72,6 @@ describe('account_info', function () {
           'index',
         ]),
         omit(expected.result.account_data, [
-          'AccountIndex',
           'PreviousTxnID',
           'PreviousTxnLgrSeq',
           'Sequence',
@@ -136,7 +135,6 @@ describe('account_info', function () {
           'index',
         ]),
         omit(expected.result.account_data, [
-          'AccountIndex',
           'PreviousTxnID',
           'PreviousTxnLgrSeq',
           'Sequence',

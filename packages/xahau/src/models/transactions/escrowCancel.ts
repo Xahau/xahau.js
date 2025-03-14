@@ -9,7 +9,7 @@ import {
 } from './common'
 
 /**
- * Return escrowed XAH to the sender.
+ * Return escrowed amount to the sender.
  *
  * @category Transaction Models
  */
@@ -22,6 +22,11 @@ export interface EscrowCancel extends BaseTransaction {
    * created the escrow to cancel.
    */
   OfferSequence: number | string
+  /**
+   * The ID of the Escrow ledger object to cancel as a 64-character hexadecimal
+   * string.
+   */
+  EscrowID?: string
 }
 
 /**
@@ -35,15 +40,17 @@ export function validateEscrowCancel(tx: Record<string, unknown>): void {
 
   validateRequiredField(tx, 'Owner', isAccount)
 
-  if (tx.OfferSequence == null) {
-    throw new ValidationError('EscrowCancel: missing OfferSequence')
+  if (tx.OfferSequence === undefined && tx.EscrowID === undefined) {
+    throw new ValidationError(
+      'EscrowCancel: must include OfferSequence or EscrowID',
+    )
   }
 
-  if (
-    (typeof tx.OfferSequence !== 'number' &&
-      typeof tx.OfferSequence !== 'string') ||
-    Number.isNaN(Number(tx.OfferSequence))
-  ) {
+  if (tx.OfferSequence !== undefined && typeof tx.OfferSequence !== 'number') {
     throw new ValidationError('EscrowCancel: OfferSequence must be a number')
+  }
+
+  if (tx.EscrowID !== undefined && typeof tx.EscrowID !== 'string') {
+    throw new ValidationError('EscrowCancel: EscrowID must be a string')
   }
 }

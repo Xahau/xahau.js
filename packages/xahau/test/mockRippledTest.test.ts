@@ -25,8 +25,7 @@ describe('mock xahaud tests', function () {
     await assertRejects(
       testContext.client.request({
         command: 'account_info',
-        account:
-          xahaudFixtures.account_info.normal.result.account_data.Account,
+        account: xahaudFixtures.account_info.normal.result.account_data.Account,
       }),
       XahaudError,
     )
@@ -51,8 +50,7 @@ describe('mock xahaud tests', function () {
     await assertRejects(
       testContext.client.request({
         command: 'account_info',
-        account:
-          xahaudFixtures.account_info.normal.result.account_data.Account,
+        account: xahaudFixtures.account_info.normal.result.account_data.Account,
       }),
       XahaudError,
     )

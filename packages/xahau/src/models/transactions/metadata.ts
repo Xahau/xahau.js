@@ -4,6 +4,30 @@ import { BaseTransaction } from './common'
 import { Payment, PaymentMetadata } from './payment'
 import type { Transaction } from './transaction'
 
+export interface HookExecution {
+  HookExecution: {
+    HookAccount: string
+    HookEmitCount: number
+    HookExecutionIndex: number
+    HookHash: string
+    HookInstructionCount: string
+    HookResult: number
+    HookReturnCode: string
+    HookReturnString: string
+    HookStateChangeCount: number
+    Flags: number
+  }
+}
+
+export interface HookEmission {
+  HookEmission: {
+    EmittedTxnID: string
+    HookAccount: string
+    HookHash: string
+    EmitNonce: string
+  }
+}
+
 export interface CreatedNode {
   CreatedNode: {
     LedgerEntryType: string
@@ -65,6 +89,8 @@ export function isDeletedNode(node: Node): node is DeletedNode {
 }
 
 export interface TransactionMetadataBase {
+  HookExecutions?: HookExecution[]
+  HookEmissions?: HookEmission[]
   AffectedNodes: Node[]
   DeliveredAmount?: Amount
   // "unavailable" possible for transactions before 2014-01-20

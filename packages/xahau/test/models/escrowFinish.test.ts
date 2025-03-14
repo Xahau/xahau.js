@@ -35,8 +35,8 @@ describe('EscrowFinish', function () {
     assert.doesNotThrow(() => validate(escrow))
   })
 
-  it(`verifies valid EscrowFinish w/string OfferSequence`, function () {
-    escrow.OfferSequence = '7'
+  it(`verifies valid EscrowFinish w/string EscrowID`, function () {
+    escrow.EscrowID = '7'
 
     assert.doesNotThrow(() => validateEscrowFinish(escrow))
     assert.doesNotThrow(() => validate(escrow))
@@ -69,6 +69,21 @@ describe('EscrowFinish', function () {
       () => validate(escrow),
       ValidationError,
       'EscrowFinish: OfferSequence must be a number',
+    )
+  })
+
+  it(`throws w/ invalid EscrowID`, function () {
+    escrow.EscrowID = 1
+
+    assert.throws(
+      () => validateEscrowFinish(escrow),
+      ValidationError,
+      'EscrowFinish: EscrowID must be a string',
+    )
+    assert.throws(
+      () => validate(escrow),
+      ValidationError,
+      'EscrowFinish: EscrowID must be a string',
     )
   })
 

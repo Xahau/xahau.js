@@ -44,7 +44,9 @@ import {
   hashLedgerHeader,
   hashEscrow,
   hashPaymentChannel,
+  hashURIToken,
 } from './hashes'
+import { calculateHookOn, hexHookParameters, TTS } from './hooks'
 import {
   percentToTransferRate,
   decimalToTransferRate,
@@ -176,6 +178,7 @@ const hashes = {
   hashLedgerHeader,
   hashEscrow,
   hashPaymentChannel,
+  hashURIToken,
 }
 
 export {
@@ -223,4 +226,7 @@ export {
   encodeForMultiSigning,
   encodeForSigning,
   encodeForSigningClaim,
+  calculateHookOn,
+  hexHookParameters,
+  TTS,
 }

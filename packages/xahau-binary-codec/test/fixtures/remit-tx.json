@@ -1,0 +1,39 @@
+{
+  "TransactionType": "Remit",
+  "Account": "rUn84CUYbNjRoTQ6mSW7BVJPSVJNLb1QLo",
+  "Destination": "rfkE1aSy9G8Upk4JssnwBxhEv5p4mn2KTy",
+  "DestinationTag": 1,
+  "Fee": "12",
+  "Flags": 0,
+  "LastLedgerSequence": 65953073,
+  "Sequence": 65923914,
+  "SigningPubKey": "02F9E33F16DF9507705EC954E3F94EB5F10D1FC4A354606DBE6297DBB1096FE654",
+  "TxnSignature": "3045022100E3FAE0EDEC3D6A8FF6D81BC9CF8288A61B7EEDE8071E90FF9314CB4621058D10022043545CF631706D700CEE65A1DB83EFDD185413808292D9D90F14D87D3DC2D8CB",
+  "Amounts": [
+    {
+      "AmountEntry": {
+        "Amount": "1000"
+      }
+    },
+    {
+      "AmountEntry": {
+        "Amount": {
+          "currency": "USD",
+          "issuer": "rcXY84C4g14iFp6taFXjjQGVeHqSCh9RX",
+          "value": "1"
+        }
+      }
+    }
+  ],
+  "MintURIToken": {
+    "URI": "DEADBEEF",
+    "Digest": "6F1DFD1D0FE8A32E40E1F2C05CF1C15545BAB56B617F9C6C2D63A6B704BEF59B",
+    "Flags": 1
+  },
+  "URITokenIDs": [
+    "AED08CC1F50DD5F23A1948AF86153A3F3B7593E5EC77D65A02BB1B29E05AB6AE"
+  ],
+  "InvoiceID": "6F1DFD1D0FE8A32E40E1F2C05CF1C15545BAB56B617F9C6C2D63A6B704BEF59B",
+  "Blob": "DEADBEEF",
+  "Inform": "rB5Ux4Lv2nRx6eeoAAsZmtctnBQ2LiACnk"
+}

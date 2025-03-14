@@ -89,6 +89,7 @@ function accountTxHasPartialPayment<
 >(response: AccountTxVersionResponseMap<Version>): boolean {
   const { transactions } = response.result
   const foo = transactions.some((tx) => {
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- xahau does not support v2
     if (tx.tx_json != null) {
       const transaction = tx
       return isPartialPayment(transaction.tx_json, transaction.meta)
@@ -158,6 +159,7 @@ export function handleStreamPartialPayment(
   stream: TransactionStream | TransactionV1Stream,
   log: (id: string, message: string) => void,
 ): void {
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- xahau does not support v2
   if (isPartialPayment(stream.tx_json ?? stream.transaction, stream.meta)) {
     const warnings = stream.warnings ?? []
 

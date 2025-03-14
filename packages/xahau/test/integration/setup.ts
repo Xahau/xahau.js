@@ -1,15 +1,7 @@
-import { Client, Currency, Wallet } from '../../src'
+import { Client, Wallet } from '../../src'
 
 import serverUrl from './serverUrl'
 import { fundAccount } from './utils'
-
-export interface TestAMMPool {
-  issuerWallet: Wallet
-  lpWallet: Wallet
-  testWallet: Wallet
-  asset: Currency
-  asset2: Currency
-}
 
 export interface XrplIntegrationTestContext {
   client: Client

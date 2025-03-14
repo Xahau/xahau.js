@@ -656,7 +656,6 @@ class Client extends EventEmitter<EventTypes> {
    * @throws ValidationError If Amount and DeliverMax fields are not identical in a Payment Transaction
    */
 
-  // eslint-disable-next-line complexity -- handling Payment transaction API v2 requires more logic
   public async autofill<T extends SubmittableTransaction>(
     transaction: T,
     signersCount?: number,
@@ -673,42 +672,17 @@ class Client extends EventEmitter<EventTypes> {
     if (tx.Sequence == null) {
       promises.push(setNextValidSequenceNumber(this, tx))
     }
-    if (tx.Fee == null) {
-      promises.push(calculateFeePerTransactionType(this, tx, signersCount))
-    }
     if (tx.LastLedgerSequence == null) {
       promises.push(setLatestValidatedLedgerSequence(this, tx))
     }
 
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment -- ignore type-assertions on the DeliverMax property
-    // @ts-expect-error -- DeliverMax property exists only at the RPC level, not at the protocol level
-    if (tx.TransactionType === 'Payment' && tx.DeliverMax != null) {
-      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- This is a valid null check for Amount
-      if (tx.Amount == null) {
-        // If only DeliverMax is provided, use it to populate the Amount field
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment -- ignore type-assertions on the DeliverMax property
-        // @ts-expect-error -- DeliverMax property exists only at the RPC level, not at the protocol level
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- DeliverMax is a known RPC-level property
-        tx.Amount = tx.DeliverMax
-      }
+    await Promise.all(promises).then(() => tx)
 
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment -- ignore type-assertions on the DeliverMax property
-      // @ts-expect-error -- DeliverMax property exists only at the RPC level, not at the protocol level
-      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- This is a valid null check for Amount
-      if (tx.Amount != null && tx.Amount !== tx.DeliverMax) {
-        return Promise.reject(
-          new ValidationError(
-            'PaymentTransaction: Amount and DeliverMax fields must be identical when both are provided',
-          ),
-        )
-      }
-
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment -- ignore type-assertions on the DeliverMax property
-      // @ts-expect-error -- DeliverMax property exists only at the RPC level, not at the protocol level
-      delete tx.DeliverMax
+    if (tx.Fee == null) {
+      await calculateFeePerTransactionType(this, tx, signersCount)
     }
 
-    return Promise.all(promises).then(() => tx)
+    return tx
   }
 
   /**

@@ -21,6 +21,8 @@
     "UInt192": 21,
     "UInt384": 22,
     "UInt512": 23,
+    "Data": 24,
+    "DataType": 25,
     "Transaction": 10001,
     "LedgerEntry": 10002,
     "Validation": 10003,
@@ -1009,6 +1011,16 @@
       }
     ],
     [
+      "TouchCount",
+      {
+        "nth": 97,
+        "isVLEncoded": false,
+        "isSerialized": true,
+        "isSigningField": true,
+        "type": "UInt64"
+      }
+    ],
+    [
       "AccountIndex",
       {
         "nth": 98,
@@ -1212,6 +1224,16 @@
       "EmitHookHash",
       {
         "nth": 13,
+        "isVLEncoded": false,
+        "isSerialized": true,
+        "isSigningField": true,
+        "type": "Hash256"
+      }
+    ],
+    [
+      "ObjectID",
+      {
+        "nth": 14,
         "isVLEncoded": false,
         "isSerialized": true,
         "isSigningField": true,
@@ -1452,6 +1474,16 @@
       "EmittedTxnID",
       {
         "nth": 97,
+        "isVLEncoded": false,
+        "isSerialized": true,
+        "isSigningField": true,
+        "type": "Hash256"
+      }
+    ],
+    [
+      "HookCanEmit",
+      {
+        "nth": 96,
         "isVLEncoded": false,
         "isSerialized": true,
         "isSigningField": true,
@@ -1899,6 +1931,46 @@
       }
     ],
     [
+      "RemarkValue",
+      {
+        "nth": 98,
+        "isVLEncoded": true,
+        "isSerialized": true,
+        "isSigningField": true,
+        "type": "Blob"
+      }
+    ],
+    [
+      "RemarkName",
+      {
+        "nth": 99,
+        "isVLEncoded": true,
+        "isSerialized": true,
+        "isSigningField": true,
+        "type": "Blob"
+      }
+    ],
+    [
+      "FunctionName",
+      {
+        "nth": 27,
+        "isVLEncoded": true,
+        "isSerialized": true,
+        "isSigningField": true,
+        "type": "Blob"
+      }
+    ],
+    [
+      "FunctionParameterName",
+      {
+        "nth": 28,
+        "isVLEncoded": true,
+        "isSerialized": true,
+        "isSigningField": true,
+        "type": "Blob"
+      }
+    ],
+    [
       "Account",
       {
         "nth": 1,
@@ -2066,6 +2138,26 @@
         "isSerialized": true,
         "isSigningField": true,
         "type": "Vector256"
+      }
+    ],
+    [
+      "FunctionParameterValue",
+      {
+        "nth": 1,
+        "isVLEncoded": false,
+        "isSerialized": true,
+        "isSigningField": true,
+        "type": "Data"
+      }
+    ],
+    [
+      "FunctionParameterType",
+      {
+        "nth": 1,
+        "isVLEncoded": false,
+        "isSerialized": true,
+        "isSigningField": true,
+        "type": "DataType"
       }
     ],
     [
@@ -2289,6 +2381,16 @@
       }
     ],
     [
+      "Remark",
+      {
+        "nth": 97,
+        "isVLEncoded": false,
+        "isSerialized": true,
+        "isSigningField": true,
+        "type": "STObject"
+      }
+    ],
+    [
       "GenesisMint",
       {
         "nth": 96,
@@ -2342,6 +2444,26 @@
       "AmountEntry",
       {
         "nth": 91,
+        "isVLEncoded": false,
+        "isSerialized": true,
+        "isSigningField": true,
+        "type": "STObject"
+      }
+    ],
+    [
+      "HookFunction",
+      {
+        "nth": 90,
+        "isVLEncoded": false,
+        "isSerialized": true,
+        "isSigningField": true,
+        "type": "STObject"
+      }
+    ],
+    [
+      "FunctionParameter",
+      {
+        "nth": 89,
         "isVLEncoded": false,
         "isSerialized": true,
         "isSigningField": true,
@@ -2489,6 +2611,16 @@
       }
     ],
     [
+      "Remarks",
+      {
+        "nth": 97,
+        "isVLEncoded": false,
+        "isSerialized": true,
+        "isSigningField": true,
+        "type": "STArray"
+      }
+    ],
+    [
       "GenesisMints",
       {
         "nth": 96,
@@ -2537,6 +2669,26 @@
         "isSigningField": true,
         "type": "STArray"
       }
+    ],
+    [
+      "HookFunctions",
+      {
+        "nth": 91,
+        "isVLEncoded": false,
+        "isSerialized": true,
+        "isSigningField": true,
+        "type": "STArray"
+      }
+    ],
+    [
+      "FunctionParameters",
+      {
+        "nth": 90,
+        "isVLEncoded": false,
+        "isSerialized": true,
+        "isSigningField": true,
+        "type": "STArray"
+      }
     ]
   ],
   "TRANSACTION_RESULTS": {
@@ -2559,7 +2711,6 @@
     "telNON_LOCAL_EMITTED_TXN": -383,
     "telIMPORT_VL_KEY_NOT_RECOGNISED": -382,
     "telCAN_NOT_QUEUE_IMPORT": -381,
-
     "temMALFORMED": -299,
     "temBAD_AMOUNT": -298,
     "temBAD_CURRENCY": -297,
@@ -2607,7 +2758,6 @@
     "temXCHAIN_BRIDGE_BAD_REWARD_AMOUNT": -255,
     "temXCHAIN_TOO_MANY_ATTESTATIONS": -254,
     "temHOOK_DATA_TOO_LARGE": -253,
-
     "tefFAILURE": -199,
     "tefALREADY": -198,
     "tefBAD_ADD_AUTH": -197,
@@ -2632,6 +2782,7 @@
     "tefPAST_IMPORT_SEQ": -178,
     "tefPAST_IMPORT_VL_SEQ": -177,
     "tefNONDIR_EMIT": -176,
+    "tefIMPORT_BLACKHOLED": -175,
 
     "terRETRY": -99,
     "terFUNDS_SPENT": -98,
@@ -2647,10 +2798,8 @@
     "terPRE_TICKET": -88,
     "terNO_AMM": -87,
     "terNO_HOOK": -86,
-
     "tesSUCCESS": 0,
     "tesPARTIAL": 1,
-
     "tecCLAIM": 100,
     "tecPATH_PARTIAL": 101,
     "tecUNFUNDED_ADD": 102,
@@ -2724,6 +2873,8 @@
     "tecXCHAIN_SELF_COMMIT": 185,
     "tecXCHAIN_BAD_PUBLIC_KEY_ACCOUNT_PAIR": 186,
     "tecINSUF_RESERVE_SELLER": 187,
+    "tecIMMUTABLE": 188,
+    "tecTOO_MANY_REMARKS": 189,
     "tecLAST_POSSIBLE_ENTRY": 255
   },
   "TRANSACTION_TYPES": {
@@ -2761,6 +2912,7 @@
     "URITokenBuy": 47,
     "URITokenCreateSellOffer": 48,
     "URITokenCancelSellOffer": 49,
+    "RemarksSet": 94,
     "Remit": 95,
     "GenesisMint": 96,
     "Import": 97,

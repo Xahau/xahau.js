@@ -24,6 +24,29 @@ export interface HookGrant {
 }
 
 /**
+ * The object that describes the function in HookFunctions.
+ */
+export interface HookFunction {
+  /**
+   * The object that describes the function in HookFunctions.
+   */
+  HookFunction: {
+    /**
+     * The name of the function.
+     */
+    FunctionName: string
+    /**
+     * The flags of the function.
+     */
+    Flags?: number
+    /**
+     * The parameters of the function.
+     */
+    FunctionParameters: FunctionParameter[]
+  }
+}
+
+/**
  * The object that describes the parameter in HookParameters.
  */
 export interface HookParameter {
@@ -39,6 +62,34 @@ export interface HookParameter {
      * The value of the parameter.
      */
     HookParameterValue?: string
+  }
+}
+
+/**
+ * The object that describes the parameter in FunctionParameters.
+ */
+export interface FunctionParameter {
+  /**
+   * The object that describes the parameter in FunctionParameters.
+   */
+  FunctionParameter: {
+    /**
+     * The name of the parameter.
+     */
+    FunctionParameterName?: string
+    /**
+     * The type of the parameter.
+     */
+    FunctionParameterType?: {
+      type: string
+    }
+    /**
+     * The value of the parameter.
+     */
+    FunctionParameterValue?: {
+      type: string
+      value: number | string | Amount
+    }
   }
 }
 
@@ -79,6 +130,10 @@ export interface Hook {
      * The grants of the hook.
      */
     HookGrants?: HookGrant[]
+    /**
+     * The functions of the hook.
+     */
+    HookFunctions?: HookFunction[]
   }
 }
 

@@ -78,6 +78,7 @@ import {
   GatewayBalancesRequest,
   GatewayBalancesResponse,
 } from './gatewayBalances'
+import { HookQueryRequest, HookQueryResponse } from './hookQuery'
 import {
   LedgerBinary,
   LedgerModifiedOfferCreateTransaction,
@@ -181,6 +182,8 @@ type Request =
   | AccountTxRequest
   | GatewayBalancesRequest
   | NoRippleCheckRequest
+  // hook methods
+  | HookQueryRequest
   // ledger methods
   | LedgerRequest
   | LedgerClosedRequest
@@ -279,6 +282,8 @@ export type RequestResponseMap<
   ? AccountTxVersionResponseMap<Version>
   : T extends GatewayBalancesRequest
   ? GatewayBalancesResponse
+  : T extends HookQueryRequest
+  ? HookQueryResponse
   : T extends NoRippleCheckRequest
   ? NoRippleCheckResponse
   : // NOTE: The order of these LedgerRequest types is important

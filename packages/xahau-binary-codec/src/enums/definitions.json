@@ -1009,6 +1009,16 @@
       }
     ],
     [
+      "TouchCount",
+      {
+        "nth": 97,
+        "isVLEncoded": false,
+        "isSerialized": true,
+        "isSigningField": true,
+        "type": "UInt64"
+      }
+    ],
+    [
       "AccountIndex",
       {
         "nth": 98,

@@ -83,6 +83,7 @@ export default interface AccountRoot extends BaseLedgerEntry, HasPreviousTxnID {
   GovernanceFlags?: string
   GovernanceMarks?: string
   AccountIndex?: number
+  TouchCount?: number
 }
 
 /**

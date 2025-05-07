@@ -22,7 +22,7 @@
     "UInt384": 22,
     "UInt512": 23,
     "Data": 24,
-    "Datatype": 25,
+    "DataType": 25,
     "Transaction": 10001,
     "LedgerEntry": 10002,
     "Validation": 10003,
@@ -2157,7 +2157,7 @@
         "isVLEncoded": false,
         "isSerialized": true,
         "isSigningField": true,
-        "type": "Datatype"
+        "type": "DataType"
       }
     ],
     [

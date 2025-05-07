@@ -45,9 +45,8 @@ class Data extends SerializedType {
   /**
    * Construct an data from Data Object
    *
-   * @param value An Amount, object representing an IOU, or a string
-   *     representing an integer amount
-   * @returns An Amount object
+   * @param value An Data
+   * @returns An Data object
    */
   // eslint-disable-next-line complexity
   static from<T extends Data | DataObject>(value: T): Data {
@@ -58,6 +57,7 @@ class Data extends SerializedType {
     if (isDataObject(value)) {
       let innerSerializedTypeID: number
       let innerBytes: Uint8Array
+      let variableLengthBytes: Uint8Array | undefined = undefined
       switch (value.type) {
         case 'UINT8': {
           innerSerializedTypeID = SERIALIZED_TYPE_ID_MAP.UInt8
@@ -92,11 +92,13 @@ class Data extends SerializedType {
         case 'VL': {
           innerSerializedTypeID = SERIALIZED_TYPE_ID_MAP.Blob
           innerBytes = Blob.from(value.value as string).toBytes()
+          variableLengthBytes = this.encodeVariableLength(innerBytes.length)
           break
         }
         case 'ACCOUNT': {
           innerSerializedTypeID = SERIALIZED_TYPE_ID_MAP.AccountID
           innerBytes = AccountID.from(value.value as string).toBytes()
+          variableLengthBytes = this.encodeVariableLength(innerBytes.length)
           break
         }
         case 'AMOUNT': {
@@ -114,74 +116,62 @@ class Data extends SerializedType {
       const bytes = new Uint8Array(2)
       writeUInt16BE(bytes, innerSerializedTypeID, 0)
 
+      if (variableLengthBytes) {
+        return new Data(
+          Uint8Array.from([...bytes, ...variableLengthBytes, ...innerBytes]),
+        )
+      }
+
       return new Data(Uint8Array.from([...bytes, ...innerBytes]))
-
-      // return new Data(
-      //   concat([
-      //     new Uint8Array(new Uint16Array([innerSerializedTypeID]).),
-      //     innerBytes,
-      //   ]),
-      // )
     }
-
     throw new Error('Invalid type to construct an Data')
   }
 
   /**
-   * Read an amount from a BinaryParser
+   * Read an Data from a BinaryParser
    *
-   * @param parser BinaryParser to read the Amount from
-   * @returns An Amount object
+   * @param parser BinaryParser to read the Data from
+   * @returns An Data object
    */
   static fromParser(parser: BinaryParser): Data {
     const innerSerializedTypeID = parser.readUInt16()
 
-    let innerLength: number
     switch (innerSerializedTypeID) {
       case SERIALIZED_TYPE_ID_MAP.UInt8: {
-        innerLength = UInt8.fromParser(parser).toBytes().length
-        break
+        return Data.fromUint8Bytes(UInt8.fromParser(parser).toBytes())
       }
       case SERIALIZED_TYPE_ID_MAP.UInt16: {
-        innerLength = UInt16.fromParser(parser).toBytes().length
-        break
+        return Data.fromUint16Bytes(UInt16.fromParser(parser).toBytes())
       }
       case SERIALIZED_TYPE_ID_MAP.UInt32: {
-        innerLength = UInt32.fromParser(parser).toBytes().length
-        break
+        return Data.fromUint32Bytes(UInt32.fromParser(parser).toBytes())
       }
       case SERIALIZED_TYPE_ID_MAP.UInt64: {
-        innerLength = UInt64.fromParser(parser).toBytes().length
-        break
+        return Data.fromUint64Bytes(UInt64.fromParser(parser).toBytes())
       }
       case SERIALIZED_TYPE_ID_MAP.UInt128: {
-        innerLength = Hash128.fromParser(parser).toBytes().length
-        break
+        return Data.fromUint128Bytes(Hash128.fromParser(parser).toBytes())
       }
       case SERIALIZED_TYPE_ID_MAP.UInt256: {
-        innerLength = Hash256.fromParser(parser).toBytes().length
-        break
+        return Data.fromUint256Bytes(Hash256.fromParser(parser).toBytes())
       }
       case SERIALIZED_TYPE_ID_MAP.Amount: {
-        innerLength = Amount.fromParser(parser).toBytes().length
-        break
+        return Data.fromAmountBytes(Amount.fromParser(parser).toBytes())
       }
       case SERIALIZED_TYPE_ID_MAP.Blob: {
-        innerLength = Blob.fromParser(
-          parser,
-          parser.readVariableLengthLength(),
-        ).toBytes().length
-        break
+        // TODO: Check if this is correct
+        return Data.fromBlobBytes(
+          Blob.fromParser(parser, parser.readVariableLengthLength()).toBytes(),
+        )
       }
       case SERIALIZED_TYPE_ID_MAP.AccountID: {
-        innerLength = AccountID.fromParser(parser).toBytes().length
-        break
+        parser.skip(1)
+        return Data.fromAccountIDBytes(AccountID.fromParser(parser).toBytes())
       }
       default: {
         throw new Error('Invalid type to construct an Data')
       }
     }
-    return new Data(parser.read(innerLength))
   }
 
   /**
@@ -237,6 +227,7 @@ class Data extends SerializedType {
         }
       }
       case SERIALIZED_TYPE_ID_MAP.Blob: {
+        // parser.skip(20)
         return {
           type: 'VL',
           value: Blob.fromParser(
@@ -246,6 +237,7 @@ class Data extends SerializedType {
         }
       }
       case SERIALIZED_TYPE_ID_MAP.AccountID: {
+        parser.skip(1)
         return {
           type: 'ACCOUNT',
           value: AccountID.fromParser(parser).toJSON(),
@@ -256,6 +248,94 @@ class Data extends SerializedType {
       }
     }
   }
+
+  static fromUint8Bytes(bytes: Uint8Array): Data {
+    const serializedTypeIDBytes = new Uint8Array(2)
+    writeUInt16BE(serializedTypeIDBytes, SERIALIZED_TYPE_ID_MAP.UInt8, 0)
+    return new Data(Uint8Array.from([...serializedTypeIDBytes, ...bytes]))
+  }
+
+  static fromUint16Bytes(bytes: Uint8Array): Data {
+    const serializedTypeIDBytes = new Uint8Array(2)
+    writeUInt16BE(serializedTypeIDBytes, SERIALIZED_TYPE_ID_MAP.UInt16, 0)
+    return new Data(Uint8Array.from([...serializedTypeIDBytes, ...bytes]))
+  }
+
+  static fromUint32Bytes(bytes: Uint8Array): Data {
+    const serializedTypeIDBytes = new Uint8Array(2)
+    writeUInt16BE(serializedTypeIDBytes, SERIALIZED_TYPE_ID_MAP.UInt32, 0)
+    return new Data(Uint8Array.from([...serializedTypeIDBytes, ...bytes]))
+  }
+
+  static fromUint64Bytes(bytes: Uint8Array): Data {
+    const serializedTypeIDBytes = new Uint8Array(2)
+    writeUInt16BE(serializedTypeIDBytes, SERIALIZED_TYPE_ID_MAP.UInt64, 0)
+    return new Data(Uint8Array.from([...serializedTypeIDBytes, ...bytes]))
+  }
+
+  static fromUint128Bytes(bytes: Uint8Array): Data {
+    const serializedTypeIDBytes = new Uint8Array(2)
+    writeUInt16BE(serializedTypeIDBytes, SERIALIZED_TYPE_ID_MAP.UInt128, 0)
+    return new Data(Uint8Array.from([...serializedTypeIDBytes, ...bytes]))
+  }
+
+  static fromUint256Bytes(bytes: Uint8Array): Data {
+    const serializedTypeIDBytes = new Uint8Array(2)
+    writeUInt16BE(serializedTypeIDBytes, SERIALIZED_TYPE_ID_MAP.UInt256, 0)
+    return new Data(Uint8Array.from([...serializedTypeIDBytes, ...bytes]))
+  }
+
+  static fromAmountBytes(bytes: Uint8Array): Data {
+    const serializedTypeIDBytes = new Uint8Array(2)
+    writeUInt16BE(serializedTypeIDBytes, SERIALIZED_TYPE_ID_MAP.Amount, 0)
+    return new Data(Uint8Array.from([...serializedTypeIDBytes, ...bytes]))
+  }
+
+  static fromBlobBytes(bytes: Uint8Array): Data {
+    const serializedTypeIDBytes = new Uint8Array(2)
+    writeUInt16BE(serializedTypeIDBytes, SERIALIZED_TYPE_ID_MAP.Blob, 0)
+    const variableLengthBytes = this.encodeVariableLength(bytes.length)
+    return new Data(
+      Uint8Array.from([
+        ...serializedTypeIDBytes,
+        ...variableLengthBytes,
+        ...bytes,
+      ]),
+    )
+  }
+
+  static fromAccountIDBytes(bytes: Uint8Array): Data {
+    const serializedTypeIDBytes = new Uint8Array(2)
+    writeUInt16BE(serializedTypeIDBytes, SERIALIZED_TYPE_ID_MAP.AccountID, 0)
+    const variableLengthBytes = this.encodeVariableLength(bytes.length)
+    return new Data(
+      Uint8Array.from([
+        ...serializedTypeIDBytes,
+        ...variableLengthBytes,
+        ...bytes,
+      ]),
+    )
+  }
+
+  static encodeVariableLength(length: number): Uint8Array {
+    const lenBytes = new Uint8Array(3)
+    if (length <= 192) {
+      lenBytes[0] = length
+      return lenBytes.slice(0, 1)
+    } else if (length <= 12480) {
+      length -= 193
+      lenBytes[0] = 193 + (length >>> 8)
+      lenBytes[1] = length & 0xff
+      return lenBytes.slice(0, 2)
+    } else if (length <= 918744) {
+      length -= 12481
+      lenBytes[0] = 241 + (length >>> 16)
+      lenBytes[1] = (length >> 8) & 0xff
+      lenBytes[2] = length & 0xff
+      return lenBytes.slice(0, 3)
+    }
+    throw new Error('Overflow error')
+  }
 }
 
-export { Data, DataObject }
+export { Data, type DataObject }

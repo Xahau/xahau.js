@@ -55,6 +55,16 @@ export function calculateHookOn(arr: Array<keyof TTS>): string {
   return hash.toUpperCase()
 }
 
+/**
+ * Calculate the hook can emit
+ *
+ * @param arr - array of transaction types
+ * @returns the hook can emit
+ */
+export function calculateHookCanEmit(arr: Array<keyof TTS>): string {
+  return calculateHookOn(arr)
+}
+
 function isHex(value: string): boolean {
   return /^[0-9A-F]+$/iu.test(value)
 }

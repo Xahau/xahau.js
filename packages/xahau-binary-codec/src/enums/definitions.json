@@ -1459,6 +1459,16 @@
       }
     ],
     [
+      "HookCanEmit",
+      {
+        "nth": 96,
+        "isVLEncoded": false,
+        "isSerialized": true,
+        "isSigningField": true,
+        "type": "Hash256"
+      }
+    ],
+    [
       "Amount",
       {
         "nth": 1,

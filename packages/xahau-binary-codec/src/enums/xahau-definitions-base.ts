@@ -37,6 +37,7 @@ class XrplDefinitionsBase {
   transactionMap: Record<string, number>
   // Maps serializable types to their TypeScript class implementation
   dataTypes: Record<string, typeof SerializedType>
+  serializedTypeIDMap: Record<string, number>
 
   /**
    * Present xahaud types in a typed and updatable format.
@@ -84,6 +85,7 @@ class XrplDefinitionsBase {
     )
 
     this.dataTypes = {} // Filled in via associateTypes
+    this.serializedTypeIDMap = enums.TYPES
     this.associateTypes(types)
   }
 

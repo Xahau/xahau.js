@@ -20,6 +20,7 @@ const Field = DEFAULT_DEFINITIONS.field
  */
 const TRANSACTION_TYPES = DEFAULT_DEFINITIONS.transactionNames
 const TRANSACTION_TYPE_MAP = DEFAULT_DEFINITIONS.transactionMap
+const SERIALIZED_TYPE_ID_MAP = DEFAULT_DEFINITIONS.serializedTypeIDMap
 
 export {
   Bytes,
@@ -33,4 +34,5 @@ export {
   TransactionType,
   TRANSACTION_TYPES,
   TRANSACTION_TYPE_MAP,
+  SERIALIZED_TYPE_ID_MAP,
 }

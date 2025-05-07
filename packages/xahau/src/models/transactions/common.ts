@@ -3,7 +3,7 @@ import { TRANSACTION_TYPES } from 'xahau-binary-codec'
 
 import { ValidationError } from '../../errors'
 import { Amount, Currency, IssuedCurrencyAmount, Memo, Signer } from '../common'
-import { EmitDetails, HookParameter } from '../common/xahau'
+import { EmitDetails, FunctionParameter, HookParameter } from '../common/xahau'
 import { onlyHasFields } from '../utils'
 
 const MEMO_SIZE = 3
@@ -279,6 +279,14 @@ export interface BaseTransaction {
    * The hook parameters of the transaction.
    */
   EmitDetails?: EmitDetails
+  /**
+   * The name of the function to call.
+   */
+  FunctionName?: string
+  /**
+   * The parameters of the function to call.
+   */
+  FunctionParameters?: FunctionParameter[]
 }
 
 /**

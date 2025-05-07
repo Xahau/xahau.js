@@ -26,6 +26,11 @@ export interface SetHookFlagsInterface extends GlobalFlags {
   hsfCollect?: boolean
 }
 
+export enum HookFunctionFlags {
+  hffINITIALIZE = 0x00000001,
+  hffQUERY = 0x00000002,
+}
+
 /**
  *
  *

@@ -36,6 +36,10 @@ export interface HookFunction {
      */
     FunctionName: string
     /**
+     * The flags of the function.
+     */
+    Flags?: number
+    /**
      * The parameters of the function.
      */
     FunctionParameters: FunctionParameter[]

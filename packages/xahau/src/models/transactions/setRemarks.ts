@@ -1,12 +1,12 @@
 import { ValidationError } from '../../errors'
 
-import { BaseTransaction, GlobalFlags, validateBaseTransaction } from './common'
+import { BaseTransaction, validateBaseTransaction } from './common'
 
 export enum RemarkFlags {
   tfImmutable = 0x00000001,
 }
 
-export interface RemarkFlagsInterface extends GlobalFlags {
+export interface RemarkFlagsInterface {
   tfImmutable?: boolean
 }
 

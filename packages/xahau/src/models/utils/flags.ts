@@ -60,14 +60,6 @@ const txToFlag = {
  * @param tx - A transaction to set its flags to its numeric representation.
  */
 export function setTransactionFlagsToNumber(tx: Transaction): void {
-  if (tx.Flags == null) {
-    tx.Flags = 0
-    return
-  }
-  if (typeof tx.Flags === 'number') {
-    return
-  }
-
   if (tx.TransactionType === 'SetHook') {
     tx.Hooks.forEach((hook: Hook) => {
       hook.Hook.Flags = convertFlagsToNumber(
@@ -86,6 +78,14 @@ export function setTransactionFlagsToNumber(tx: Transaction): void {
         MintURITokenFlags,
       )
     }
+  }
+
+  if (tx.Flags == null) {
+    tx.Flags = 0
+    return
+  }
+  if (typeof tx.Flags === 'number') {
+    return
   }
 
   tx.Flags = txToFlag[tx.TransactionType]

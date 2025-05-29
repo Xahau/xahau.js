@@ -32,9 +32,17 @@ describe('SetRemarks', function () {
   it(`verifies valid SetRemarks`, function () {
     assert.doesNotThrow(() => validateSetRemarks(tx))
     assert.doesNotThrow(() => validate(tx))
+
+    tx.Remarks[0].Remark.Flags = { tfImmutable: true }
+    assert.doesNotThrow(() => validateSetRemarks(tx))
+    assert.doesNotThrow(() => validate(tx))
+
+    tx.Remarks = [{ Remark: { RemarkName: 'DEADBEEF' } }]
+    assert.doesNotThrow(() => validateSetRemarks(tx))
+    assert.doesNotThrow(() => validate(tx))
   })
 
-  it(`throws w/ invalid ObjectID in Remarks`, function () {
+  it(`throws w/ invalid ObjectID`, function () {
     delete tx.ObjectID
     let errorMessage = 'SetRemarks: ObjectID is required'
     assert.throws(() => validateSetRemarks(tx), ValidationError, errorMessage)
@@ -47,7 +55,7 @@ describe('SetRemarks', function () {
     assert.throws(() => validate(tx), ValidationError, errorMessage)
   })
 
-  it(`throws w/ invalid Remarks in Remarks`, function () {
+  it(`throws w/ invalid Remarks`, function () {
     delete tx.Remarks
     let errorMessage = 'SetRemarks: Remarks is required'
     assert.throws(() => validateSetRemarks(tx), ValidationError, errorMessage)

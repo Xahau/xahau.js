@@ -1,5 +1,28 @@
 import { Amount } from '.'
 
+/**
+ * Enum representing values for Hook Flags for SetHook Transaction.
+ *
+ * @category Transaction Flags
+ */
+export enum HookFlags {
+  /**
+   */
+  hsfOverride = 0x00000001,
+  /**
+   */
+  hsfNSDelete = 0x0000002,
+  /**
+   */
+  hsfCollect = 0x00000004,
+}
+
+export interface HookFlagsInterface {
+  hsfOverride?: boolean
+  hsfNSDelete?: boolean
+  hsfCollect?: boolean
+}
+
 export interface AmountEntry {
   AmountEntry: { Amount: Amount }
 }
@@ -58,7 +81,7 @@ export interface Hook {
     /**
      * The flags that are set on the hook.
      */
-    Flags?: number
+    Flags?: number | HookFlagsInterface
     /**
      * The transactions that triggers the hook. Represented as a 256Hash
      */
@@ -94,6 +117,14 @@ export interface EmitDetails {
   sfEmitCallback?: string
 }
 
+export enum MintURITokenFlags {
+  tfBurnable = 0x00000001,
+}
+
+export interface MintURITokenFlagsInterface {
+  tfBurnable?: boolean
+}
+
 /**
  * The object that describes the uritoken in MintURIToken.
  */
@@ -109,5 +140,5 @@ export interface MintURIToken {
   /**
    * The flags that are set on the uritoken.
    */
-  Flags?: number
+  Flags?: number | MintURITokenFlagsInterface
 }

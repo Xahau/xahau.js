@@ -65,6 +65,9 @@ describe('Remit', function () {
         Destination: wallet2.classicAddress,
         MintURIToken: {
           URI: stringToHex('https://example.com'),
+          Flags: {
+            tfBurnable: true,
+          },
         },
       }
 

@@ -1,13 +1,7 @@
 /* eslint-disable no-param-reassign -- param reassign is safe */
 /* eslint-disable no-bitwise -- flags require bitwise operations */
 import { ValidationError } from '../../errors'
-import {
-  Hook,
-  HookFlags,
-  HookFlagsInterface,
-  MintURITokenFlags,
-  MintURITokenFlagsInterface,
-} from '../common/xahau'
+import { Hook, HookFlags, MintURITokenFlags } from '../common/xahau'
 import {
   AccountRootFlagsInterface,
   AccountRootFlags,
@@ -60,21 +54,18 @@ const txToFlag = {
  * @param tx - A transaction to set its flags to its numeric representation.
  */
 export function setTransactionFlagsToNumber(tx: Transaction): void {
-  if (tx.TransactionType === 'SetHook') {
+  if (tx.TransactionType === 'SetHook' && Array.isArray(tx.Hooks)) {
     tx.Hooks.forEach((hook: Hook) => {
-      hook.Hook.Flags = convertFlagsToNumber(
-        // eslint-disable-next-line @typescript-eslint/consistent-type-assertions -- idk
-        hook.Hook.Flags as HookFlagsInterface,
-        HookFlags,
-      )
+      if (typeof hook.Hook.Flags === 'object') {
+        hook.Hook.Flags = convertFlagsToNumber(hook.Hook.Flags, HookFlags)
+      }
     })
   }
 
   if (tx.TransactionType === 'Remit') {
-    if (tx.MintURIToken != null) {
+    if (tx.MintURIToken != null && typeof tx.MintURIToken.Flags === 'object') {
       tx.MintURIToken.Flags = convertFlagsToNumber(
-        // eslint-disable-next-line @typescript-eslint/consistent-type-assertions -- idk
-        tx.MintURIToken.Flags as MintURITokenFlagsInterface,
+        tx.MintURIToken.Flags,
         MintURITokenFlags,
       )
     }

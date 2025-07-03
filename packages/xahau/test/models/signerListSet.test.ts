@@ -1,10 +1,7 @@
-import { validateSignerListSet } from '../../src/models/transactions/signerListSet'
-import { assertTxIsValid, assertTxValidationError } from '../testUtils'
+import { assert } from 'chai'
 
-const assertValid = (tx: any): void =>
-  assertTxIsValid(tx, validateSignerListSet)
-const assertInvalid = (tx: any, message: string): void =>
-  assertTxValidationError(tx, validateSignerListSet, message)
+import { validate, ValidationError } from '../../src'
+import { validateSignerListSet } from '../../src/models/transactions/signerListSet'
 
 /**
  * SignerListSet Transaction Verification Testing.
@@ -12,7 +9,7 @@ const assertInvalid = (tx: any, message: string): void =>
  * Providing runtime verification testing for each specific transaction type.
  */
 describe('SignerListSet', function () {
-  let signerListSetTx: any
+  let signerListSetTx
 
   beforeEach(function () {
     signerListSetTx = {
@@ -45,20 +42,36 @@ describe('SignerListSet', function () {
   })
 
   it(`verifies valid SignerListSet`, function () {
-    assertValid(signerListSetTx)
+    assert.doesNotThrow(() => validateSignerListSet(signerListSetTx))
+    assert.doesNotThrow(() => validate(signerListSetTx))
   })
 
   it(`throws w/ missing SignerQuorum`, function () {
     signerListSetTx.SignerQuorum = undefined
 
-    assertInvalid(signerListSetTx, 'SignerListSet: missing field SignerQuorum')
+    assert.throws(
+      () => validateSignerListSet(signerListSetTx),
+      ValidationError,
+      'SignerListSet: missing field SignerQuorum',
+    )
+    assert.throws(
+      () => validate(signerListSetTx),
+      ValidationError,
+      'SignerListSet: missing field SignerQuorum',
+    )
   })
 
   it(`throws w/ empty SignerEntries`, function () {
     signerListSetTx.SignerEntries = []
 
-    assertInvalid(
-      signerListSetTx,
+    assert.throws(
+      () => validateSignerListSet(signerListSetTx),
+      ValidationError,
+      'SignerListSet: need at least 1 member in SignerEntries',
+    )
+    assert.throws(
+      () => validate(signerListSetTx),
+      ValidationError,
       'SignerListSet: need at least 1 member in SignerEntries',
     )
   })
@@ -66,7 +79,16 @@ describe('SignerListSet', function () {
   it(`throws w/ invalid SignerEntries`, function () {
     signerListSetTx.SignerEntries = 'khgfgyhujk'
 
-    assertInvalid(signerListSetTx, 'SignerListSet: invalid SignerEntries')
+    assert.throws(
+      () => validateSignerListSet(signerListSetTx),
+      ValidationError,
+      'SignerListSet: invalid field SignerEntries',
+    )
+    assert.throws(
+      () => validate(signerListSetTx),
+      ValidationError,
+      'SignerListSet: invalid field SignerEntries',
+    )
   })
 
   it(`throws w/ maximum of 32 members allowed in SignerEntries`, function () {
@@ -118,7 +140,16 @@ describe('SignerListSet', function () {
 
     const errorMessage =
       'SignerListSet: maximum of 32 members allowed in SignerEntries'
-    assertInvalid(signerListSetTx, errorMessage)
+    assert.throws(
+      () => validateSignerListSet(signerListSetTx),
+      ValidationError,
+      errorMessage,
+    )
+    assert.throws(
+      () => validate(signerListSetTx),
+      ValidationError,
+      errorMessage,
+    )
   })
 
   it(`verifies valid WalletLocator in SignerEntries`, function () {
@@ -148,7 +179,8 @@ describe('SignerListSet', function () {
       },
     ]
 
-    assertValid(signerListSetTx)
+    assert.doesNotThrow(() => validateSignerListSet(signerListSetTx))
+    assert.doesNotThrow(() => validate(signerListSetTx))
   })
 
   it(`throws w/ invalid WalletLocator in SignerEntries`, function () {
@@ -170,6 +202,15 @@ describe('SignerListSet', function () {
     ]
     const errorMessage =
       'SignerListSet: WalletLocator in SignerEntry must be a 256-bit (32-byte) hexadecimal value'
-    assertInvalid(signerListSetTx, errorMessage)
+    assert.throws(
+      () => validateSignerListSet(signerListSetTx),
+      ValidationError,
+      errorMessage,
+    )
+    assert.throws(
+      () => validate(signerListSetTx),
+      ValidationError,
+      errorMessage,
+    )
   })
 })

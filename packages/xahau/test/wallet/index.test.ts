@@ -508,7 +508,7 @@ describe('Wallet', function () {
       }
       assert.throws(() => {
         Wallet.fromSeed(secret).sign(lowercaseMemoTx)
-      }, /MemoType field must be a hex value/u)
+      }, /BaseTransaction: invalid Memos/u)
     })
 
     it('sign throws when MemoData is not a hex value', async function () {
@@ -534,7 +534,7 @@ describe('Wallet', function () {
       }
       assert.throws(() => {
         Wallet.fromSeed(secret).sign(lowercaseMemoTx)
-      }, /MemoData field must be a hex value/u)
+      }, /BaseTransaction: invalid Memos/u)
     })
 
     it('sign throws when MemoFormat is not a hex value', async function () {
@@ -560,7 +560,7 @@ describe('Wallet', function () {
       }
       assert.throws(() => {
         Wallet.fromSeed(secret).sign(lowercaseMemoTx)
-      }, /MemoFormat field must be a hex value/u)
+      }, /BaseTransaction: invalid Memos/u)
     })
 
     it('sign with EscrowFinish', async function () {

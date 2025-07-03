@@ -4,7 +4,7 @@ import { IssuedCurrencyAmount } from '../common'
 import {
   BaseTransaction,
   validateBaseTransaction,
-  isIssuedCurrency,
+  isIssuedCurrencyAmount,
 } from './common'
 
 /**
@@ -39,11 +39,11 @@ export function validateClawback(tx: Record<string, unknown>): void {
     throw new ValidationError('Clawback: missing field Amount')
   }
 
-  if (!isIssuedCurrency(tx.Amount)) {
+  if (!isIssuedCurrencyAmount(tx.Amount)) {
     throw new ValidationError('Clawback: invalid Amount')
   }
 
-  if (isIssuedCurrency(tx.Amount) && tx.Account === tx.Amount.issuer) {
+  if (isIssuedCurrencyAmount(tx.Amount) && tx.Account === tx.Amount.issuer) {
     throw new ValidationError('Clawback: invalid holder Account')
   }
 }

@@ -2,23 +2,36 @@ import { isValidClassicAddress, isValidXAddress } from 'xahau-address-codec'
 import { TRANSACTION_TYPES } from 'xahau-binary-codec'
 
 import { ValidationError } from '../../errors'
-import { Amount, Currency, IssuedCurrencyAmount, Memo, Signer } from '../common'
+import {
+  Amount,
+  Currency,
+  IssuedCurrency,
+  IssuedCurrencyAmount,
+  Memo,
+  Signer,
+} from '../common'
 import { EmitDetails, HookParameter } from '../common/xahau'
-import { onlyHasFields } from '../utils'
+import { isHex, onlyHasFields } from '../utils'
 
 const MEMO_SIZE = 3
 
-function isMemo(obj: { Memo?: unknown }): boolean {
-  if (obj.Memo == null) {
+function isMemo(obj: unknown): obj is Memo {
+  if (!isRecord(obj)) {
     return false
   }
-  // eslint-disable-next-line @typescript-eslint/consistent-type-assertions -- Only used by JS
-  const memo = obj.Memo as Record<string, unknown>
+
+  const memo = obj.Memo
+  if (!isRecord(memo)) {
+    return false
+  }
   const size = Object.keys(memo).length
-  const validData = memo.MemoData == null || typeof memo.MemoData === 'string'
+  const validData =
+    memo.MemoData == null || (isString(memo.MemoData) && isHex(memo.MemoData))
   const validFormat =
-    memo.MemoFormat == null || typeof memo.MemoFormat === 'string'
-  const validType = memo.MemoType == null || typeof memo.MemoType === 'string'
+    memo.MemoFormat == null ||
+    (isString(memo.MemoFormat) && isHex(memo.MemoFormat))
+  const validType =
+    memo.MemoType == null || (isString(memo.MemoType) && isHex(memo.MemoType))
 
   return (
     size >= 1 &&
@@ -32,20 +45,21 @@ function isMemo(obj: { Memo?: unknown }): boolean {
 
 const SIGNER_SIZE = 3
 
-function isSigner(obj: unknown): boolean {
-  // eslint-disable-next-line @typescript-eslint/consistent-type-assertions -- Only used by JS
-  const signerWrapper = obj as Record<string, unknown>
-
-  if (signerWrapper.Signer == null) {
+function isSigner(obj: unknown): obj is Signer {
+  if (!isRecord(obj)) {
     return false
   }
-  // eslint-disable-next-line @typescript-eslint/consistent-type-assertions -- Only used by JS and Signer is previously unknown
-  const signer = signerWrapper.Signer as Record<string, unknown>
+
+  const signer = obj.Signer
+  if (!isRecord(signer)) {
+    return false
+  }
+
   return (
     Object.keys(signer).length === SIGNER_SIZE &&
-    typeof signer.Account === 'string' &&
-    typeof signer.TxnSignature === 'string' &&
-    typeof signer.SigningPubKey === 'string'
+    isString(signer.Account) &&
+    isString(signer.TxnSignature) &&
+    isString(signer.SigningPubKey)
   )
 }
 
@@ -56,8 +70,14 @@ const ISSUED_CURRENCY_SIZE = 3
 // 4-16 bytes as hex
 export const HOOK_NAME_REGEX = /^(?:[0-9A-Fa-f]{2}){4,16}$/u
 
-function isRecord(value: unknown): value is Record<string, unknown> {
-  return value !== null && typeof value === 'object'
+/**
+ * Verify the form and type of a Record/Object at runtime.
+ *
+ * @param value - The object to check the form and type of.
+ * @returns Whether the Record/Object is properly formed.
+ */
+export function isRecord(value: unknown): value is Record<string, unknown> {
+  return value !== null && typeof value === 'object' && !Array.isArray(value)
 }
 
 /**
@@ -81,17 +101,27 @@ export function isNumber(num: unknown): num is number {
 }
 
 /**
+ * Verify the form and type of a Currency at runtime.
+ *
+ * @param input - The input to check the form and type of.
+ * @returns Whether the Currency is properly formed.
+ */
+export function isCurrency(input: unknown): input is Currency {
+  return isString(input) || isIssuedCurrency(input)
+}
+
+/**
  * Verify the form and type of an IssuedCurrency at runtime.
  *
  * @param input - The input to check the form and type of.
  * @returns Whether the IssuedCurrency is properly formed.
  */
-export function isCurrency(input: unknown): input is Currency {
+export function isIssuedCurrency(input: unknown): input is IssuedCurrency {
   return (
     isRecord(input) &&
     ((Object.keys(input).length === ISSUE_SIZE &&
-      typeof input.issuer === 'string' &&
-      typeof input.currency === 'string') ||
+      isString(input.issuer) &&
+      isString(input.currency)) ||
       (Object.keys(input).length === XAH_CURRENCY_SIZE &&
         input.currency === 'XAH'))
   )
@@ -103,15 +133,15 @@ export function isCurrency(input: unknown): input is Currency {
  * @param input - The input to check the form and type of.
  * @returns Whether the IssuedCurrencyAmount is properly formed.
  */
-export function isIssuedCurrency(
+export function isIssuedCurrencyAmount(
   input: unknown,
 ): input is IssuedCurrencyAmount {
   return (
     isRecord(input) &&
     Object.keys(input).length === ISSUED_CURRENCY_SIZE &&
-    typeof input.value === 'string' &&
-    typeof input.issuer === 'string' &&
-    typeof input.currency === 'string'
+    isString(input.value) &&
+    isString(input.issuer) &&
+    isString(input.currency)
   )
 }
 
@@ -140,7 +170,17 @@ export function isAccount(account: unknown): account is Account {
  * @returns Whether the Amount is properly formed.
  */
 export function isAmount(amount: unknown): amount is Amount {
-  return typeof amount === 'string' || isIssuedCurrency(amount)
+  return typeof amount === 'string' || isIssuedCurrencyAmount(amount)
+}
+
+/**
+ * Verify the form and type of an Array at runtime.
+ *
+ * @param input - The object to check the form and type of.
+ * @returns Whether the Array is properly formed.
+ */
+export function isArray<T = unknown>(input: unknown): input is T[] {
+  return input != null && Array.isArray(input)
 }
 
 /* eslint-disable @typescript-eslint/restrict-template-expressions -- tx.TransactionType is checked before any calls */
@@ -148,25 +188,39 @@ export function isAmount(amount: unknown): amount is Amount {
 /**
  * Verify the form and type of a required type for a transaction at runtime.
  *
- * @param tx - The transaction input to check the form and type of.
- * @param paramName - The name of the transaction parameter.
+ * @param tx - The object input to check the form and type of.
+ * @param param - The object parameter.
  * @param checkValidity - The function to use to check the type.
- * @throws
+ * @param errorOpts - Extra values to make the error message easier to understand.
+ * @param errorOpts.txType - The transaction type throwing the error.
+ * @param errorOpts.paramName - The name of the parameter in the transaction with the error.
+ * @throws ValidationError if the parameter is missing or invalid.
  */
-export function validateRequiredField(
-  tx: Record<string, unknown>,
-  paramName: string,
-  checkValidity: (inp: unknown) => boolean,
-): void {
-  if (tx[paramName] == null) {
+// eslint-disable-next-line max-params -- helper function
+export function validateRequiredField<
+  T extends Record<string, unknown>,
+  K extends keyof T,
+  V,
+>(
+  tx: T,
+  param: K,
+  checkValidity: (inp: unknown) => inp is V,
+  errorOpts: {
+    txType?: string
+    paramName?: string
+  } = {},
+): asserts tx is T & { [P in K]: V } {
+  const paramNameStr = errorOpts.paramName ?? param
+  const txType = errorOpts.txType ?? tx.TransactionType
+  if (tx[param] == null) {
     throw new ValidationError(
-      `${tx.TransactionType}: missing field ${paramName}`,
+      `${txType}: missing field ${String(paramNameStr)}`,
     )
   }
 
-  if (!checkValidity(tx[paramName])) {
+  if (!checkValidity(tx[param])) {
     throw new ValidationError(
-      `${tx.TransactionType}: invalid field ${paramName}`,
+      `${txType}: invalid field ${String(paramNameStr)}`,
     )
   }
 }
@@ -175,18 +229,32 @@ export function validateRequiredField(
  * Verify the form and type of an optional type for a transaction at runtime.
  *
  * @param tx - The transaction input to check the form and type of.
- * @param paramName - The name of the transaction parameter.
+ * @param param - The object parameter.
  * @param checkValidity - The function to use to check the type.
- * @throws
+ * @param errorOpts - Extra values to make the error message easier to understand.
+ * @param errorOpts.txType - The transaction type throwing the error.
+ * @param errorOpts.paramName - The name of the parameter in the transaction with the error.
+ * @throws ValidationError if the parameter is invalid.
  */
-export function validateOptionalField(
-  tx: Record<string, unknown>,
-  paramName: string,
-  checkValidity: (inp: unknown) => boolean,
-): void {
-  if (tx[paramName] !== undefined && !checkValidity(tx[paramName])) {
+// eslint-disable-next-line max-params -- helper function
+export function validateOptionalField<
+  T extends Record<string, unknown>,
+  K extends keyof T,
+  V,
+>(
+  tx: T,
+  param: K,
+  checkValidity: (inp: unknown) => inp is V,
+  errorOpts: {
+    txType?: string
+    paramName?: string
+  } = {},
+): asserts tx is T & { [P in K]: V | undefined } {
+  const paramNameStr = errorOpts.paramName ?? param
+  const txType = errorOpts.txType ?? tx.TransactionType
+  if (tx[param] !== undefined && !checkValidity(tx[param])) {
     throw new ValidationError(
-      `${tx.TransactionType}: invalid field ${paramName}`,
+      `${txType}: invalid field ${String(paramNameStr)}`,
     )
   }
 }
@@ -307,7 +375,15 @@ function validateHookName(common: Record<string, unknown>): void {
  * @param common - An interface w/ common transaction fields.
  * @throws When the common param is malformed.
  */
-export function validateBaseTransaction(common: Record<string, unknown>): void {
+export function validateBaseTransaction(
+  common: unknown,
+): asserts common is BaseTransaction {
+  if (!isRecord(common)) {
+    throw new ValidationError(
+      'BaseTransaction: invalid, expected a valid object',
+    )
+  }
+
   if (common.TransactionType === undefined) {
     throw new ValidationError('BaseTransaction: missing field TransactionType')
   }
@@ -330,18 +406,16 @@ export function validateBaseTransaction(common: Record<string, unknown>): void {
 
   validateOptionalField(common, 'LastLedgerSequence', isNumber)
 
-  // eslint-disable-next-line @typescript-eslint/consistent-type-assertions -- Only used by JS
-  const memos = common.Memos as Array<{ Memo?: unknown }> | undefined
-  if (memos !== undefined && !memos.every(isMemo)) {
+  const memos = common.Memos
+  if (memos != null && (!isArray(memos) || !memos.every(isMemo))) {
     throw new ValidationError('BaseTransaction: invalid Memos')
   }
 
-  // eslint-disable-next-line @typescript-eslint/consistent-type-assertions -- Only used by JS
-  const signers = common.Signers as Array<Record<string, unknown>> | undefined
+  const signers = common.Signers
 
   if (
-    signers !== undefined &&
-    (signers.length === 0 || !signers.every(isSigner))
+    signers != null &&
+    (!isArray(signers) || signers.length === 0 || !signers.every(isSigner))
   ) {
     throw new ValidationError('BaseTransaction: invalid Signers')
   }

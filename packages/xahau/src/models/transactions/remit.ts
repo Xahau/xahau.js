@@ -2,7 +2,7 @@ import { ValidationError } from '../../errors'
 import { AmountEntry, MintURIToken } from '../common/xahau'
 import { isHex } from '../utils'
 
-import { BaseTransaction, validateBaseTransaction } from './common'
+import { BaseTransaction, isAmount, validateBaseTransaction } from './common'
 
 const MAX_URI_LENGTH = 512
 const DIGEST_LENGTH = 64
@@ -116,6 +116,10 @@ function checkAmounts(tx: Record<string, unknown>): void {
       typeof amount.AmountEntry !== 'object'
     ) {
       throw new ValidationError('Remit: invalid Amounts.AmountEntry')
+    }
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- ignore
+    if (!isAmount(amount.AmountEntry.Amount)) {
+      throw new ValidationError('Remit: invalid Amounts.AmountEntry.Amount')
     }
     // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- ignore
     if (typeof amount.AmountEntry.Amount === 'string') {

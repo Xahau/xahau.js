@@ -64,6 +64,10 @@ export interface Hook {
      */
     HookOn?: string
     /**
+     * The transactions that can emit from the hook. Represented as a 256Hash
+     */
+    HookCanEmit?: string
+    /**
      * The namespace of the hook.
      */
     HookNamespace?: string

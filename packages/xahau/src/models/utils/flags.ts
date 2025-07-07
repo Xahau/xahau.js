@@ -11,6 +11,12 @@ import { GlobalFlags } from '../transactions/common'
 import { OfferCreateFlags } from '../transactions/offerCreate'
 import { PaymentFlags } from '../transactions/payment'
 import { PaymentChannelClaimFlags } from '../transactions/paymentChannelClaim'
+import { SetHookFlagsInterface, SetHookFlags } from '../transactions/setHook'
+import {
+  RemarkFlagsInterface,
+  RemarkFlags,
+  Remark,
+} from '../transactions/setRemarks'
 import type { Transaction } from '../transactions/transaction'
 import { TrustSetFlags } from '../transactions/trustSet'
 
@@ -77,6 +83,26 @@ export function setTransactionFlagsToNumber(tx: Transaction): void {
   }
   if (typeof tx.Flags === 'number') {
     return
+  }
+
+
+  if (tx.TransactionType === 'SetHook') {
+    tx.Flags = convertFlagsToNumber(tx.Flags, SetHookFlags)
+    tx.Hooks.forEach((hook: Hook) => {
+      hook.Hook.Flags = convertFlagsToNumber(
+        // eslint-disable-next-line @typescript-eslint/consistent-type-assertions -- idk
+        hook.Hook.Flags as SetHookFlagsInterface,
+        SetHookFlags,
+      )
+    })
+  } else if (tx.TransactionType === 'SetRemarks') {
+    tx.Remarks.forEach((remark: Remark) => {
+      remark.Remark.Flags = convertFlagsToNumber(
+        // eslint-disable-next-line @typescript-eslint/consistent-type-assertions -- idk
+        remark.Remark.Flags as RemarkFlagsInterface,
+        RemarkFlags,
+      )
+    })
   }
 
   tx.Flags = txToFlag[tx.TransactionType]

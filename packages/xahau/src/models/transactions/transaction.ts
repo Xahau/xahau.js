@@ -38,6 +38,7 @@ import { Remit, validateRemit } from './remit'
 import { SetFee } from './setFee'
 import { SetHook, validateSetHook } from './setHook'
 import { SetRegularKey, validateSetRegularKey } from './setRegularKey'
+import { SetRemarks, validateSetRemarks } from './setRemarks'
 import { SignerListSet, validateSignerListSet } from './signerListSet'
 import { TicketCreate, validateTicketCreate } from './ticketCreate'
 import { TrustSet, validateTrustSet } from './trustSet'
@@ -80,6 +81,7 @@ export type SubmittableTransaction =
   | Remit
   | SetHook
   | SetRegularKey
+  | SetRemarks
   | SignerListSet
   | TicketCreate
   | TrustSet
@@ -260,6 +262,10 @@ export function validate(transaction: Record<string, unknown>): void {
 
     case 'SetRegularKey':
       validateSetRegularKey(tx)
+      break
+
+    case 'SetRemarks':
+      validateSetRemarks(tx)
       break
 
     case 'SignerListSet':

@@ -42,6 +42,12 @@ export { Remit } from './remit'
 export { SetHookFlagsInterface, SetHookFlags, SetHook } from './setHook'
 export { SetFee, SetFeePreAmendment, SetFeePostAmendment } from './setFee'
 export { SetRegularKey } from './setRegularKey'
+export {
+  SetRemarks,
+  Remark,
+  RemarkFlags,
+  RemarkFlagsInterface,
+} from './setRemarks'
 export { SignerListSet } from './signerListSet'
 export { TicketCreate } from './ticketCreate'
 export { TrustSetFlagsInterface, TrustSetFlags, TrustSet } from './trustSet'

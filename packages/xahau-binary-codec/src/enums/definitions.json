@@ -1219,6 +1219,16 @@
       }
     ],
     [
+      "ObjectID",
+      {
+        "nth": 14,
+        "isVLEncoded": false,
+        "isSerialized": true,
+        "isSigningField": true,
+        "type": "Hash256"
+      }
+    ],
+    [
       "BookDirectory",
       {
         "nth": 16,
@@ -1899,6 +1909,26 @@
       }
     ],
     [
+      "RemarkValue",
+      {
+        "nth": 98,
+        "isVLEncoded": true,
+        "isSerialized": true,
+        "isSigningField": true,
+        "type": "Blob"
+      }
+    ],
+    [
+      "RemarkName",
+      {
+        "nth": 99,
+        "isVLEncoded": true,
+        "isSerialized": true,
+        "isSigningField": true,
+        "type": "Blob"
+      }
+    ],
+    [
       "Account",
       {
         "nth": 1,
@@ -2289,6 +2319,16 @@
       }
     ],
     [
+      "Remark",
+      {
+        "nth": 97,
+        "isVLEncoded": false,
+        "isSerialized": true,
+        "isSigningField": true,
+        "type": "STObject"
+      }
+    ],
+    [
       "GenesisMint",
       {
         "nth": 96,
@@ -2489,6 +2529,16 @@
       }
     ],
     [
+      "Remarks",
+      {
+        "nth": 97,
+        "isVLEncoded": false,
+        "isSerialized": true,
+        "isSigningField": true,
+        "type": "STArray"
+      }
+    ],
+    [
       "GenesisMints",
       {
         "nth": 96,
@@ -2632,6 +2682,7 @@
     "tefPAST_IMPORT_SEQ": -178,
     "tefPAST_IMPORT_VL_SEQ": -177,
     "tefNONDIR_EMIT": -176,
+    "tefIMPORT_BLACKHOLED": -175,
 
     "terRETRY": -99,
     "terFUNDS_SPENT": -98,
@@ -2724,6 +2775,8 @@
     "tecXCHAIN_SELF_COMMIT": 185,
     "tecXCHAIN_BAD_PUBLIC_KEY_ACCOUNT_PAIR": 186,
     "tecINSUF_RESERVE_SELLER": 187,
+    "tecIMMUTABLE": 188,
+    "tecTOO_MANY_REMARKS": 189,
     "tecLAST_POSSIBLE_ENTRY": 255
   },
   "TRANSACTION_TYPES": {
@@ -2761,6 +2814,7 @@
     "URITokenBuy": 47,
     "URITokenCreateSellOffer": 48,
     "URITokenCancelSellOffer": 49,
+    "SetRemarks": 94,
     "Remit": 95,
     "GenesisMint": 96,
     "Import": 97,

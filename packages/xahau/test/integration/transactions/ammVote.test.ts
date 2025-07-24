@@ -79,6 +79,7 @@ describe('AMMVote', function () {
     const beforeDiscountedFee = preDiscountedFee
     const diffDiscountedFee = 7
 
+    // eslint-disable-next-line @typescript-eslint/restrict-plus-operands -- this is valid
     const expectedDiscountedFee = beforeDiscountedFee + diffDiscountedFee
 
     assert.equal(afterTradingFee, expectedTradingFee)

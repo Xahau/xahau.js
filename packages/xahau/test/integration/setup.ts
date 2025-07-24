@@ -1,7 +1,27 @@
-import { Client, Wallet } from '../../src'
+import {
+  AMMDeposit,
+  AMMDepositFlags,
+  Client,
+  IssuedCurrency,
+  Wallet,
+  XAH,
+} from '../../src'
 
 import serverUrl from './serverUrl'
-import { fundAccount } from './utils'
+import {
+  createAMMPool,
+  fundAccount,
+  generateFundedWallet,
+  testTransaction,
+} from './utils'
+
+export interface TestAMMPool {
+  issuerWallet: Wallet
+  lpWallet: Wallet
+  testWallet: Wallet
+  asset: XAH
+  asset2: IssuedCurrency
+}
 
 export interface XrplIntegrationTestContext {
   client: Client
@@ -45,4 +65,31 @@ export async function setupClient(
     }
     return context
   })
+}
+
+export async function setupAMMPool(client: Client): Promise<TestAMMPool> {
+  const testAMMPool = await createAMMPool(client)
+  const { issuerWallet, lpWallet, asset, asset2 } = testAMMPool
+
+  const testWallet = await generateFundedWallet(client)
+
+  // Need to deposit (be an LP) to make bid/vote/withdraw eligible in tests for testContext.wallet
+  const ammDepositTx: AMMDeposit = {
+    TransactionType: 'AMMDeposit',
+    Account: testWallet.classicAddress,
+    Asset: asset,
+    Asset2: asset2,
+    Amount: '1000',
+    Flags: AMMDepositFlags.tfSingleAsset,
+  }
+
+  await testTransaction(client, ammDepositTx, testWallet)
+
+  return {
+    issuerWallet,
+    lpWallet,
+    testWallet,
+    asset,
+    asset2,
+  }
 }

@@ -1,11 +1,18 @@
+/* eslint-disable max-lines -- need to work with a lot of transactions in a switch statement */
 /* eslint-disable max-lines-per-function -- need to work with a lot of Tx verifications */
 
 import { ValidationError } from '../../errors'
-import { IssuedCurrencyAmount, Memo } from '../common'
+import { Memo } from '../common'
 import { isHex } from '../utils'
 import { setTransactionFlagsToNumber } from '../utils/flags'
 
 import { AccountSet, validateAccountSet } from './accountSet'
+import { AMMBid, validateAMMBid } from './AMMBid'
+import { AMMCreate, validateAMMCreate } from './AMMCreate'
+import { AMMDelete, validateAMMDelete } from './AMMDelete'
+import { AMMDeposit, validateAMMDeposit } from './AMMDeposit'
+import { AMMVote, validateAMMVote } from './AMMVote'
+import { AMMWithdraw, validateAMMWithdraw } from './AMMWithdraw'
 import { CheckCancel, validateCheckCancel } from './checkCancel'
 import { CheckCash, validateCheckCash } from './checkCash'
 import { CheckCreate, validateCheckCreate } from './checkCreate'
@@ -62,6 +69,12 @@ import { URITokenMint, validateURITokenMint } from './uriTokenMint'
  */
 export type SubmittableTransaction =
   | AccountSet
+  | AMMBid
+  | AMMDelete
+  | AMMDeposit
+  | AMMCreate
+  | AMMVote
+  | AMMWithdraw
   | CheckCancel
   | CheckCash
   | CheckCreate
@@ -167,8 +180,7 @@ export function validate(transaction: Record<string, unknown>): void {
   Object.keys(tx).forEach((key) => {
     const standard_currency_code_len = 3
     if (tx[key] && isIssuedCurrency(tx[key])) {
-      // eslint-disable-next-line @typescript-eslint/consistent-type-assertions -- needed
-      const txCurrency = (tx[key] as IssuedCurrencyAmount).currency
+      const txCurrency = tx[key].currency
 
       if (
         txCurrency.length === standard_currency_code_len &&
@@ -186,6 +198,30 @@ export function validate(transaction: Record<string, unknown>): void {
   switch (tx.TransactionType) {
     case 'AccountSet':
       validateAccountSet(tx)
+      break
+
+    case 'AMMBid':
+      validateAMMBid(tx)
+      break
+
+    case 'AMMDelete':
+      validateAMMDelete(tx)
+      break
+
+    case 'AMMDeposit':
+      validateAMMDeposit(tx)
+      break
+
+    case 'AMMCreate':
+      validateAMMCreate(tx)
+      break
+
+    case 'AMMVote':
+      validateAMMVote(tx)
+      break
+
+    case 'AMMWithdraw':
+      validateAMMWithdraw(tx)
       break
 
     case 'CheckCancel':

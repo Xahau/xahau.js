@@ -1,5 +1,6 @@
 import AccountRoot from './AccountRoot'
 import Amendments from './Amendments'
+import AMM from './AMM'
 import Check from './Check'
 import DepositPreauth from './DepositPreauth'
 import DirectoryNode from './DirectoryNode'
@@ -23,6 +24,7 @@ import URIToken from './URIToken'
 type LedgerEntry =
   | AccountRoot
   | Amendments
+  | AMM
   | Check
   | DepositPreauth
   | DirectoryNode
@@ -45,6 +47,7 @@ type LedgerEntry =
 
 type LedgerEntryFilter =
   | 'account'
+  | 'amm'
   | 'amendments'
   | 'check'
   | 'deposit_preauth'

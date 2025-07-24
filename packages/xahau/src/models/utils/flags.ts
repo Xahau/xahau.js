@@ -7,6 +7,8 @@ import {
   AccountRootFlags,
 } from '../ledger/AccountRoot'
 import { AccountSetTfFlags } from '../transactions/accountSet'
+import { AMMDepositFlags } from '../transactions/AMMDeposit'
+import { AMMWithdrawFlags } from '../transactions/AMMWithdraw'
 import { GlobalFlags } from '../transactions/common'
 import { OfferCreateFlags } from '../transactions/offerCreate'
 import { PaymentFlags } from '../transactions/payment'
@@ -48,6 +50,8 @@ export function parseAccountRootFlags(
 
 const txToFlag = {
   AccountSet: AccountSetTfFlags,
+  AMMDeposit: AMMDepositFlags,
+  AMMWithdraw: AMMWithdrawFlags,
   OfferCreate: OfferCreateFlags,
   PaymentChannelClaim: PaymentChannelClaimFlags,
   Payment: PaymentFlags,

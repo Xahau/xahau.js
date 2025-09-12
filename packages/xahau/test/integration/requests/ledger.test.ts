@@ -107,9 +107,8 @@ describe('ledger', function () {
         type: 'response',
       }
 
-      const ledgerResponse = await testContext.client.request<LedgerRequest>(
-        ledgerRequest,
-      )
+      const ledgerResponse =
+        await testContext.client.request<LedgerRequest>(ledgerRequest)
 
       assert.equal(ledgerResponse.type, expected.type)
 

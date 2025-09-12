@@ -84,8 +84,7 @@ export function validateSetHook(tx: Record<string, unknown>): void {
     }
     if (
       HookOnIncoming !== undefined &&
-      HookOnOutgoing !== undefined &&
-      HookOnIncoming.toUpperCase() === HookOnOutgoing.toUpperCase()
+      HookOnIncoming.toUpperCase() === HookOnOutgoing?.toUpperCase()
     ) {
       throw new ValidationError(
         `SetHook: HookOnIncoming and HookOnOutgoing in Hook must be different, use HookOn instead`,

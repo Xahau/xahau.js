@@ -128,7 +128,6 @@ function checkAmounts(tx: Record<string, unknown>): void {
     }
     // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- ignore
     if (typeof amount.AmountEntry.Amount === 'string') {
-      // eslint-disable-next-line max-depth -- ignore
       if (seenXrp) {
         throw new ValidationError(
           'Remit: Duplicate Native amounts are not allowed',
@@ -139,7 +138,6 @@ function checkAmounts(tx: Record<string, unknown>): void {
       // eslint-disable-next-line max-len -- ignore
       // eslint-disable-next-line @typescript-eslint/restrict-template-expressions, @typescript-eslint/no-unsafe-member-access -- ignore
       const amountKey = `${amount.AmountEntry.Amount.currency}:${amount.AmountEntry.Amount.issuer}`
-      // eslint-disable-next-line max-depth -- ingore
       if (seen.has(amountKey)) {
         throw new ValidationError('Remit: Duplicate amounts are not allowed')
       }

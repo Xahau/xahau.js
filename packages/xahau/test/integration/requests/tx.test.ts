@@ -5,7 +5,6 @@ import {
   hashes,
   SubmitResponse,
   TxRequest,
-  TxResponse,
   TxV1Response,
 } from '../../../src'
 import { convertStringToHex } from '../../../src/utils'
@@ -51,13 +50,12 @@ describe('tx', function () {
         transaction: hash,
       })
 
-      const expectedResponse: TxResponse = {
+      const expectedResponse: TxV1Response = {
         api_version: 1,
         id: txResponse.id,
         type: 'response',
         result: {
           ...accountSet,
-          // @ts-expect-error -- expected
           Fee: txResponse.result.Fee,
           Flags: 0,
           LastLedgerSequence: txResponse.result.LastLedgerSequence,
@@ -70,7 +68,7 @@ describe('tx', function () {
         },
       }
 
-      assert.deepEqual(txResponse, expectedResponse as unknown)
+      assert.deepEqual(txResponse, expectedResponse)
     },
     TIMEOUT,
   )

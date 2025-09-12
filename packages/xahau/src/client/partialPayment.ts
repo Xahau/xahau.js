@@ -36,6 +36,7 @@ function amountsEqual(amt1: Amount, amt2: Amount): boolean {
   )
 }
 
+/* eslint-disable complexity -- required here for multiple checks */
 function isPartialPayment(
   tx?: Transaction,
   metadata?: TransactionMetadata | string,
@@ -73,6 +74,7 @@ function isPartialPayment(
 
   return !amountsEqual(delivered, amount)
 }
+/* eslint-enable complexity */
 
 function txHasPartialPayment(response: TxResponse): boolean {
   return isPartialPayment(response.result.tx_json, response.result.meta)

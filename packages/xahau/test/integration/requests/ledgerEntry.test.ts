@@ -39,9 +39,8 @@ describe('ledger_entry', function () {
         index: ledgerEntryIndex,
       }
 
-      const ledgerEntryResponse = await testContext.client.request(
-        ledgerEntryRequest,
-      )
+      const ledgerEntryResponse =
+        await testContext.client.request(ledgerEntryRequest)
 
       const expectedResponse: LedgerEntryResponse = {
         api_version: 1,

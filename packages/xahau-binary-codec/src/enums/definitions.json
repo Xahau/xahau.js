@@ -2829,6 +2829,7 @@
     "NFTokenCreateOffer": 27,
     "NFTokenCancelOffer": 28,
     "NFTokenAcceptOffer": 29,
+    "Clawback": 30,
     "URITokenMint": 45,
     "URITokenBurn": 46,
     "URITokenBuy": 47,

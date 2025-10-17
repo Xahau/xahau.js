@@ -84,6 +84,8 @@ export default interface AccountRoot extends BaseLedgerEntry, HasPreviousTxnID {
   GovernanceMarks?: string
   AccountIndex?: number
   TouchCount?: number
+  /* The cron job that is associated with this account. */
+  Cron?: string
 }
 
 /**

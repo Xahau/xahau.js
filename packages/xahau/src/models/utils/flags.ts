@@ -8,6 +8,7 @@ import {
 } from '../ledger/AccountRoot'
 import { AccountSetTfFlags } from '../transactions/accountSet'
 import { GlobalFlags } from '../transactions/common'
+import { CronSetFlags } from '../transactions/cronSet'
 import { OfferCreateFlags } from '../transactions/offerCreate'
 import { PaymentFlags } from '../transactions/payment'
 import { PaymentChannelClaimFlags } from '../transactions/paymentChannelClaim'
@@ -52,6 +53,7 @@ const txToFlag = {
   PaymentChannelClaim: PaymentChannelClaimFlags,
   Payment: PaymentFlags,
   TrustSet: TrustSetFlags,
+  CronSet: CronSetFlags,
 }
 
 /**

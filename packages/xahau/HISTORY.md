@@ -5,6 +5,11 @@ Subscribe to [the **xrpl-announce** mailing list](https://groups.google.com/g/xr
 ## Unreleased Changes
 
 ### Added
+* Support for Cron Amendment
+
+## 4.0.1 (2025-10-03)
+
+### Added
 * parseTransactionFlags as a utility function in the xrpl package to streamline transactions flags-to-map conversion
 * Support for XLS-77d Deep-Freeze amendment
 

@@ -29,6 +29,7 @@
   "LEDGER_ENTRY_TYPES": {
     "Invalid": -1,
     "AccountRoot": 97,
+    "Cron": 65,
     "DirectoryNode": 100,
     "RippleState": 114,
     "Ticket": 84,
@@ -799,6 +800,26 @@
       }
     ],
     [
+      "RepeatCount",
+      {
+        "nth": 94,
+        "isVLEncoded": false,
+        "isSerialized": true,
+        "isSigningField": true,
+        "type": "UInt32"
+      }
+    ],
+    [
+      "DelaySeconds",
+      {
+        "nth": 95,
+        "isVLEncoded": false,
+        "isSerialized": true,
+        "isSigningField": true,
+        "type": "UInt32"
+      }
+    ],
+    [
       "XahauActivationLgrSeq",
       {
         "nth": 96,
@@ -1482,6 +1503,16 @@
       "HookCanEmit",
       {
         "nth": 96,
+        "isVLEncoded": false,
+        "isSerialized": true,
+        "isSigningField": true,
+        "type": "Hash256"
+      }
+    ],
+    [
+      "Cron",
+      {
+        "nth": 95,
         "isVLEncoded": false,
         "isSerialized": true,
         "isSigningField": true,
@@ -2835,6 +2866,8 @@
     "URITokenBuy": 47,
     "URITokenCreateSellOffer": 48,
     "URITokenCancelSellOffer": 49,
+    "Cron": 92,
+    "CronSet": 93,
     "SetRemarks": 94,
     "Remit": 95,
     "GenesisMint": 96,

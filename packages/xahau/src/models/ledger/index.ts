@@ -4,6 +4,7 @@ import AccountRoot, {
 } from './AccountRoot'
 import Amendments, { Majority, AMENDMENTS_ID } from './Amendments'
 import Check from './Check'
+import Cron from './Cron'
 import DepositPreauth from './DepositPreauth'
 import DirectoryNode from './DirectoryNode'
 import EmittedTxn from './EmittedTxn'
@@ -36,6 +37,7 @@ export {
   AMENDMENTS_ID,
   Amendments,
   Check,
+  Cron,
   DepositPreauth,
   DirectoryNode,
   EmittedTxn,

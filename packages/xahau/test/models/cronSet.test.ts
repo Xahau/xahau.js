@@ -1,6 +1,10 @@
 import { assert } from 'chai'
 
-import { validate, ValidationError } from '../../src'
+import {
+  setTransactionFlagsToNumber,
+  validate,
+  ValidationError,
+} from '../../src'
 import {
   CronSetFlags,
   validateCronSet,
@@ -19,6 +23,7 @@ describe('CronSet', function () {
       Fee: '100',
       RepeatCount: 256,
       DelaySeconds: 365 * 24 * 60 * 60,
+      StartTime: 0,
     } as any
 
     assert.doesNotThrow(() => validateCronSet(validCronSet))
@@ -41,7 +46,10 @@ describe('CronSet', function () {
       Flags: { tfCronUnset: true },
     } as any
 
-    assert.doesNotThrow(() => validateCronSet(validCronSet))
+    assert.doesNotThrow(() => {
+      setTransactionFlagsToNumber(validCronSet)
+      validateCronSet(validCronSet)
+    })
     assert.doesNotThrow(() => validate(validCronSet))
   })
 
@@ -52,18 +60,19 @@ describe('CronSet', function () {
       Flags: CronSetFlags.tfCronUnset,
       RepeatCount: 1,
       DelaySeconds: 1,
+      StartTime: 1,
       Fee: '100',
     } as any
 
     assert.throws(
       () => validateCronSet(invalidDeleteOperation),
       ValidationError,
-      'CronSet: RepeatCount and DelaySeconds must not be set when Flags is set to tfCronUnset',
+      'CronSet: RepeatCount, DelaySeconds, and StartTime must not be set when Flags is set to tfCronUnset',
     )
     assert.throws(
       () => validate(invalidDeleteOperation),
       ValidationError,
-      'CronSet: RepeatCount and DelaySeconds must not be set when Flags is set to tfCronUnset',
+      'CronSet: RepeatCount, DelaySeconds, and StartTime must not be set when Flags is set to tfCronUnset',
     )
   })
 
@@ -72,6 +81,8 @@ describe('CronSet', function () {
       TransactionType: 'CronSet',
       Account: 'rUn84CUYbNjRoTQ6mSW7BVJPSVJNLb1QLo',
       RepeatCount: 257,
+      StartTime: 1,
+      DelaySeconds: 1,
       Fee: '100',
     } as any
 
@@ -91,6 +102,8 @@ describe('CronSet', function () {
       TransactionType: 'CronSet',
       Account: 'rUn84CUYbNjRoTQ6mSW7BVJPSVJNLb1QLo',
       DelaySeconds: 365 * 24 * 60 * 60 + 1,
+      StartTime: 1,
+      RepeatCount: 1,
       Fee: '100',
     } as any
 

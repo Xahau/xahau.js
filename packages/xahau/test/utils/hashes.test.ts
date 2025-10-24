@@ -20,6 +20,7 @@ import {
   hashAccountRoot,
   hashOfferId,
   hashSignerListId,
+  hashCron,
 } from '../../src/utils/hashes'
 import fixtures from '../fixtures/xahaud'
 import { assertResultMatch } from '../testUtils'
@@ -145,6 +146,15 @@ describe('Hashes', function () {
       'E35708503B3C3143FB522D749AAFCC296E8060F0FB371A9A56FAE0B1ED127366'
     const actualEntryHash = hashPaymentChannel(account, dstAccount, sequence)
 
+    assert.equal(actualEntryHash, expectedEntryHash)
+  })
+
+  it('calcCronEntryHash', function () {
+    const owner = 'rG1QQv2nh2gr7RCZ1P8YYcBUKCCN633jCn'
+    const time = 30758410
+    const expectedEntryHash =
+      'F7B645436187CC6101D5560AF1127C15262825333ADC45B3155918D98149BD3F'
+    const actualEntryHash = hashCron(owner, time)
     assert.equal(actualEntryHash, expectedEntryHash)
   })
 

@@ -1,6 +1,12 @@
 import { ValidationError } from '../../errors'
 
-import { BaseTransaction, validateBaseTransaction } from './common'
+import {
+  BaseTransaction,
+  isNumber,
+  validateBaseTransaction,
+  validateOptionalField,
+  validateRequiredField,
+} from './common'
 /**
  * Transaction Flags for an CronSet Transaction.
  *
@@ -23,6 +29,7 @@ export interface CronSet extends BaseTransaction {
   Flags?: number | CronSetFlags
   RepeatCount?: number
   DelaySeconds?: number
+  StartTime?: number
 }
 
 const MAX_REPEAT_COUNT = 256
@@ -38,29 +45,45 @@ const MIN_DELAY_SECONDS = 365 * 24 * 60 * 60
 export function validateCronSet(tx: Record<string, unknown>): void {
   validateBaseTransaction(tx)
 
-  if (tx.Flags === CronSetFlags.tfCronUnset) {
-    if (tx.RepeatCount !== undefined || tx.DelaySeconds !== undefined) {
+  if (
+    typeof tx.Flags === 'number' &&
+    // eslint-disable-next-line no-bitwise -- bitwise operation to check if the flag is set
+    tx.Flags & CronSetFlags.tfCronUnset
+  ) {
+    if (
+      tx.RepeatCount !== undefined ||
+      tx.DelaySeconds !== undefined ||
+      tx.StartTime !== undefined
+    ) {
       throw new ValidationError(
-        'CronSet: RepeatCount and DelaySeconds must not be set when Flags is set to tfCronUnset',
+        'CronSet: RepeatCount, DelaySeconds, and StartTime must not be set when Flags is set to tfCronUnset',
       )
     }
+    return
+  }
+  // eslint-disable-next-line no-bitwise -- bitwise operation to check if the flag is set
+  console.log(tx.Flags, CronSetFlags.tfCronUnset, 1 & 1)
+
+  validateRequiredField(tx, 'StartTime', isNumber)
+  validateOptionalField(tx, 'RepeatCount', isNumber)
+  validateOptionalField(tx, 'DelaySeconds', isNumber)
+
+  if ((tx.RepeatCount === undefined) !== (tx.DelaySeconds === undefined)) {
+    throw new ValidationError(
+      'CronSet: Both RepeatCount and DelaySeconds must be set, or neither should be set',
+    )
   }
 
-  if (tx.RepeatCount !== undefined && typeof tx.RepeatCount !== 'number') {
-    throw new ValidationError('CronSet: RepeatCount must be a number')
-  }
-
-  if (tx.RepeatCount !== undefined && tx.RepeatCount > MAX_REPEAT_COUNT) {
+  if (typeof tx.RepeatCount === 'number' && tx.RepeatCount > MAX_REPEAT_COUNT) {
     throw new ValidationError(
       `CronSet: RepeatCount must be less than ${MAX_REPEAT_COUNT}`,
     )
   }
 
-  if (tx.DelaySeconds !== undefined && typeof tx.DelaySeconds !== 'number') {
-    throw new ValidationError('CronSet: DelaySeconds must be a number')
-  }
-
-  if (tx.DelaySeconds !== undefined && tx.DelaySeconds > MIN_DELAY_SECONDS) {
+  if (
+    typeof tx.DelaySeconds === 'number' &&
+    tx.DelaySeconds > MIN_DELAY_SECONDS
+  ) {
     throw new ValidationError(
       `CronSet: DelaySeconds must be less than ${MIN_DELAY_SECONDS}`,
     )

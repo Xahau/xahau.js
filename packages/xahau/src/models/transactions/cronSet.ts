@@ -61,8 +61,6 @@ export function validateCronSet(tx: Record<string, unknown>): void {
     }
     return
   }
-  // eslint-disable-next-line no-bitwise -- bitwise operation to check if the flag is set
-  console.log(tx.Flags, CronSetFlags.tfCronUnset, 1 & 1)
 
   validateRequiredField(tx, 'StartTime', isNumber)
   validateOptionalField(tx, 'RepeatCount', isNumber)

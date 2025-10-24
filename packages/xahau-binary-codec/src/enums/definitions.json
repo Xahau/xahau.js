@@ -2670,7 +2670,6 @@
     "telNON_LOCAL_EMITTED_TXN": -383,
     "telIMPORT_VL_KEY_NOT_RECOGNISED": -382,
     "telCAN_NOT_QUEUE_IMPORT": -381,
-
     "temMALFORMED": -299,
     "temBAD_AMOUNT": -298,
     "temBAD_CURRENCY": -297,
@@ -2834,7 +2833,6 @@
     "tecINSUF_RESERVE_SELLER": 187,
     "tecIMMUTABLE": 188,
     "tecTOO_MANY_REMARKS": 189,
-    "tecHAS_HOOK_STATE": 190,
     "tecLAST_POSSIBLE_ENTRY": 255
   },
   "TRANSACTION_TYPES": {
@@ -2875,7 +2873,7 @@
     "URITokenCancelSellOffer": 49,
     "Cron": 92,
     "CronSet": 93,
-    "RemarksSet": 94,
+    "SetRemarks": 94,
     "Remit": 95,
     "GenesisMint": 96,
     "Import": 97,

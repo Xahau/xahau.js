@@ -117,6 +117,7 @@ describe('server_info (xahaud)', function () {
         'time',
         'uptime',
         'complete_ledgers',
+        'complete_ledgers_pinned',
         'hostid',
         'load',
         'state_accounting',

@@ -110,6 +110,9 @@ jobs:
         run: |
           docker run --detach --rm --name xahaud-service -p 6006:6006 --volume "${{ github.workspace }}/.ci-config/":"/opt/xahau/etc/" --health-cmd="wget localhost:6006 || exit 1" --health-interval=5s --health-retries=10 --health-timeout=2s --env GITHUB_ACTIONS=true --env CI=true ${{ env.XAHAUD_DOCKER_IMAGE }} /opt/xahau/bin/xahaud -a --conf /opt/xahau/etc/xahaud.cfg
 
+      - name: Check docker container log
+        run: docker logs xahaud-service
+
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v3
         with:

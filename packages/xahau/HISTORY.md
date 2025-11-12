@@ -6,6 +6,7 @@ Subscribe to [the **xrpl-announce** mailing list](https://groups.google.com/g/xr
 
 ### Added
 * Support for Cron Amendment
+* Support for ExtendedHookState Amendment
 
 ## 4.0.1 (2025-10-03)
 

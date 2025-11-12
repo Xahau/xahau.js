@@ -1,6 +1,6 @@
 {
   "name": "xahau",
-  "version": "4.0.1",
+  "version": "4.0.2",
   "license": "ISC",
   "description": "A TypeScript/JavaScript API for interacting with the XAH Ledger in Node.js and the browser",
   "files": [
@@ -29,7 +29,7 @@
     "bignumber.js": "^9.0.0",
     "eventemitter3": "^5.0.1",
     "xahau-address-codec": "^5.0.0",
-    "xahau-binary-codec": "^2.1.1",
+    "xahau-binary-codec": "^2.1.2",
     "xahau-keypairs": "^2.0.0"
   },
   "devDependencies": {

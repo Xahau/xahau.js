@@ -1,6 +1,7 @@
 import AccountRoot from './AccountRoot'
 import Amendments from './Amendments'
 import Check from './Check'
+import Cron from './Cron'
 import DepositPreauth from './DepositPreauth'
 import DirectoryNode from './DirectoryNode'
 import EmittedTxn from './EmittedTxn'
@@ -23,6 +24,7 @@ import URIToken from './URIToken'
 type LedgerEntry =
   | AccountRoot
   | Amendments
+  | Cron
   | Check
   | DepositPreauth
   | DirectoryNode
@@ -46,6 +48,7 @@ type LedgerEntry =
 type LedgerEntryFilter =
   | 'account'
   | 'amendments'
+  | 'cron'
   | 'check'
   | 'deposit_preauth'
   | 'directory'

@@ -800,6 +800,16 @@
       }
     ],
     [
+      "StartTime",
+      {
+        "nth": 93,
+        "isVLEncoded": false,
+        "isSerialized": true,
+        "isSigningField": true,
+        "type": "UInt32"
+      }
+    ],
+    [
       "RepeatCount",
       {
         "nth": 94,

@@ -4,7 +4,7 @@
 name: Node.js CI
 
 env:
-  XAHAUD_DOCKER_IMAGE: xahauci/xahaud:2025.2.6
+  XAHAUD_DOCKER_IMAGE: xahauci/xahaud:2025.7.9
 
 on:
   push:

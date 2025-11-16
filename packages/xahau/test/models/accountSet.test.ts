@@ -201,6 +201,5 @@ describe('AccountSet', function () {
       ValidationError,
       'AccountSet: HookStateScale must be greater than or equal to 1',
     )
-
   })
 })

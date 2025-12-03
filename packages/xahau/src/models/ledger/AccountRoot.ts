@@ -202,7 +202,6 @@ export enum AccountRootFlags {
   lsfDepositAuth = 0x01000000,
   /**
    * The TSH pays for the execution of their own Hook Chain. Added by the Hooks amendment.
-   * (It has DepositAuth enabled.)
    */
   lsfTshCollect = 0x02000000,
   /**

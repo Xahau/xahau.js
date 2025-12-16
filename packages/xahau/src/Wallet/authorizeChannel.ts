@@ -1,7 +1,7 @@
 import { encodeForSigningClaim } from 'xahau-binary-codec'
 import { sign } from 'xahau-keypairs'
 
-import { Wallet } from './index'
+import type { Wallet } from './index'
 
 /**
  * Creates a signature that can be used to redeem a specific amount of XAH from a payment channel.

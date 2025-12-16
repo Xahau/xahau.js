@@ -505,3 +505,7 @@ function removeTrailingZeros(tx: Transaction): void {
     tx.Amount.value = new BigNumber(tx.Amount.value).toString()
   }
 }
+
+export { multisign, verifySignature } from './signer'
+
+export { authorizeChannel } from './authorizeChannel'

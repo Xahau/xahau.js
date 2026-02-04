@@ -36,7 +36,7 @@ class UInt64 extends UInt {
 
     let buf = new Uint8Array(UInt64.width)
 
-    if (typeof val === 'number') {
+    if (typeof val === 'number' && Number.isInteger(val)) {
       if (val < 0) {
         throw new Error('value must be an unsigned integer')
       }

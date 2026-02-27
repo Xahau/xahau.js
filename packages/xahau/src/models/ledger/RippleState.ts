@@ -2,6 +2,13 @@ import { IssuedCurrencyAmount } from '../common'
 
 import { BaseLedgerEntry, HasPreviousTxnID } from './BaseLedgerEntry'
 
+export interface RippleStateReward {
+  RewardLgrFirst: number
+  RewardLgrLast: number
+  RewardTime: number
+  TrustLineRewardAccumulator: IssuedCurrencyAmount
+}
+
 /**
  * The RippleState object type connects two accounts in a single currency.
  *
@@ -61,6 +68,8 @@ export default interface RippleState extends BaseLedgerEntry, HasPreviousTxnID {
    * equivalent to 1 billion, or face value.
    */
   HighQualityOut?: number
+  HighReward?: RippleStateReward
+  LowReward?: RippleStateReward
 }
 
 export enum RippleStateFlags {

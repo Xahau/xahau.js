@@ -90,6 +90,9 @@ export default interface AccountRoot extends BaseLedgerEntry, HasPreviousTxnID {
   GovernanceMarks?: string
   AccountIndex?: number
   TouchCount?: number
+  HookStateScale?: number
+  /* The cron job that is associated with this account. */
+  Cron?: string
 }
 
 /**
@@ -158,6 +161,11 @@ export interface AccountRootFlagsInterface {
    * Disallow incoming Remit from other accounts.
    */
   lsfDisallowIncomingRemit?: boolean
+
+  /**
+   * This address can claw back issued IOUs. Once enabled, cannot be disabled.
+   */
+  lsfAllowTrustLineClawback?: boolean
 }
 
 export enum AccountRootFlags {
@@ -222,4 +230,8 @@ export enum AccountRootFlags {
    * Disallow incoming Remits from other accounts.
    */
   lsfDisallowIncomingRemit = 0x80000000,
+  /**
+   * This address can claw back issued IOUs. Once enabled, cannot be disabled.
+   */
+  lsfAllowTrustLineClawback = 0x00001000,
 }

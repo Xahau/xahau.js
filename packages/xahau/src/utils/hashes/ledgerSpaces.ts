@@ -30,6 +30,7 @@ const ledgerSpaces = {
   check: 'C',
   depositPreauth: 'p',
   uriToken: 'U',
+  cron: 'L',
 }
 
 export default ledgerSpaces

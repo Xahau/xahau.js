@@ -2,6 +2,7 @@ import AccountRoot from './AccountRoot'
 import Amendments from './Amendments'
 import AMM from './AMM'
 import Check from './Check'
+import Cron from './Cron'
 import DepositPreauth from './DepositPreauth'
 import DirectoryNode from './DirectoryNode'
 import EmittedTxn from './EmittedTxn'
@@ -25,6 +26,7 @@ type LedgerEntry =
   | AccountRoot
   | Amendments
   | AMM
+  | Cron
   | Check
   | DepositPreauth
   | DirectoryNode
@@ -49,6 +51,7 @@ type LedgerEntryFilter =
   | 'account'
   | 'amm'
   | 'amendments'
+  | 'cron'
   | 'check'
   | 'deposit_preauth'
   | 'directory'

@@ -215,6 +215,20 @@ export interface LedgerEntryRequest extends BaseRequest, LookupByLedgerRequest {
         uri: string
       }
     | string
+
+  /**
+   * The Cron object to retrieve. If a string, must be the object ID of the
+   * Cron, as hexadecimal. If an object, the `owner` and `time`
+   * sub-fields are required to uniquely specify the Cron entry.
+   */
+  cron?:
+    | {
+        /** The owner of the Cron object. */
+        owner: string
+        /** The start time of the Cron object. */
+        time: number
+      }
+    | string
 }
 
 /**

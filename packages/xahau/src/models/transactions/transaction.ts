@@ -18,7 +18,10 @@ import { CheckCancel, validateCheckCancel } from './checkCancel'
 import { CheckCash, validateCheckCash } from './checkCash'
 import { CheckCreate, validateCheckCreate } from './checkCreate'
 import { ClaimReward, validateClaimReward } from './claimReward'
+import { Clawback, validateClawback } from './clawback'
 import { BaseTransaction, isIssuedCurrency } from './common'
+import { Cron } from './cron'
+import { CronSet, validateCronSet } from './cronSet'
 import { DepositPreauth, validateDepositPreauth } from './depositPreauth'
 import { EnableAmendment } from './enableAmendment'
 import { EscrowCancel, validateEscrowCancel } from './escrowCancel'
@@ -81,6 +84,8 @@ export type SubmittableTransaction =
   | CheckCash
   | CheckCreate
   | ClaimReward
+  | Clawback
+  | CronSet
   | DepositPreauth
   | EscrowCancel
   | EscrowCreate
@@ -111,7 +116,7 @@ export type SubmittableTransaction =
  *
  * @category Transaction Models
  */
-export type PseudoTransaction = EnableAmendment | SetFee | UNLModify
+export type PseudoTransaction = Cron | EnableAmendment | SetFee | UNLModify
 
 /**
  * All transactions that can live on the XAHL
@@ -245,6 +250,14 @@ export function validate(transaction: Record<string, unknown>): void {
 
     case 'ClaimReward':
       validateClaimReward(tx)
+      break
+
+    case 'Clawback':
+      validateClawback(tx)
+      break
+
+    case 'CronSet':
+      validateCronSet(tx)
       break
 
     case 'DepositPreauth':

@@ -199,4 +199,28 @@ export function hashURIToken(issuer: string, uri: string): string {
   )
 }
 
+/**
+ * Compute the Hash of a Cron LedgerEntry.
+ *
+ * @param owner - Account of the Cron.
+ * @param time - Time of the Cron.
+ * @returns Hash of the Cron.
+ * @category Utilities
+ */
+export function hashCron(owner: string, time: number): string {
+  const timeString = bytesToHex([
+    (time >> 24) & 0xff,
+    (time >> 16) & 0xff,
+    (time >> 8) & 0xff,
+    (time >> 0) & 0xff,
+  ])
+
+  const nsHash = sha512Half(ledgerSpaceHex('cron')).slice(0, 16)
+  const accHash = sha512Half(
+    ledgerSpaceHex('cron') + timeString + addressToHex(owner),
+  ).slice(0, 40)
+
+  return nsHash + timeString + accHash
+}
+
 export { hashLedgerHeader, hashSignedTx, hashLedger, hashStateTree, hashTxTree }

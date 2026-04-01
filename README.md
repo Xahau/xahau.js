@@ -75,7 +75,6 @@ If you're using xahau.js with React or Deno, you'll need to do a couple extra st
 - [Using xahau.js with `create-react-app`](https://github.com/XRPLF/xahau.js/blob/main/UNIQUE_SETUPS.md#using-xahaujs-with-create-react-app)
 - [Using xahau.js with `React Native`](https://github.com/XRPLF/xahau.js/blob/main/UNIQUE_SETUPS.md#using-xahaujs-with-react-native)
 - [Using xahau.js with `Vite React`](https://github.com/XRPLF/xahau.js/blob/main/UNIQUE_SETUPS.md#using-xahaujs-with-vite-react)
-- [Using xahau.js with `Deno`](https://github.com/XRPLF/xahau.js/blob/main/UNIQUE_SETUPS.md#using-xahaujs-with-deno)
 
 ## Documentation
 

@@ -1,5 +1,5 @@
 import { bytesToHex } from '@xrplf/isomorphic/utils'
-import { BigNumber } from 'bignumber.js'
+import BigNumber from 'bignumber.js'
 import { decodeAccountID } from 'xahau-address-codec'
 import { decode, encode, encodeForSigning } from 'xahau-binary-codec'
 import { verify } from 'xahau-keypairs'
@@ -137,8 +137,10 @@ function getTransactionWithAllSigners(
  * @returns 1 if left \> right, 0 if left = right, -1 if left \< right, and null if left or right are NaN.
  */
 function compareSigners(left: Signer, right: Signer): number {
-  return addressToBigNumber(left.Signer.Account).comparedTo(
-    addressToBigNumber(right.Signer.Account),
+  return (
+    addressToBigNumber(left.Signer.Account).comparedTo(
+      addressToBigNumber(right.Signer.Account),
+    ) ?? 0
   )
 }
 

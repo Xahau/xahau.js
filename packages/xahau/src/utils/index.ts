@@ -46,7 +46,12 @@ import {
   hashPaymentChannel,
   hashURIToken,
 } from './hashes'
-import { calculateHookOn, hexHookParameters, TTS } from './hooks'
+import {
+  calculateHookOn,
+  calculateHookCanEmit,
+  hexHookParameters,
+  TTS,
+} from './hooks'
 import {
   percentToTransferRate,
   decimalToTransferRate,
@@ -227,6 +232,7 @@ export {
   encodeForSigning,
   encodeForSigningClaim,
   calculateHookOn,
+  calculateHookCanEmit,
   hexHookParameters,
   TTS,
 }

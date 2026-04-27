@@ -157,6 +157,14 @@ describe('Remit', function () {
       'Remit: Duplicate amounts are not allowed',
     )
   })
+  it(`throws w/ Bad Amount`, function () {
+    remit.Amounts = [{ AmountEntry: { Amount: 1234 } }]
+    assert.throws(
+      () => validateRemit(remit),
+      ValidationError,
+      'Remit: invalid Amounts.AmountEntry.Amount',
+    )
+  })
   it(`throws w/ Bad URITokenIDs`, function () {
     remit.URITokenIDs = {}
     assert.throws(

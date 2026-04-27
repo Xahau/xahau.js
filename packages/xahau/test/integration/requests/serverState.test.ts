@@ -105,6 +105,7 @@ describe('server_state', function () {
 
       const removeKeys = [
         'complete_ledgers',
+        'complete_ledgers_pinned',
         'load',
         'state_accounting',
         'pubkey_node',

@@ -74,7 +74,13 @@ class XrplDefinitionsBase {
       .filter(([_key, value]) => value >= 0)
       .map(([key, _value]) => key)
 
-    const ignoreList = ['EnableAmendment', 'SetFee', 'UNLModify', 'EmitFailure']
+    const ignoreList = [
+      'EnableAmendment',
+      'SetFee',
+      'UNLModify',
+      'EmitFailure',
+      'Cron',
+    ]
     this.transactionMap = Object.assign(
       {},
       ...Object.entries(enums.TRANSACTION_TYPES)

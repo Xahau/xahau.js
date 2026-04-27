@@ -29,6 +29,7 @@
   "LEDGER_ENTRY_TYPES": {
     "Invalid": -1,
     "AccountRoot": 97,
+    "Cron": 65,
     "DirectoryNode": 100,
     "RippleState": 114,
     "Ticket": 84,
@@ -322,6 +323,16 @@
       "HookApiVersion",
       {
         "nth": 20,
+        "isVLEncoded": false,
+        "isSerialized": true,
+        "isSigningField": true,
+        "type": "UInt16"
+      }
+    ],
+    [
+      "HookStateScale",
+      {
+        "nth": 21,
         "isVLEncoded": false,
         "isSerialized": true,
         "isSigningField": true,
@@ -792,6 +803,36 @@
       "FirstNFTokenSequence",
       {
         "nth": 50,
+        "isVLEncoded": false,
+        "isSerialized": true,
+        "isSigningField": true,
+        "type": "UInt32"
+      }
+    ],
+    [
+      "StartTime",
+      {
+        "nth": 93,
+        "isVLEncoded": false,
+        "isSerialized": true,
+        "isSigningField": true,
+        "type": "UInt32"
+      }
+    ],
+    [
+      "RepeatCount",
+      {
+        "nth": 94,
+        "isVLEncoded": false,
+        "isSerialized": true,
+        "isSigningField": true,
+        "type": "UInt32"
+      }
+    ],
+    [
+      "DelaySeconds",
+      {
+        "nth": 95,
         "isVLEncoded": false,
         "isSerialized": true,
         "isSigningField": true,
@@ -1472,6 +1513,26 @@
       "EmittedTxnID",
       {
         "nth": 97,
+        "isVLEncoded": false,
+        "isSerialized": true,
+        "isSigningField": true,
+        "type": "Hash256"
+      }
+    ],
+    [
+      "HookCanEmit",
+      {
+        "nth": 96,
+        "isVLEncoded": false,
+        "isSerialized": true,
+        "isSigningField": true,
+        "type": "Hash256"
+      }
+    ],
+    [
+      "Cron",
+      {
+        "nth": 95,
         "isVLEncoded": false,
         "isSerialized": true,
         "isSigningField": true,
@@ -2787,6 +2848,7 @@
     "tecINSUF_RESERVE_SELLER": 187,
     "tecIMMUTABLE": 188,
     "tecTOO_MANY_REMARKS": 189,
+    "tecHAS_HOOK_STATE": 190,
     "tecLAST_POSSIBLE_ENTRY": 255
   },
   "TRANSACTION_TYPES": {
@@ -2819,11 +2881,14 @@
     "NFTokenCreateOffer": 27,
     "NFTokenCancelOffer": 28,
     "NFTokenAcceptOffer": 29,
+    "Clawback": 30,
     "URITokenMint": 45,
     "URITokenBurn": 46,
     "URITokenBuy": 47,
     "URITokenCreateSellOffer": 48,
     "URITokenCancelSellOffer": 49,
+    "Cron": 92,
+    "CronSet": 93,
     "SetRemarks": 94,
     "Remit": 95,
     "GenesisMint": 96,

@@ -41,10 +41,15 @@ export function validateSetHook(tx: Record<string, unknown>): void {
   for (const hook of tx.Hooks) {
     // eslint-disable-next-line @typescript-eslint/consistent-type-assertions -- Should be a Hook
     const hookObject = hook as Hook
-    const { HookOn, HookNamespace } = hookObject.Hook
+    const { HookOn, HookCanEmit, HookNamespace } = hookObject.Hook
     if (HookOn !== undefined && !HEX_REGEX.test(HookOn)) {
       throw new ValidationError(
         `SetHook: HookOn in Hook must be a 256-bit (32-byte) hexadecimal value`,
+      )
+    }
+    if (HookCanEmit !== undefined && !HEX_REGEX.test(HookCanEmit)) {
+      throw new ValidationError(
+        `SetHook: HookCanEmit in Hook must be a 256-bit (32-byte) hexadecimal value`,
       )
     }
     if (HookNamespace !== undefined && !HEX_REGEX.test(HookNamespace)) {

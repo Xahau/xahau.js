@@ -214,7 +214,8 @@ describe('Models Utils', function () {
         AccountRootFlags.lsfDisallowIncomingCheck |
         AccountRootFlags.lsfDisallowIncomingPayChan |
         AccountRootFlags.lsfDisallowIncomingTrustline |
-        AccountRootFlags.lsfDisallowIncomingRemit
+        AccountRootFlags.lsfDisallowIncomingRemit |
+        AccountRootFlags.lsfAllowTrustLineClawback
 
       const parsed = parseAccountRootFlags(accountRootFlags)
 
@@ -232,7 +233,8 @@ describe('Models Utils', function () {
           parsed.lsfDisallowIncomingCheck &&
           parsed.lsfDisallowIncomingPayChan &&
           parsed.lsfDisallowIncomingTrustline &&
-          parsed.lsfDisallowIncomingRemit,
+          parsed.lsfDisallowIncomingRemit &&
+          parsed.lsfAllowTrustLineClawback,
       )
     })
 
@@ -253,6 +255,7 @@ describe('Models Utils', function () {
       assert.isUndefined(parsed.lsfDisallowIncomingPayChan)
       assert.isUndefined(parsed.lsfDisallowIncomingTrustline)
       assert.isUndefined(parsed.lsfDisallowIncomingRemit)
+      assert.isUndefined(parsed.lsfAllowTrustLineClawback)
     })
 
     it('parseTransactionFlags all enabled', function () {

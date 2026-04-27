@@ -3,9 +3,20 @@
 Subscribe to [the **xrpl-announce** mailing list](https://groups.google.com/g/xrpl-announce) for release announcements. We recommend that xrpl.js (ripple-lib) users stay up-to-date with the latest stable release.
 
 ## Unreleased Changes
+### Added
+* Fixed minified `build/xahau-latest-min.js` to have all the latest xahau package changes.
+
+## 4.0.1 (2025-11-12)
+
+### Added
+* Support for Cron Amendment
+* Support for ExtendedHookState Amendment
+
+## 4.0.1 (2025-10-03)
 
 ### Added
 * parseTransactionFlags as a utility function in the xrpl package to streamline transactions flags-to-map conversion
+* Support for XLS-77d Deep-Freeze amendment
 
 ### Fixed
 * `TransactionStream` model supports APIv2

@@ -146,7 +146,7 @@ class Amount extends SerializedType {
    */
   toJSON(): AmountObject | string {
     if (this.isNative()) {
-      const bytes = this.bytes
+      const bytes = this.bytes.slice()
       const isPositive = bytes[0] & 0x40
       const sign = isPositive ? '' : '-'
       bytes[0] &= 0x3f

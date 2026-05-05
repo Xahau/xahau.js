@@ -12,7 +12,6 @@ import { CronSetFlags } from '../transactions/cronSet'
 import { OfferCreateFlags } from '../transactions/offerCreate'
 import { PaymentFlags } from '../transactions/payment'
 import { PaymentChannelClaimFlags } from '../transactions/paymentChannelClaim'
-import { SetHookFlagsInterface, SetHookFlags } from '../transactions/setHook'
 import {
   RemarkFlagsInterface,
   RemarkFlags,
@@ -79,32 +78,24 @@ export function setTransactionFlagsToNumber(tx: Transaction): void {
     }
   }
 
+  if (tx.TransactionType === 'SetRemarks') {
+    if (Array.isArray(tx.Remarks)) {
+      tx.Remarks.forEach((remark: Remark) => {
+        remark.Remark.Flags = convertFlagsToNumber(
+          // eslint-disable-next-line @typescript-eslint/consistent-type-assertions -- idk
+          remark.Remark.Flags as RemarkFlagsInterface,
+          RemarkFlags,
+        )
+      })
+    }
+  }
+
   if (tx.Flags == null) {
     tx.Flags = 0
     return
   }
   if (typeof tx.Flags === 'number') {
     return
-  }
-
-
-  if (tx.TransactionType === 'SetHook') {
-    tx.Flags = convertFlagsToNumber(tx.Flags, SetHookFlags)
-    tx.Hooks.forEach((hook: Hook) => {
-      hook.Hook.Flags = convertFlagsToNumber(
-        // eslint-disable-next-line @typescript-eslint/consistent-type-assertions -- idk
-        hook.Hook.Flags as SetHookFlagsInterface,
-        SetHookFlags,
-      )
-    })
-  } else if (tx.TransactionType === 'SetRemarks') {
-    tx.Remarks.forEach((remark: Remark) => {
-      remark.Remark.Flags = convertFlagsToNumber(
-        // eslint-disable-next-line @typescript-eslint/consistent-type-assertions -- idk
-        remark.Remark.Flags as RemarkFlagsInterface,
-        RemarkFlags,
-      )
-    })
   }
 
   tx.Flags = txToFlag[tx.TransactionType]

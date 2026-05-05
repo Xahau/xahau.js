@@ -12,11 +12,7 @@ import { CronSetFlags } from '../transactions/cronSet'
 import { OfferCreateFlags } from '../transactions/offerCreate'
 import { PaymentFlags } from '../transactions/payment'
 import { PaymentChannelClaimFlags } from '../transactions/paymentChannelClaim'
-import {
-  RemarkFlagsInterface,
-  RemarkFlags,
-  Remark,
-} from '../transactions/setRemarks'
+import { RemarkFlags, Remark } from '../transactions/setRemarks'
 import type { Transaction } from '../transactions/transaction'
 import { TrustSetFlags } from '../transactions/trustSet'
 
@@ -81,11 +77,12 @@ export function setTransactionFlagsToNumber(tx: Transaction): void {
   if (tx.TransactionType === 'SetRemarks') {
     if (Array.isArray(tx.Remarks)) {
       tx.Remarks.forEach((remark: Remark) => {
-        remark.Remark.Flags = convertFlagsToNumber(
-          // eslint-disable-next-line @typescript-eslint/consistent-type-assertions -- idk
-          remark.Remark.Flags as RemarkFlagsInterface,
-          RemarkFlags,
-        )
+        if (typeof remark.Remark.Flags === 'object') {
+          remark.Remark.Flags = convertFlagsToNumber(
+            remark.Remark.Flags,
+            RemarkFlags,
+          )
+        }
       })
     }
   }

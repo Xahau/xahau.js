@@ -1,7 +1,7 @@
 /**
- * XAH Ledger namespace prefixes.
+ * Xahau Network namespace prefixes.
  *
- * The XAH Ledger is a key-value store. In order to avoid name collisions,
+ * The Xahau Network is a key-value store. In order to avoid name collisions,
  * names are partitioned into namespaces.
  *
  * Each namespace is just a single character prefix.

@@ -355,13 +355,13 @@ export class Wallet {
    * Output of `sign` includes a `tx_blob` and a `hash`, both of which are needed to submit & verify the results.
    * Note: If you pass a `Wallet` to `client.submit` or `client.submitAndWait` it will do signing like this under the hood.
    *
-   * `tx_blob` is a binary representation of a transaction on the XAH Ledger. It's essentially a byte array
+   * `tx_blob` is a binary representation of a transaction on the Xahau Network. It's essentially a byte array
    * that encodes all of the data necessary to execute the transaction, including the source address, the destination
    * address, the amount, and any additional fields required for the specific transaction type.
    *
-   * `hash` is a unique identifier that's generated from the signed transaction data on the XAH Ledger. It's essentially
+   * `hash` is a unique identifier that's generated from the signed transaction data on the Xahau Network. It's essentially
    * A cryptographic digest of the signed transaction blob, created using a hash function. The signed transaction hash is
-   * Useful for identifying and tracking specific transactions on the XAH Ledger. It can be used to query transaction
+   * Useful for identifying and tracking specific transactions on the Xahau Network. It can be used to query transaction
    * Information, verify the authenticity of a transaction, and detect any tampering with the transaction data.
    *
    * @param this - Wallet instance.

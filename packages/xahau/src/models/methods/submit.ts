@@ -65,7 +65,7 @@ export interface SubmitResponse extends BaseResponse {
     applied: boolean
     /**
      * The value true indicates this transaction was broadcast to peer servers
-     * in the peer-to-peer XAH Ledger network.
+     * in the peer-to-peer Xahau Network network.
      */
     broadcast: boolean
     /**

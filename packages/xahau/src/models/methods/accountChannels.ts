@@ -3,7 +3,7 @@ import { Amount } from '../common'
 import { BaseRequest, BaseResponse, LookupByLedgerRequest } from './baseMethod'
 
 /**
- * Represents a payment channel in the XAH Ledger.
+ * Represents a payment channel in the Xahau Network.
  */
 export interface Channel {
   /** The owner of the channel, as an Address. */
@@ -38,7 +38,7 @@ export interface Channel {
   settle_delay: number
 
   /**
-   * The public key for the payment channel in the XAH Ledger's base58 format.
+   * The public key for the payment channel in the Xahau Network's base58 format.
    * Signed claims against this channel must be redeemed with the matching key pair.
    */
   public_key?: string

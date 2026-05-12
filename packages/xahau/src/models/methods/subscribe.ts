@@ -29,7 +29,7 @@ export interface SubscribeBook {
   taker_pays: Currency
   /**
    * Unique account address to use as a perspective for viewing offers, in the.
-   * XAH Ledger's base58 format.
+   * Xahau Network's base58 format.
    */
   taker: string
   /**
@@ -54,7 +54,7 @@ export interface SubscribeRequest extends BaseRequest {
   streams?: StreamType[]
   /**
    * Array with the unique addresses of accounts to monitor for validated
-   * transactions. The addresses must be in the XAH Ledger's base58 format.
+   * transactions. The addresses must be in the Xahau Network's base58 format.
    * The server sends a notification for any transaction that affects at least
    * one of these accounts.
    */
@@ -235,7 +235,7 @@ export interface ValidationStream extends BaseStream {
   load_fee?: number
   /**
    * The validator's master public key, if the validator is using a validator
-   * token, in the XAH Ledger's base58 format.
+   * token, in the Xahau Network's base58 format.
    */
   master_key?: string
   /**
@@ -254,7 +254,7 @@ export interface ValidationStream extends BaseStream {
   signing_time: number
   /**
    * The public key from the key-pair that the validator used to sign the
-   * message, in the XAH Ledger's base58 format. This identifies the validator
+   * message, in the Xahau Network's base58 format. This identifies the validator
    * sending the message and can also be used to verify the signature. If the
    * validator is using a token, this is an ephemeral public key.
    */

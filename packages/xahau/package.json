@@ -2,7 +2,7 @@
   "name": "xahau",
   "version": "4.0.3",
   "license": "ISC",
-  "description": "A TypeScript/JavaScript API for interacting with the XAH Ledger in Node.js and the browser",
+  "description": "A TypeScript/JavaScript API for interacting with the Xahau Network in Node.js and the browser",
   "files": [
     "build/xahau-latest-min.js",
     "build/xahau-latest-min.js.map",

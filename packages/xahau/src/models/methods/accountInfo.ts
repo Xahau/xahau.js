@@ -25,7 +25,7 @@ export interface AccountInfoRequest extends BaseRequest, LookupByLedgerRequest {
    */
   signer_lists?: boolean
   /**
-   * If true, then the account field only accepts a public key or XAH Ledger
+   * If true, then the account field only accepts a public key or Xahau Network
    * address. Otherwise, account can be a secret or passphrase (not
    * recommended). The default is false.
    */
@@ -159,7 +159,7 @@ interface BaseAccountInfoResponse extends BaseResponse {
     /**
      * Information about queued transactions sent by this account. This
      * information describes the state of the local xahaud server, which may be
-     * different from other servers in the peer-to-peer XAH Ledger network. Some
+     * different from other servers in the peer-to-peer Xahau Network network. Some
      * fields may be omitted because the values are calculated "lazily" by the
      * queuing mechanism.
      */

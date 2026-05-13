@@ -47,7 +47,7 @@ const ed25519: SigningScheme = {
       // ZIP 215 is a stricter Ed25519 signature verification scheme.
       // However, setting it to false adheres to the more commonly used
       // RFC8032 / NIST186-5 standards, making it compatible with systems
-      // like the XAH Ledger.
+      // like the Xahau Network.
       { zip215: false },
     )
   },

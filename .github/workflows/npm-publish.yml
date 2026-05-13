@@ -1,0 +1,87 @@
+name: Publish npm packages
+
+on:
+  pull_request:
+    branches: [main-xahau]
+    paths:
+      - packages/xahau/package.json
+      - packages/xahau-address-codec/package.json
+      - packages/xahau-binary-codec/package.json
+      - packages/xahau-keypairs/package.json
+  push:
+    branches: [main-xahau]
+    paths:
+      - packages/xahau/package.json
+      - packages/xahau-address-codec/package.json
+      - packages/xahau-binary-codec/package.json
+      - packages/xahau-keypairs/package.json
+
+concurrency:
+  group: npm-publish-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  dry-run:
+    name: Dry-run ${{ matrix.package.name }}
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    strategy:
+      fail-fast: false
+      matrix:
+        package:
+          - name: xahau-address-codec
+            path: packages/xahau-address-codec
+          - name: xahau-binary-codec
+            path: packages/xahau-binary-codec
+          - name: xahau-keypairs
+            path: packages/xahau-keypairs
+          - name: xahau
+            path: packages/xahau
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Fetch pull request base
+        env:
+          BASE_REF: ${{ github.base_ref }}
+        run: git fetch --no-tags --depth=1 origin "$BASE_REF"
+
+      - uses: ./.github/actions/npm-publish-package
+        with:
+          package-path: ${{ matrix.package.path }}
+          base-ref: origin/${{ github.base_ref }}
+          dry-run: "true"
+
+  publish:
+    name: Publish ${{ matrix.package.name }}
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main-xahau'
+    runs-on: ubuntu-latest
+    environment: npm
+    permissions:
+      contents: write
+      id-token: write
+    strategy:
+      fail-fast: false
+      matrix:
+        package:
+          - name: xahau-address-codec
+            path: packages/xahau-address-codec
+          - name: xahau-binary-codec
+            path: packages/xahau-binary-codec
+          - name: xahau-keypairs
+            path: packages/xahau-keypairs
+          - name: xahau
+            path: packages/xahau
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - uses: ./.github/actions/npm-publish-package
+        with:
+          package-path: ${{ matrix.package.path }}
+          base-ref: ${{ github.event.before }}
+          target-commitish: ${{ github.sha }}

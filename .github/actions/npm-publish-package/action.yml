@@ -1,0 +1,79 @@
+name: Publish npm package
+description: Publish one workspace package to npm and create the matching GitHub release.
+
+inputs:
+  package-path:
+    description: Workspace package path.
+    required: true
+  node-version:
+    description: Node.js version used for npm trusted publishing.
+    required: false
+    default: "24"
+  registry-url:
+    description: npm registry URL.
+    required: false
+    default: https://registry.npmjs.org
+  target-commitish:
+    description: Commit SHA used for the GitHub release tag.
+    required: false
+    default: ""
+  dry-run:
+    description: Run npm publish as a dry-run and skip GitHub release creation.
+    required: false
+    default: "false"
+  base-ref:
+    description: Git ref used to detect whether package.json version changed.
+    required: false
+    default: ""
+
+runs:
+  using: composite
+  steps:
+    - id: version
+      name: Check package version change
+      shell: bash
+      run: bash .github/workflows/scripts/check-package-version-changed.sh "${{ inputs.package-path }}"
+      env:
+        BASE_REF: ${{ inputs.base-ref }}
+
+    - uses: actions/setup-node@v6
+      if: steps.version.outputs.changed == 'true'
+      with:
+        node-version: ${{ inputs.node-version }}
+        registry-url: ${{ inputs.registry-url }}
+        package-manager-cache: false
+
+    - name: Install dependencies
+      if: steps.version.outputs.changed == 'true'
+      shell: bash
+      run: npm ci
+
+    - id: package
+      name: Read package metadata
+      if: steps.version.outputs.changed == 'true'
+      shell: bash
+      run: bash .github/workflows/scripts/read-package-metadata.sh "${{ inputs.package-path }}"
+
+    - name: Check package version is unpublished
+      if: steps.version.outputs.changed == 'true'
+      shell: bash
+      run: bash .github/workflows/scripts/check-npm-version-unpublished.sh "${{ steps.package.outputs.tag }}"
+
+    - name: Publish to npm (dry-run)
+      if: steps.version.outputs.changed == 'true' && inputs.dry-run == 'true'
+      shell: bash
+      run: npm publish --workspace "${{ inputs.package-path }}" --registry "${{ inputs.registry-url }}" --dry-run
+
+    - name: Publish to npm
+      if: steps.version.outputs.changed == 'true' && inputs.dry-run != 'true'
+      shell: bash
+      run: npm publish --workspace "${{ inputs.package-path }}" --registry "${{ inputs.registry-url }}"
+
+    - name: Create GitHub release
+      if: steps.version.outputs.changed == 'true' && inputs.dry-run != 'true'
+      uses: softprops/action-gh-release@v2
+      with:
+        tag_name: ${{ steps.package.outputs.tag }}
+        target_commitish: ${{ inputs.target-commitish }}
+        name: ${{ steps.package.outputs.tag }}
+        body: Published ${{ steps.package.outputs.tag }} to npm.

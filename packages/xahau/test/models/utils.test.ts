@@ -14,6 +14,12 @@ import {
   Remit,
   convertStringToHex,
   SetHook,
+  URITokenMint,
+  URITokenMintFlags,
+  ClaimReward,
+  ClaimRewardFlags,
+  CronSet,
+  CronSetFlags,
 } from '../../src'
 import { HookFlags, MintURITokenFlags } from '../../src/models/common/xahau'
 import { AccountRootFlags } from '../../src/models/ledger'
@@ -140,6 +146,52 @@ describe('Models Utils', function () {
 
       const { tfSetfAuth, tfClearNoRipple, tfClearFreeze } = TrustSetFlags
       const expected: number = tfSetfAuth | tfClearNoRipple | tfClearFreeze
+
+      setTransactionFlagsToNumber(tx)
+      assert.strictEqual(tx.Flags, expected)
+    })
+
+    it('sets URITokenMintFlags to its numeric value', function () {
+      const tx: URITokenMint = {
+        TransactionType: 'URITokenMint',
+        Account: 'rUn84CUYbNjRoTQ6mSW7BVJPSVJNLb1QLo',
+        URI: convertStringToHex('https://xahau.network'),
+        Flags: {
+          tfBurnable: true,
+        },
+      }
+      const { tfBurnable } = URITokenMintFlags
+      const expected: number = tfBurnable
+
+      setTransactionFlagsToNumber(tx)
+      assert.strictEqual(tx.Flags, expected)
+    })
+
+    it('sets ClaimRewardFlags to its numeric value', function () {
+      const tx: ClaimReward = {
+        TransactionType: 'ClaimReward',
+        Account: 'rUn84CUYbNjRoTQ6mSW7BVJPSVJNLb1QLo',
+        Flags: {
+          tfOptOut: true,
+        },
+      }
+      const { tfOptOut } = ClaimRewardFlags
+      const expected: number = tfOptOut
+
+      setTransactionFlagsToNumber(tx)
+      assert.strictEqual(tx.Flags, expected)
+    })
+
+    it('sets CronSetFlags to its numeric value', function () {
+      const tx: CronSet = {
+        TransactionType: 'CronSet',
+        Account: 'rUn84CUYbNjRoTQ6mSW7BVJPSVJNLb1QLo',
+        Flags: {
+          tfCronUnset: true,
+        },
+      }
+      const { tfCronUnset } = CronSetFlags
+      const expected: number = tfCronUnset
 
       setTransactionFlagsToNumber(tx)
       assert.strictEqual(tx.Flags, expected)

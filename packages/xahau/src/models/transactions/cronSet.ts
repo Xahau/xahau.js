@@ -2,6 +2,7 @@ import { ValidationError } from '../../errors'
 
 import {
   BaseTransaction,
+  GlobalFlags,
   isNumber,
   validateBaseTransaction,
   validateOptionalField,
@@ -20,13 +21,46 @@ export enum CronSetFlags {
 }
 
 /**
+ * Map of flags to boolean values representing {@link CronSet} transaction
+ * flags.
+ *
+ * @category Transaction Flags
+ *
+ * @example
+ * ```typescript
+ * const tx: CronSet = {
+ * Account: 'rUn84CUYbNjRoTQ6mSW7BVJPSVJNLb1QLo',
+ * TransactionType: 'CronSet',
+ * Flags: {
+ *   tfCronUnset: true,
+ * },
+ * }
+ *
+ * // Autofill the tx to see how flags actually look compared to the interface usage.
+ * const autofilledTx = await client.autofill(tx)
+ * console.log(autofilledTx)
+ * // {
+ * // Account: 'rUn84CUYbNjRoTQ6mSW7BVJPSVJNLb1QLo',
+ * // TransactionType: 'CronSet',
+ * // Flags: 0,
+ * // Sequence: 21970384,
+ * // Fee: '12',
+ * // LastLedgerSequence: 21970404
+ * // }
+ * ```
+ */
+export interface CronSetFlagsInterface extends GlobalFlags {
+  tfCronUnset?: boolean
+}
+
+/**
  * CronSet is a transaction model that allows an account to set a cron job.
  *
  * @category Transaction Models
  */
 export interface CronSet extends BaseTransaction {
   TransactionType: 'CronSet'
-  Flags?: number | CronSetFlags
+  Flags?: number | CronSetFlagsInterface
   RepeatCount?: number
   DelaySeconds?: number
   StartTime?: number

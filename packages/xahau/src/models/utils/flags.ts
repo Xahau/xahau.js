@@ -6,6 +6,7 @@ import {
   AccountRootFlagsInterface,
   AccountRootFlags,
 } from '../ledger/AccountRoot'
+import { ClaimRewardFlags, URITokenMintFlags } from '../transactions'
 import { AccountSetTfFlags } from '../transactions/accountSet'
 import { GlobalFlags } from '../transactions/common'
 import { CronSetFlags } from '../transactions/cronSet'
@@ -48,6 +49,8 @@ const txToFlag = {
   PaymentChannelClaim: PaymentChannelClaimFlags,
   Payment: PaymentFlags,
   TrustSet: TrustSetFlags,
+  URITokenMint: URITokenMintFlags,
+  ClaimReward: ClaimRewardFlags,
   CronSet: CronSetFlags,
 }
 

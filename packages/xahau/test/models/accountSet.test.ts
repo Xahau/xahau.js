@@ -182,12 +182,24 @@ describe('AccountSet', function () {
     assert.throws(
       () => validateAccountSet(account),
       ValidationError,
-      'AccountSet: HookStateScale must be less than 16',
+      'AccountSet: HookStateScale must be less than or equal to 16',
     )
     assert.throws(
       () => validate(account),
       ValidationError,
-      'AccountSet: HookStateScale must be less than 16',
+      'AccountSet: HookStateScale must be less than or equal to 16',
+    )
+
+    account.HookStateScale = 0
+    assert.throws(
+      () => validateAccountSet(account),
+      ValidationError,
+      'AccountSet: HookStateScale must be greater than or equal to 1',
+    )
+    assert.throws(
+      () => validate(account),
+      ValidationError,
+      'AccountSet: HookStateScale must be greater than or equal to 1',
     )
   })
 })

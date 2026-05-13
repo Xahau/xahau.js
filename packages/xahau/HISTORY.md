@@ -4,6 +4,13 @@ Subscribe to [the **xrpl-announce** mailing list](https://groups.google.com/g/xr
 
 ## Unreleased Changes
 
+## 4.0.3 (2025-11-18)
+
+### Added
+* Fixed minified `build/xahau-latest-min.js` to have all the latest xahau package changes.
+
+## 4.0.2 (2025-11-12)
+
 ### Added
 * Support for Cron Amendment
 * Support for ExtendedHookState Amendment

@@ -173,6 +173,7 @@ export interface AccountSet extends BaseTransaction {
 const MIN_TICK_SIZE = 3
 const MAX_TICK_SIZE = 15
 const MAX_HOOK_STATE_SCALE = 16
+const MIN_HOOK_STATE_SCALE = 1
 
 /**
  * Verify the form and type of an AccountSet at runtime.
@@ -233,12 +234,22 @@ export function validateAccountSet(tx: Record<string, unknown>): void {
   }
 
   validateOptionalField(tx, 'HookStateScale', isNumber)
+
   if (
     typeof tx.HookStateScale === 'number' &&
     tx.HookStateScale > MAX_HOOK_STATE_SCALE
   ) {
     throw new ValidationError(
-      `AccountSet: HookStateScale must be less than ${MAX_HOOK_STATE_SCALE}`,
+      `AccountSet: HookStateScale must be less than or equal to ${MAX_HOOK_STATE_SCALE}`,
+    )
+  }
+
+  if (
+    typeof tx.HookStateScale === 'number' &&
+    tx.HookStateScale < MIN_HOOK_STATE_SCALE
+  ) {
+    throw new ValidationError(
+      `AccountSet: HookStateScale must be greater than or equal to ${MIN_HOOK_STATE_SCALE}`,
     )
   }
 }

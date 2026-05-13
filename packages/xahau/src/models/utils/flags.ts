@@ -6,8 +6,8 @@ import {
   AccountRootFlagsInterface,
   AccountRootFlags,
 } from '../ledger/AccountRoot'
-import { ClaimRewardFlags, URITokenMintFlags } from '../transactions'
 import { AccountSetTfFlags } from '../transactions/accountSet'
+import { ClaimRewardFlags } from '../transactions/claimReward'
 import { GlobalFlags } from '../transactions/common'
 import { CronSetFlags } from '../transactions/cronSet'
 import { OfferCreateFlags } from '../transactions/offerCreate'
@@ -16,6 +16,7 @@ import { PaymentChannelClaimFlags } from '../transactions/paymentChannelClaim'
 import { RemarkFlags, Remark } from '../transactions/setRemarks'
 import type { Transaction } from '../transactions/transaction'
 import { TrustSetFlags } from '../transactions/trustSet'
+import { URITokenMintFlags } from '../transactions/uriTokenMint'
 
 import { isFlagEnabled } from '.'
 

@@ -3,7 +3,7 @@ import { ValidationError } from '../../errors'
 import { BaseTransaction, validateBaseTransaction } from './common'
 
 /**
- * An OfferCancel transaction removes an Offer object from the XAH Ledger.
+ * An OfferCancel transaction removes an Offer object from the Xahau Network.
  *
  *  @category Transaction Models
  */

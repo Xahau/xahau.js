@@ -1063,7 +1063,7 @@ class Client extends EventEmitter<EventTypes> {
 
   /**
    * The fundWallet() method is used to send an amount of XAH (usually 1000) to a new (randomly generated)
-   * or existing XAH Ledger wallet.
+   * or existing Xahau Network wallet.
    *
    * @category Faucet
    *

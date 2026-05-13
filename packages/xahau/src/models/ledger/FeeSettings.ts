@@ -11,7 +11,7 @@ export interface FeeSettingsPreAmendmentFields {
   BaseFee: string
   /** The BaseFee translated into "fee units". */
   ReferenceFeeUnits: number
-  /** The base reserve for an account in the XAH Ledger, as drops of XAH. */
+  /** The base reserve for an account in the Xahau Network, as drops of XAH. */
   ReserveBase: number
   /** The incremental owner reserve for owning objects, as drops of XAH. */
   ReserveIncrement: number
@@ -20,7 +20,7 @@ export interface FeeSettingsPreAmendmentFields {
 export interface FeeSettingsPostAmendmentFields {
   /** The transaction cost of the "reference transaction" in drops of XAH as hexadecimal. */
   BaseFeeDrops: string
-  /** The base reserve for an account in the XAH Ledger, as drops of XAH. */
+  /** The base reserve for an account in the Xahau Network, as drops of XAH. */
   ReserveBaseDrops: string
   /** The incremental owner reserve for owning objects, as drops of XAH. */
   ReserveIncrementDrops: string

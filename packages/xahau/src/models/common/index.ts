@@ -71,7 +71,7 @@ export interface SignerEntry {
    */
   SignerEntry: {
     /**
-     * An XAH Ledger address whose signature contributes to the multi-signature.
+     * An Xahau Network address whose signature contributes to the multi-signature.
      * It does not need to be a funded address in the ledger.
      */
     Account: string

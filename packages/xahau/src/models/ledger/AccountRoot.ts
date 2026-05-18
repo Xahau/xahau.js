@@ -207,6 +207,10 @@ export enum AccountRootFlags {
    */
   lsfDepositAuth = 0x01000000,
   /**
+   * The TSH pays for the execution of their own Hook Chain. Added by the Hooks amendment.
+   */
+  lsfTshCollect = 0x02000000,
+  /**
    * Disallow incoming NFTOffers from other accounts.
    */
   lsfDisallowIncomingNFTokenOffer = 0x04000000,

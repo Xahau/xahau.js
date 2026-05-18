@@ -18,7 +18,7 @@ export interface ChannelVerifyRequest extends BaseRequest {
   channel_id: string
   /**
    * The public key of the channel and the key pair that was used to create the
-   * signature, in hexadecimal or the XAH Ledger's base58 format.
+   * signature, in hexadecimal or the Xahau Network's base58 format.
    */
   public_key: string
   /** The signature to verify, in hexadecimal. */

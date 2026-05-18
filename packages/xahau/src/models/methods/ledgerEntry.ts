@@ -3,7 +3,7 @@ import { LedgerEntry } from '../ledger'
 import { BaseRequest, BaseResponse, LookupByLedgerRequest } from './baseMethod'
 
 /**
- * The `ledger_entry` method returns a single ledger object from the XAH Ledger
+ * The `ledger_entry` method returns a single ledger object from the Xahau Network
  * in its raw format. Expects a response in the form of a {@link
  * LedgerEntryResponse}.
  *
@@ -45,7 +45,7 @@ export interface LedgerEntryRequest extends BaseRequest, LookupByLedgerRequest {
   include_deleted?: boolean
   /**
    * If true, return the requested ledger object's contents as a hex string in
-   * the XAH Ledger's binary format. Otherwise, return data in JSON format. The
+   * the Xahau Network's binary format. Otherwise, return data in JSON format. The
    * default is false.
    */
   binary?: boolean

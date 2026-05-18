@@ -24,7 +24,7 @@ export interface UnsubscribeRequest extends BaseRequest {
   streams?: StreamType[]
   /**
    * Array of unique account addresses to stop receiving updates for, in the.
-   * XAH Ledger's base58 format.
+   * Xahau Network's base58 format.
    */
   accounts?: string[]
   /**

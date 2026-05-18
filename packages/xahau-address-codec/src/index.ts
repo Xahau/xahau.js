@@ -162,9 +162,9 @@ export {
   encodeAccountID,
   // Decode a classic address to its raw bytes
   decodeAccountID,
-  // Encode bytes to XAH Ledger node public key format
+  // Encode bytes to Xahau Network node public key format
   encodeNodePublic,
-  // Decode an XAH Ledger node public key into its raw bytes
+  // Decode an Xahau Network node public key into its raw bytes
   decodeNodePublic,
   // Encode a public key, as for payment channels
   encodeAccountPublic,

@@ -108,7 +108,7 @@ export interface ServerInfoResponse extends BaseResponse {
        * The number of times (since starting up) that this server has had over
        * 250 transactions waiting to be processed at once. A large number here
        * may mean that your server is unable to handle the transaction load of
-       * the XAH Ledger network.
+       * the Xahau Network network.
        */
       jq_trans_overflow: string
       /**

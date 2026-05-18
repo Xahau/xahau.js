@@ -38,6 +38,8 @@ jobs:
           RELEASE_TAG: ${{ github.event.release.tag_name }}
 
       - uses: actions/checkout@v6
+        with:
+          ref: ${{ github.event.release.tag_name }}
 
       - uses: actions/setup-node@v6
         with:

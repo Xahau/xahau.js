@@ -26,7 +26,7 @@ export interface AccountOffersRequest
    */
   marker?: unknown
   /**
-   * If true, then the account field only accepts a public key or XAH Ledger
+   * If true, then the account field only accepts a public key or Xahau Network
    * address. Otherwise, account can be a secret or passphrase (not
    * recommended). The default is false.
    */

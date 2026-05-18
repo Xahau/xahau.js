@@ -11,10 +11,10 @@ import { BaseTransaction, validateBaseTransaction } from './common'
  */
 export interface DepositPreauth extends BaseTransaction {
   TransactionType: 'DepositPreauth'
-  /** The XAH Ledger address of the sender to preauthorize. */
+  /** The Xahau Network address of the sender to preauthorize. */
   Authorize?: string
   /**
-   * The XAH Ledger address of a sender whose preauthorization should be.
+   * The Xahau Network address of a sender whose preauthorization should be.
    * revoked.
    */
   Unauthorize?: string

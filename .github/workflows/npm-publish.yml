@@ -1,88 +1,100 @@
 name: Publish npm packages
 
 on:
-  pull_request:
-    branches: [main-xahau]
-    paths:
-      - packages/xahau/package.json
-      - packages/xahau-address-codec/package.json
-      - packages/xahau-binary-codec/package.json
-      - packages/xahau-keypairs/package.json
-  push:
-    branches: [main-xahau]
-    paths:
-      - packages/xahau/package.json
-      - packages/xahau-address-codec/package.json
-      - packages/xahau-binary-codec/package.json
-      - packages/xahau-keypairs/package.json
-  workflow_dispatch:
+  release:
+    types: [published]
 
 concurrency:
-  group: npm-publish-${{ github.ref }}
+  group: npm-publish-${{ github.event.release.tag_name }}
   cancel-in-progress: false
 
 jobs:
-  dry-run:
-    name: Dry-run ${{ matrix.package.name }}
-    if: github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch'
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-    strategy:
-      fail-fast: false
-      matrix:
-        package:
-          - name: xahau-address-codec
-            path: packages/xahau-address-codec
-          - name: xahau-binary-codec
-            path: packages/xahau-binary-codec
-          - name: xahau-keypairs
-            path: packages/xahau-keypairs
-          - name: xahau
-            path: packages/xahau
-    steps:
-      - uses: actions/checkout@v6
-        with:
-          fetch-depth: 0
-
-      - name: Fetch pull request base
-        env:
-          BASE_REF: ${{ github.base_ref }}
-        run: git fetch --no-tags --depth=1 origin "$BASE_REF"
-
-      - uses: ./.github/actions/npm-publish-package
-        with:
-          package-path: ${{ matrix.package.path }}
-          base-ref: origin/${{ github.base_ref }}
-          dry-run: "true"
-
   publish:
-    name: Publish ${{ matrix.package.name }}
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main-xahau'
+    name: Publish ${{ github.event.release.tag_name }}
     runs-on: ubuntu-latest
     environment: npm
     permissions:
-      contents: write
+      contents: read
       id-token: write
-    strategy:
-      fail-fast: false
-      matrix:
-        package:
-          - name: xahau-address-codec
-            path: packages/xahau-address-codec
-          - name: xahau-binary-codec
-            path: packages/xahau-binary-codec
-          - name: xahau-keypairs
-            path: packages/xahau-keypairs
-          - name: xahau
-            path: packages/xahau
     steps:
-      - uses: actions/checkout@v6
-        with:
-          fetch-depth: 0
+      - id: release
+        name: Resolve package from tag
+        shell: bash
+        run: |
+          case "$RELEASE_TAG" in
+            xahau@*) package_path="packages/xahau" ;;
+            xahau-address-codec@*) package_path="packages/xahau-address-codec" ;;
+            xahau-binary-codec@*) package_path="packages/xahau-binary-codec" ;;
+            xahau-keypairs@*) package_path="packages/xahau-keypairs" ;;
+            *)
+              echo "Unsupported release tag: $RELEASE_TAG" >&2
+              echo "Expected xahau@<version>, xahau-address-codec@<version>, xahau-binary-codec@<version>, or xahau-keypairs@<version>." >&2
+              exit 1
+              ;;
+          esac
 
-      - uses: ./.github/actions/npm-publish-package
+          echo "package-path=$package_path" >> "$GITHUB_OUTPUT"
+        env:
+          RELEASE_TAG: ${{ github.event.release.tag_name }}
+
+      - uses: actions/checkout@v6
+
+      - uses: actions/setup-node@v6
         with:
-          package-path: ${{ matrix.package.path }}
-          base-ref: ${{ github.event.before }}
-          target-commitish: ${{ github.sha }}
+          node-version: "20"
+          registry-url: https://registry.npmjs.org
+          package-manager-cache: false
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build package
+        run: npm run build # --workspace "${{ steps.release.outputs.package-path }}"
+
+      - id: package
+        name: Read package metadata
+        shell: bash
+        run: |
+          package_json="${{ steps.release.outputs.package-path }}/package.json"
+          name="$(jq -r .name "$package_json")"
+          version="$(jq -r .version "$package_json")"
+          tag="$name@$version"
+
+          {
+            echo "name=$name"
+            echo "version=$version"
+            echo "tag=$tag"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Check release tag matches package version
+        shell: bash
+        run: |
+          if [[ "$RELEASE_TAG" != "$PACKAGE_TAG" ]]; then
+            echo "Release tag $RELEASE_TAG does not match package tag $PACKAGE_TAG." >&2
+            exit 1
+          fi
+        env:
+          RELEASE_TAG: ${{ github.event.release.tag_name }}
+          PACKAGE_TAG: ${{ steps.package.outputs.tag }}
+
+      - name: Check package version is unpublished
+        shell: bash
+        run: |
+          package_spec="${{ steps.package.outputs.tag }}"
+          stderr_file="$(mktemp)"
+
+          if npm view "$package_spec" version --registry https://registry.npmjs.org 2>"$stderr_file"; then
+            echo "$package_spec is already published." >&2
+            exit 1
+          fi
+
+          if grep -Eq "E404|404 Not Found|is not in this registry" "$stderr_file"; then
+            echo "$package_spec is not published yet."
+            exit 0
+          fi
+
+          cat "$stderr_file" >&2
+          exit 1
+
+      - name: Publish to npm
+        run: npm publish --workspace "${{ steps.release.outputs.package-path }}" --registry https://registry.npmjs.org

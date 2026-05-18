@@ -15,6 +15,7 @@ on:
       - packages/xahau-address-codec/package.json
       - packages/xahau-binary-codec/package.json
       - packages/xahau-keypairs/package.json
+  workflow_dispatch:
 
 concurrency:
   group: npm-publish-${{ github.ref }}
@@ -23,7 +24,7 @@ concurrency:
 jobs:
   dry-run:
     name: Dry-run ${{ matrix.package.name }}
-    if: github.event_name == 'pull_request'
+    if: github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     permissions:
       contents: read

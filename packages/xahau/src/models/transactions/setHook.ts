@@ -1,30 +1,7 @@
 import { ValidationError } from '../../errors'
 import { Hook } from '../common/xahau'
 
-import { BaseTransaction, GlobalFlags, validateBaseTransaction } from './common'
-
-/**
- * Enum representing values for Set Hook Transaction Flags.
- *
- * @category Transaction Flags
- */
-export enum SetHookFlags {
-  /**
-   */
-  hsfOverride = 0x00000001,
-  /**
-   */
-  hsfNSDelete = 0x0000002,
-  /**
-   */
-  hsfCollect = 0x00000004,
-}
-
-export interface SetHookFlagsInterface extends GlobalFlags {
-  hsfOverride?: boolean
-  hsfNSDelete?: boolean
-  hsfCollect?: boolean
-}
+import { BaseTransaction, validateBaseTransaction } from './common'
 
 /**
  *
@@ -37,8 +14,6 @@ export interface SetHook extends BaseTransaction {
    *
    */
   Hooks: Hook[]
-
-  Flags?: number | SetHookFlagsInterface
 }
 
 const MAX_HOOKS = 10

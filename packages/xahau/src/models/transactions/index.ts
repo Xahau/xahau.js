@@ -41,7 +41,7 @@ export {
 export { PaymentChannelCreate } from './paymentChannelCreate'
 export { PaymentChannelFund } from './paymentChannelFund'
 export { Remit } from './remit'
-export { SetHookFlagsInterface, SetHookFlags, SetHook } from './setHook'
+export { SetHook } from './setHook'
 export { SetFee, SetFeePreAmendment, SetFeePostAmendment } from './setFee'
 export { SetRegularKey } from './setRegularKey'
 export {

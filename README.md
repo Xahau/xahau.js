@@ -86,6 +86,7 @@ As you develop with xahau.js, there's two sites you'll use extensively:
    - What kinds of transactions there are ([Transaction Types](https://docs.xahau.network/technical/protocol-reference/transactions/transaction-types))
    - Requests you can send ([Public API Methods](https://docs.xahau.network/features/http-websocket-apis))
 
+<!--
 ### Mailing Lists
 
 If you want to hear when we release new versions of xahau.js, you can join our low-traffic mailing list (About 1 email per week):
@@ -97,3 +98,4 @@ If you're using the Xahau Ledger in production, you should run a [xahaud server]
 - [Subscribe to xahau-server](https://groups.google.com/g/xahau-server)
 
 You are also welcome to create an [issue](https://github.com/Xahau/xahau.js/issues) here and we'll do our best to respond within 3 days.
+-->

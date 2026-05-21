@@ -1490,29 +1490,29 @@
       }
     ],
     [
-      "GovernanceFlags",
+      "HookOnOutgoing",
       {
-        "nth": 99,
-        "isVLEncoded": false,
         "isSerialized": true,
         "isSigningField": true,
+        "isVLEncoded": false,
+        "nth": 93,
         "type": "Hash256"
       }
     ],
     [
-      "GovernanceMarks",
+      "HookOnIncoming",
       {
-        "nth": 98,
-        "isVLEncoded": false,
         "isSerialized": true,
         "isSigningField": true,
+        "isVLEncoded": false,
+        "nth": 94,
         "type": "Hash256"
       }
     ],
     [
-      "EmittedTxnID",
+      "Cron",
       {
-        "nth": 97,
+        "nth": 95,
         "isVLEncoded": false,
         "isSerialized": true,
         "isSigningField": true,
@@ -1530,9 +1530,29 @@
       }
     ],
     [
-      "Cron",
+      "EmittedTxnID",
       {
-        "nth": 95,
+        "nth": 97,
+        "isVLEncoded": false,
+        "isSerialized": true,
+        "isSigningField": true,
+        "type": "Hash256"
+      }
+    ],
+    [
+      "GovernanceMarks",
+      {
+        "nth": 98,
+        "isVLEncoded": false,
+        "isSerialized": true,
+        "isSigningField": true,
+        "type": "Hash256"
+      }
+    ],
+    [
+      "GovernanceFlags",
+      {
+        "nth": 99,
         "isVLEncoded": false,
         "isSerialized": true,
         "isSigningField": true,

@@ -1980,6 +1980,16 @@
       }
     ],
     [
+      "HookName",
+      {
+        "isSerialized": true,
+        "isSigningField": true,
+        "isVLEncoded": true,
+        "nth": 97,
+        "type": "Blob"
+      }
+    ],
+    [
       "RemarkValue",
       {
         "nth": 98,

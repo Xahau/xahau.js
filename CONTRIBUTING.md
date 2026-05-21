@@ -270,6 +270,7 @@ This should almost always be done using the [`xrpl-codec-gen`](https://github.co
    3. Highlights of important changes
 
 
+<!--
 ## Mailing Lists
 
 We have a low-traffic mailing list for announcements of new `xahau.js` releases. (About 1 email every couple of weeks)
@@ -279,3 +280,4 @@ We have a low-traffic mailing list for announcements of new `xahau.js` releases.
 If you're using the Xahau Ledger in production, you should run a [xahaud server](https://github.com/xahau/xahaud) and subscribe to the xahau-server mailing list as well.
 
 - [Subscribe to xahau-server](https://groups.google.com/g/xahau-server)
+-->

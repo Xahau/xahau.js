@@ -4,6 +4,9 @@ Subscribe to [the **xrpl-announce** mailing list](https://groups.google.com/g/xr
 
 ## Unreleased Changes
 
+### Added
+* Support for HookOnV2 Amendment
+
 ## 4.0.3 (2025-11-18)
 
 ### Added

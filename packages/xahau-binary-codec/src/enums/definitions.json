@@ -2203,6 +2203,16 @@
       }
     ],
     [
+      "Holder",
+      {
+        "isSerialized": true,
+        "isSigningField": true,
+        "isVLEncoded": true,
+        "nth": 11,
+        "type": "AccountID"
+      }
+    ],
+    [
       "HookAccount",
       {
         "nth": 16,

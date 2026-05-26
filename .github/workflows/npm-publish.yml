@@ -61,11 +61,18 @@ jobs:
           name="$(jq -r .name "$package_json")"
           version="$(jq -r .version "$package_json")"
           tag="$name@$version"
+          if [[ "$version" == *"-"* ]]; then
+            release_tag="${version#*-}"
+            release_tag="${release_tag%%.*}"
+          else
+            release_tag="latest"
+          fi
 
           {
             echo "name=$name"
             echo "version=$version"
             echo "tag=$tag"
+            echo "release_tag=$release_tag"
           } >> "$GITHUB_OUTPUT"
 
       - name: Check release tag matches package version
@@ -99,4 +106,4 @@ jobs:
           exit 1
 
       - name: Publish to npm
-        run: npm publish --workspace "${{ steps.release.outputs.package-path }}" --registry https://registry.npmjs.org
+        run: npm publish --workspace "${{ steps.release.outputs.package-path }}" --registry https://registry.npmjs.org --tag "${{ steps.package.outputs.release_tag }}"

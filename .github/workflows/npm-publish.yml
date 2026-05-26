@@ -51,7 +51,7 @@ jobs:
         run: npm ci
 
       - name: Build package
-        run: npm run build "${{ steps.release.outputs.package-path }}"
+        run: npm run build
 
       - id: package
         name: Read package metadata

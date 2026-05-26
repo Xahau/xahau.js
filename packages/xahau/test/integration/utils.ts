@@ -196,7 +196,7 @@ export async function verifySubmittedTransaction(
   })
   // eslint-disable-next-line @typescript-eslint/no-explicit-any -- TODO: handle this API change for 2.0.0
   const decodedTx: any = typeof tx === 'string' ? decode(tx) : tx
-  if (decodedTx.TransactionType === 'Payment' && client.apiVersion !== 1) {
+  if (decodedTx.TransactionType === 'Payment') {
     decodedTx.DeliverMax = decodedTx.Amount
     delete decodedTx.Amount
   }

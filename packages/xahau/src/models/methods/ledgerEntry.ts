@@ -3,7 +3,7 @@ import { LedgerEntry } from '../ledger'
 import { BaseRequest, BaseResponse, LookupByLedgerRequest } from './baseMethod'
 
 /**
- * The `ledger_entry` method returns a single ledger object from the XAH Ledger
+ * The `ledger_entry` method returns a single ledger object from the Xahau Network
  * in its raw format. Expects a response in the form of a {@link
  * LedgerEntryResponse}.
  *
@@ -30,7 +30,7 @@ export interface LedgerEntryRequest extends BaseRequest, LookupByLedgerRequest {
   include_deleted?: boolean
   /**
    * If true, return the requested ledger object's contents as a hex string in
-   * the XAH Ledger's binary format. Otherwise, return data in JSON format. The
+   * the Xahau Network's binary format. Otherwise, return data in JSON format. The
    * default is false.
    */
   binary?: boolean
@@ -198,6 +198,20 @@ export interface LedgerEntryRequest extends BaseRequest, LookupByLedgerRequest {
         issuer: string
         /** The URIToken uri string (ascii). */
         uri: string
+      }
+    | string
+
+  /**
+   * The Cron object to retrieve. If a string, must be the object ID of the
+   * Cron, as hexadecimal. If an object, the `owner` and `time`
+   * sub-fields are required to uniquely specify the Cron entry.
+   */
+  cron?:
+    | {
+        /** The owner of the Cron object. */
+        owner: string
+        /** The start time of the Cron object. */
+        time: number
       }
     | string
 }

@@ -4,6 +4,7 @@ import {
   Account,
   BaseTransaction,
   isAccount,
+  isNumber,
   validateBaseTransaction,
   validateOptionalField,
 } from './common'
@@ -163,10 +164,16 @@ export interface AccountSet extends BaseTransaction {
    * account's behalf using NFTokenMint's `Issuer` field.
    */
   NFTokenMinter?: Account
+  /**
+   * The allowed scale of the hook state.
+   */
+  HookStateScale?: number
 }
 
 const MIN_TICK_SIZE = 3
 const MAX_TICK_SIZE = 15
+const MAX_HOOK_STATE_SCALE = 16
+const MIN_HOOK_STATE_SCALE = 1
 
 /**
  * Verify the form and type of an AccountSet at runtime.
@@ -174,7 +181,7 @@ const MAX_TICK_SIZE = 15
  * @param tx - An AccountSet Transaction.
  * @throws When the AccountSet is Malformed.
  */
-// eslint-disable-next-line max-lines-per-function -- okay for this method, only a little over
+// eslint-disable-next-line max-lines-per-function, max-statements -- okay for this method, only a little over
 export function validateAccountSet(tx: Record<string, unknown>): void {
   validateBaseTransaction(tx)
 
@@ -224,5 +231,25 @@ export function validateAccountSet(tx: Record<string, unknown>): void {
     ) {
       throw new ValidationError('AccountSet: invalid TickSize')
     }
+  }
+
+  validateOptionalField(tx, 'HookStateScale', isNumber)
+
+  if (
+    typeof tx.HookStateScale === 'number' &&
+    tx.HookStateScale > MAX_HOOK_STATE_SCALE
+  ) {
+    throw new ValidationError(
+      `AccountSet: HookStateScale must be less than or equal to ${MAX_HOOK_STATE_SCALE}`,
+    )
+  }
+
+  if (
+    typeof tx.HookStateScale === 'number' &&
+    tx.HookStateScale < MIN_HOOK_STATE_SCALE
+  ) {
+    throw new ValidationError(
+      `AccountSet: HookStateScale must be greater than or equal to ${MIN_HOOK_STATE_SCALE}`,
+    )
   }
 }

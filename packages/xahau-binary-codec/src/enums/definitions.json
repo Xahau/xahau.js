@@ -330,6 +330,16 @@
       }
     ],
     [
+      "HookStateScale",
+      {
+        "nth": 21,
+        "isVLEncoded": false,
+        "isSerialized": true,
+        "isSigningField": true,
+        "type": "UInt16"
+      }
+    ],
+    [
       "NetworkID",
       {
         "nth": 1,
@@ -793,6 +803,16 @@
       "FirstNFTokenSequence",
       {
         "nth": 50,
+        "isVLEncoded": false,
+        "isSerialized": true,
+        "isSigningField": true,
+        "type": "UInt32"
+      }
+    ],
+    [
+      "StartTime",
+      {
+        "nth": 93,
         "isVLEncoded": false,
         "isSerialized": true,
         "isSigningField": true,
@@ -2828,6 +2848,7 @@
     "tecINSUF_RESERVE_SELLER": 187,
     "tecIMMUTABLE": 188,
     "tecTOO_MANY_REMARKS": 189,
+    "tecHAS_HOOK_STATE": 190,
     "tecLAST_POSSIBLE_ENTRY": 255
   },
   "TRANSACTION_TYPES": {

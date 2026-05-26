@@ -163,4 +163,43 @@ describe('AccountSet', function () {
       'AccountSet: invalid field NFTokenMinter',
     )
   })
+
+  it(`throws w/ invalid HookStateScale`, function () {
+    account.HookStateScale = ''
+
+    assert.throws(
+      () => validateAccountSet(account),
+      ValidationError,
+      'AccountSet: invalid field HookStateScale',
+    )
+    assert.throws(
+      () => validate(account),
+      ValidationError,
+      'AccountSet: invalid field HookStateScale',
+    )
+
+    account.HookStateScale = 17
+    assert.throws(
+      () => validateAccountSet(account),
+      ValidationError,
+      'AccountSet: HookStateScale must be less than or equal to 16',
+    )
+    assert.throws(
+      () => validate(account),
+      ValidationError,
+      'AccountSet: HookStateScale must be less than or equal to 16',
+    )
+
+    account.HookStateScale = 0
+    assert.throws(
+      () => validateAccountSet(account),
+      ValidationError,
+      'AccountSet: HookStateScale must be greater than or equal to 1',
+    )
+    assert.throws(
+      () => validate(account),
+      ValidationError,
+      'AccountSet: HookStateScale must be greater than or equal to 1',
+    )
+  })
 })

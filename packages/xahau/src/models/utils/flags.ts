@@ -1,25 +1,22 @@
 /* eslint-disable no-param-reassign -- param reassign is safe */
 /* eslint-disable no-bitwise -- flags require bitwise operations */
 import { ValidationError } from '../../errors'
-import { Hook } from '../common/xahau'
+import { Hook, HookFlags, MintURITokenFlags } from '../common/xahau'
 import {
   AccountRootFlagsInterface,
   AccountRootFlags,
 } from '../ledger/AccountRoot'
 import { AccountSetTfFlags } from '../transactions/accountSet'
+import { ClaimRewardFlags } from '../transactions/claimReward'
 import { GlobalFlags } from '../transactions/common'
 import { CronSetFlags } from '../transactions/cronSet'
 import { OfferCreateFlags } from '../transactions/offerCreate'
 import { PaymentFlags } from '../transactions/payment'
 import { PaymentChannelClaimFlags } from '../transactions/paymentChannelClaim'
-import { SetHookFlagsInterface, SetHookFlags } from '../transactions/setHook'
-import {
-  RemarkFlagsInterface,
-  RemarkFlags,
-  Remark,
-} from '../transactions/setRemarks'
+import { RemarkFlags, Remark } from '../transactions/setRemarks'
 import type { Transaction } from '../transactions/transaction'
 import { TrustSetFlags } from '../transactions/trustSet'
+import { URITokenMintFlags } from '../transactions/uriTokenMint'
 
 import { isFlagEnabled } from '.'
 
@@ -53,6 +50,8 @@ const txToFlag = {
   PaymentChannelClaim: PaymentChannelClaimFlags,
   Payment: PaymentFlags,
   TrustSet: TrustSetFlags,
+  URITokenMint: URITokenMintFlags,
+  ClaimReward: ClaimRewardFlags,
   CronSet: CronSetFlags,
 }
 
@@ -62,31 +61,42 @@ const txToFlag = {
  * @param tx - A transaction to set its flags to its numeric representation.
  */
 export function setTransactionFlagsToNumber(tx: Transaction): void {
+  if (tx.TransactionType === 'SetHook' && Array.isArray(tx.Hooks)) {
+    tx.Hooks.forEach((hook: Hook) => {
+      if (typeof hook.Hook.Flags === 'object') {
+        hook.Hook.Flags = convertFlagsToNumber(hook.Hook.Flags, HookFlags)
+      }
+    })
+  }
+
+  if (tx.TransactionType === 'Remit') {
+    if (tx.MintURIToken != null && typeof tx.MintURIToken.Flags === 'object') {
+      tx.MintURIToken.Flags = convertFlagsToNumber(
+        tx.MintURIToken.Flags,
+        MintURITokenFlags,
+      )
+    }
+  }
+
+  if (tx.TransactionType === 'SetRemarks') {
+    if (Array.isArray(tx.Remarks)) {
+      tx.Remarks.forEach((remark: Remark) => {
+        if (typeof remark.Remark.Flags === 'object') {
+          remark.Remark.Flags = convertFlagsToNumber(
+            remark.Remark.Flags,
+            RemarkFlags,
+          )
+        }
+      })
+    }
+  }
+
   if (tx.Flags == null) {
     tx.Flags = 0
     return
   }
   if (typeof tx.Flags === 'number') {
     return
-  }
-
-  if (tx.TransactionType === 'SetHook') {
-    tx.Flags = convertFlagsToNumber(tx.Flags, SetHookFlags)
-    tx.Hooks.forEach((hook: Hook) => {
-      hook.Hook.Flags = convertFlagsToNumber(
-        // eslint-disable-next-line @typescript-eslint/consistent-type-assertions -- idk
-        hook.Hook.Flags as SetHookFlagsInterface,
-        SetHookFlags,
-      )
-    })
-  } else if (tx.TransactionType === 'SetRemarks') {
-    tx.Remarks.forEach((remark: Remark) => {
-      remark.Remark.Flags = convertFlagsToNumber(
-        // eslint-disable-next-line @typescript-eslint/consistent-type-assertions -- idk
-        remark.Remark.Flags as RemarkFlagsInterface,
-        RemarkFlags,
-      )
-    })
   }
 
   tx.Flags = txToFlag[tx.TransactionType]

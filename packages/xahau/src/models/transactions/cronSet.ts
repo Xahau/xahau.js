@@ -1,6 +1,13 @@
 import { ValidationError } from '../../errors'
 
-import { BaseTransaction, validateBaseTransaction } from './common'
+import {
+  BaseTransaction,
+  GlobalFlags,
+  isNumber,
+  validateBaseTransaction,
+  validateOptionalField,
+  validateRequiredField,
+} from './common'
 /**
  * Transaction Flags for an CronSet Transaction.
  *
@@ -14,15 +21,49 @@ export enum CronSetFlags {
 }
 
 /**
+ * Map of flags to boolean values representing {@link CronSet} transaction
+ * flags.
+ *
+ * @category Transaction Flags
+ *
+ * @example
+ * ```typescript
+ * const tx: CronSet = {
+ * Account: 'rUn84CUYbNjRoTQ6mSW7BVJPSVJNLb1QLo',
+ * TransactionType: 'CronSet',
+ * Flags: {
+ *   tfCronUnset: true,
+ * },
+ * }
+ *
+ * // Autofill the tx to see how flags actually look compared to the interface usage.
+ * const autofilledTx = await client.autofill(tx)
+ * console.log(autofilledTx)
+ * // {
+ * // Account: 'rUn84CUYbNjRoTQ6mSW7BVJPSVJNLb1QLo',
+ * // TransactionType: 'CronSet',
+ * // Flags: 0,
+ * // Sequence: 21970384,
+ * // Fee: '12',
+ * // LastLedgerSequence: 21970404
+ * // }
+ * ```
+ */
+export interface CronSetFlagsInterface extends GlobalFlags {
+  tfCronUnset?: boolean
+}
+
+/**
  * CronSet is a transaction model that allows an account to set a cron job.
  *
  * @category Transaction Models
  */
 export interface CronSet extends BaseTransaction {
   TransactionType: 'CronSet'
-  Flags?: number | CronSetFlags
+  Flags?: number | CronSetFlagsInterface
   RepeatCount?: number
   DelaySeconds?: number
+  StartTime?: number
 }
 
 const MAX_REPEAT_COUNT = 256
@@ -38,29 +79,43 @@ const MIN_DELAY_SECONDS = 365 * 24 * 60 * 60
 export function validateCronSet(tx: Record<string, unknown>): void {
   validateBaseTransaction(tx)
 
-  if (tx.Flags === CronSetFlags.tfCronUnset) {
-    if (tx.RepeatCount !== undefined || tx.DelaySeconds !== undefined) {
+  if (
+    typeof tx.Flags === 'number' &&
+    // eslint-disable-next-line no-bitwise -- bitwise operation to check if the flag is set
+    tx.Flags & CronSetFlags.tfCronUnset
+  ) {
+    if (
+      tx.RepeatCount !== undefined ||
+      tx.DelaySeconds !== undefined ||
+      tx.StartTime !== undefined
+    ) {
       throw new ValidationError(
-        'CronSet: RepeatCount and DelaySeconds must not be set when Flags is set to tfCronUnset',
+        'CronSet: RepeatCount, DelaySeconds, and StartTime must not be set when Flags is set to tfCronUnset',
       )
     }
+    return
   }
 
-  if (tx.RepeatCount !== undefined && typeof tx.RepeatCount !== 'number') {
-    throw new ValidationError('CronSet: RepeatCount must be a number')
+  validateRequiredField(tx, 'StartTime', isNumber)
+  validateOptionalField(tx, 'RepeatCount', isNumber)
+  validateOptionalField(tx, 'DelaySeconds', isNumber)
+
+  if ((tx.RepeatCount === undefined) !== (tx.DelaySeconds === undefined)) {
+    throw new ValidationError(
+      'CronSet: Both RepeatCount and DelaySeconds must be set, or neither should be set',
+    )
   }
 
-  if (tx.RepeatCount !== undefined && tx.RepeatCount > MAX_REPEAT_COUNT) {
+  if (typeof tx.RepeatCount === 'number' && tx.RepeatCount > MAX_REPEAT_COUNT) {
     throw new ValidationError(
       `CronSet: RepeatCount must be less than ${MAX_REPEAT_COUNT}`,
     )
   }
 
-  if (tx.DelaySeconds !== undefined && typeof tx.DelaySeconds !== 'number') {
-    throw new ValidationError('CronSet: DelaySeconds must be a number')
-  }
-
-  if (tx.DelaySeconds !== undefined && tx.DelaySeconds > MIN_DELAY_SECONDS) {
+  if (
+    typeof tx.DelaySeconds === 'number' &&
+    tx.DelaySeconds > MIN_DELAY_SECONDS
+  ) {
     throw new ValidationError(
       `CronSet: DelaySeconds must be less than ${MIN_DELAY_SECONDS}`,
     )

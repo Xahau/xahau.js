@@ -84,6 +84,7 @@ export default interface AccountRoot extends BaseLedgerEntry, HasPreviousTxnID {
   GovernanceMarks?: string
   AccountIndex?: number
   TouchCount?: number
+  HookStateScale?: number
   /* The cron job that is associated with this account. */
   Cron?: string
 }
@@ -199,6 +200,10 @@ export enum AccountRootFlags {
    * (It has DepositAuth enabled.)
    */
   lsfDepositAuth = 0x01000000,
+  /**
+   * The TSH pays for the execution of their own Hook Chain. Added by the Hooks amendment.
+   */
+  lsfTshCollect = 0x02000000,
   /**
    * Disallow incoming NFTOffers from other accounts.
    */

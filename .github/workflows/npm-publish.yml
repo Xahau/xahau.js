@@ -1,0 +1,109 @@
+name: Publish npm packages
+
+on:
+  release:
+    types: [published]
+
+concurrency:
+  group: npm-publish-${{ github.event.release.tag_name }}
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    name: Publish ${{ github.event.release.tag_name }}
+    runs-on: ubuntu-latest
+    environment: npm
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - id: release
+        name: Resolve package from tag
+        shell: bash
+        run: |
+          case "$RELEASE_TAG" in
+            xahau@*) package_path="packages/xahau" ;;
+            xahau-address-codec@*) package_path="packages/xahau-address-codec" ;;
+            xahau-binary-codec@*) package_path="packages/xahau-binary-codec" ;;
+            xahau-keypairs@*) package_path="packages/xahau-keypairs" ;;
+            *)
+              echo "Unsupported release tag: $RELEASE_TAG" >&2
+              echo "Expected xahau@<version>, xahau-address-codec@<version>, xahau-binary-codec@<version>, or xahau-keypairs@<version>." >&2
+              exit 1
+              ;;
+          esac
+
+          echo "package-path=$package_path" >> "$GITHUB_OUTPUT"
+        env:
+          RELEASE_TAG: ${{ github.event.release.tag_name }}
+
+      - uses: actions/checkout@v6
+        with:
+          ref: ${{ github.event.release.tag_name }}
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: "24"
+          registry-url: https://registry.npmjs.org
+          package-manager-cache: false
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build package
+        run: npm run build
+
+      - id: package
+        name: Read package metadata
+        shell: bash
+        run: |
+          package_json="${{ steps.release.outputs.package-path }}/package.json"
+          name="$(jq -r .name "$package_json")"
+          version="$(jq -r .version "$package_json")"
+          tag="$name@$version"
+          if [[ "$version" == *"-"* ]]; then
+            release_tag="${version#*-}"
+            release_tag="${release_tag%%.*}"
+          else
+            release_tag="latest"
+          fi
+
+          {
+            echo "name=$name"
+            echo "version=$version"
+            echo "tag=$tag"
+            echo "release_tag=$release_tag"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Check release tag matches package version
+        shell: bash
+        run: |
+          if [[ "$RELEASE_TAG" != "$PACKAGE_TAG" ]]; then
+            echo "Release tag $RELEASE_TAG does not match package tag $PACKAGE_TAG." >&2
+            exit 1
+          fi
+        env:
+          RELEASE_TAG: ${{ github.event.release.tag_name }}
+          PACKAGE_TAG: ${{ steps.package.outputs.tag }}
+
+      - name: Check package version is unpublished
+        shell: bash
+        run: |
+          package_spec="${{ steps.package.outputs.tag }}"
+          stderr_file="$(mktemp)"
+
+          if npm view "$package_spec" version --registry https://registry.npmjs.org 2>"$stderr_file"; then
+            echo "$package_spec is already published." >&2
+            exit 1
+          fi
+
+          if grep -Eq "E404|404 Not Found|is not in this registry" "$stderr_file"; then
+            echo "$package_spec is not published yet."
+            exit 0
+          fi
+
+          cat "$stderr_file" >&2
+          exit 1
+
+      - name: Publish to npm
+        run: npm publish --workspace "${{ steps.release.outputs.package-path }}" --registry https://registry.npmjs.org --tag "${{ steps.package.outputs.release_tag }}"

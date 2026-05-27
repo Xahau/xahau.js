@@ -41,26 +41,6 @@
       }
     ],
     [
-      "hash",
-      {
-        "isSerialized": false,
-        "isSigningField": false,
-        "isVLEncoded": false,
-        "nth": 257,
-        "type": "Hash256"
-      }
-    ],
-    [
-      "index",
-      {
-        "isSerialized": false,
-        "isSigningField": false,
-        "isVLEncoded": false,
-        "nth": 258,
-        "type": "Hash256"
-      }
-    ],
-    [
       "taker_gets_funded",
       {
         "isSerialized": false,
@@ -1533,20 +1513,20 @@
     [
       "hash",
       {
-        "isSerialized": true,
+        "isSerialized": false,
         "isSigningField": false,
         "isVLEncoded": false,
-        "nth": 1,
+        "nth": 257,
         "type": "Hash256"
       }
     ],
     [
       "index",
       {
-        "isSerialized": true,
+        "isSerialized": false,
         "isSigningField": false,
         "isVLEncoded": false,
-        "nth": 2,
+        "nth": 258,
         "type": "Hash256"
       }
     ],
@@ -3356,7 +3336,7 @@
         "isSerialized": false,
         "isSigningField": false,
         "isVLEncoded": false,
-        "nth": 1,
+        "nth": 257,
         "type": "Transaction"
       }
     ],
@@ -3366,7 +3346,7 @@
         "isSerialized": false,
         "isSigningField": false,
         "isVLEncoded": false,
-        "nth": 1,
+        "nth": 257,
         "type": "LedgerEntry"
       }
     ],
@@ -3376,7 +3356,7 @@
         "isSerialized": false,
         "isSigningField": false,
         "isVLEncoded": false,
-        "nth": 1,
+        "nth": 257,
         "type": "Validation"
       }
     ],
@@ -3386,7 +3366,7 @@
         "isSerialized": false,
         "isSigningField": false,
         "isVLEncoded": false,
-        "nth": 1,
+        "nth": 257,
         "type": "Metadata"
       }
     ]
@@ -3683,8 +3663,8 @@
     "telNO_DST_PARTIAL": -393,
     "telREQUIRES_NETWORK_ID": -385,
     "telWRONG_NETWORK": -386,
-    "temARRAY_EMPTY": -252,
-    "temARRAY_TOO_LARGE": -251,
+    "temARRAY_EMPTY": -251,
+    "temARRAY_TOO_LARGE": -250,
     "temBAD_AMM_TOKENS": -261,
     "temBAD_AMOUNT": -298,
     "temBAD_CURRENCY": -297,
@@ -3708,15 +3688,15 @@
     "temBAD_SIGNER": -272,
     "temBAD_SRC_ACCOUNT": -281,
     "temBAD_TICK_SIZE": -269,
-    "temBAD_TRANSFER_FEE": -250,
+    "temBAD_TRANSFER_FEE": -249,
     "temBAD_TRANSFER_RATE": -280,
     "temBAD_WEIGHT": -270,
     "temCANNOT_PREAUTH_SELF": -267,
     "temDISABLED": -273,
     "temDST_IS_SRC": -279,
     "temDST_NEEDED": -278,
-    "temEMPTY_DID": -253,
-    "temHOOK_DATA_TOO_LARGE": -254,
+    "temEMPTY_DID": -252,
+    "temHOOK_DATA_TOO_LARGE": -253,
     "temINVALID": -277,
     "temINVALID_ACCOUNT_ID": -268,
     "temINVALID_COUNT": -266,
@@ -3733,6 +3713,7 @@
     "temXCHAIN_BRIDGE_BAD_REWARD_AMOUNT": -255,
     "temXCHAIN_BRIDGE_NONDOOR_OWNER": -257,
     "temXCHAIN_EQUAL_DOOR_ACCOUNTS": -260,
+    "temXCHAIN_TOO_MANY_ATTESTATIONS": -254,
     "terFUNDS_SPENT": -98,
     "terINSUF_FEE_B": -97,
     "terLAST": -91,
@@ -3861,6 +3842,6 @@
     "Vector256": 19,
     "XChainBridge": 25
   },
-  "hash": "809A77D53BE8EEDBFB37E993E30D36AB08A4DD061945EB97447802DB7CBAB1B0",
+  "hash": "1A2E5781D880B2C4E600DB37FAAB486756E6ABF948F7207DE4D343F3DE4305A0",
   "native_currency_code": "XAH"
 }

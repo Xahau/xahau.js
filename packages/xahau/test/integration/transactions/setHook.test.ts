@@ -34,6 +34,7 @@ describe('SetHook', function () {
               HookApiVersion: 0,
               HookOn: '00'.repeat(32),
               HookCanEmit: '00'.repeat(32),
+              HookName: '484F4F4B',
               HookParameters: [
                 {
                   HookParameter: {

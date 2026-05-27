@@ -209,7 +209,6 @@ export async function verifySubmittedTransaction(
       'ledger_index',
       'meta',
       'validated',
-      'git',
     ]),
     decodedTx,
   )

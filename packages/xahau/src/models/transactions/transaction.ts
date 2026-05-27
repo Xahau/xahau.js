@@ -171,9 +171,9 @@ export function validate(transaction: Record<string, unknown>): void {
 
   Object.keys(tx).forEach((key) => {
     const standard_currency_code_len = 3
-    const value = tx[key]
-    if (value && isIssuedCurrency(value)) {
-      const txCurrency = value.currency
+    if (tx[key] && isIssuedCurrency(tx[key])) {
+      // eslint-disable-next-line @typescript-eslint/consistent-type-assertions -- needed
+      const txCurrency = (tx[key] as IssuedCurrencyAmount).currency
 
       if (
         txCurrency.length === standard_currency_code_len &&

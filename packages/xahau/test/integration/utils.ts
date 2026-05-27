@@ -202,7 +202,7 @@ export async function verifySubmittedTransaction(
   const decodedTx: any = typeof tx === 'string' ? decode(tx) : tx
   if (decodedTx.TransactionType === 'Payment') {
     decodedTx.DeliverMax = decodedTx.Amount
-    // delete decodedTx.Amount
+    delete decodedTx.Amount
   }
 
   assert(data.result)

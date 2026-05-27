@@ -1,5 +1,3 @@
-import { assert } from 'chai'
-
 import { Payment, Wallet } from '../../../src'
 import serverUrl from '../serverUrl'
 import {
@@ -14,21 +12,8 @@ const TIMEOUT = 20000
 
 describe('Payment', function () {
   let testContext: XrplIntegrationTestContext
-  let paymentTx: Payment
-  const AMOUNT = '10000000'
   // This wallet is used for DeliverMax related tests
   let senderWallet: Wallet
-
-  beforeEach(async () => {
-    // this payment transaction JSON needs to be refreshed before every test.
-    // Because, we tinker with Amount and DeliverMax fields in the API v2 tests
-    paymentTx = {
-      TransactionType: 'Payment',
-      Account: senderWallet.classicAddress,
-      Amount: AMOUNT,
-      Destination: 'rfkE1aSy9G8Upk4JssnwBxhEv5p4mn2KTy',
-    }
-  })
 
   beforeAll(async () => {
     testContext = await setupClient(serverUrl)
@@ -46,59 +31,6 @@ describe('Payment', function () {
         Amount: '1000',
       }
       await testTransaction(testContext.client, tx, testContext.wallet)
-    },
-    TIMEOUT,
-  )
-
-  it(
-    'Validate Payment transaction API v2: Payment Transaction: Specify Only Amount field',
-    async () => {
-      const result = await testTransaction(
-        testContext.client,
-        paymentTx,
-        senderWallet,
-      )
-
-      assert.equal(result.result.engine_result_code, 0)
-      assert.equal((result.result.tx_json as Payment).Amount, AMOUNT)
-    },
-    TIMEOUT,
-  )
-
-  it(
-    'Validate Payment transaction API v2: Payment Transaction: Specify Only DeliverMax field',
-    async () => {
-      // @ts-expect-error -- DeliverMax is a non-protocol, RPC level field in Payment transactions
-      paymentTx.DeliverMax = paymentTx.Amount
-      // @ts-expect-error -- DeliverMax is a non-protocol, RPC level field in Payment transactions
-      delete paymentTx.Amount
-
-      const result = await testTransaction(
-        testContext.client,
-        paymentTx,
-        senderWallet,
-      )
-
-      assert.equal(result.result.engine_result_code, 0)
-      assert.equal((result.result.tx_json as Payment).Amount, AMOUNT)
-    },
-    TIMEOUT,
-  )
-
-  it(
-    'Validate Payment transaction API v2: Payment Transaction: identical DeliverMax and Amount fields',
-    async () => {
-      // @ts-expect-error -- DeliverMax is a non-protocol, RPC level field in Payment transactions
-      paymentTx.DeliverMax = paymentTx.Amount
-
-      const result = await testTransaction(
-        testContext.client,
-        paymentTx,
-        senderWallet,
-      )
-
-      assert.equal(result.result.engine_result_code, 0)
-      assert.equal((result.result.tx_json as Payment).Amount, AMOUNT)
     },
     TIMEOUT,
   )

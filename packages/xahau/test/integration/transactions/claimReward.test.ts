@@ -35,6 +35,7 @@ describe('ClaimReward', function () {
             Hook: {
               CreateCode: acceptHook,
               HookApiVersion: 0,
+              HookOn: '00'.repeat(32),
               HookNamespace: '00'.repeat(32),
             },
           },

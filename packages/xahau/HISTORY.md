@@ -7,6 +7,16 @@ Subscribe to [the **xrpl-announce** mailing list](https://groups.google.com/g/xr
 ### Added
 * Support for HookOnV2 Amendment
 
+## 4.0.4 (2026-05-27)
+
+### Added
+* Improve HookStateScale validation
+
+### Fixed
+* Add lsfTshCollect flag in AccountRoot
+* Refactor amount assignment in partialPayment.ts
+* Fix setTransactionFlagsToNumber for Xahau transactions
+
 ## 4.0.3 (2025-11-18)
 
 ### Added

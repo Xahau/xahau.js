@@ -103,26 +103,6 @@
     [
       "TradingFee",
       {
-        "isSerialized": true,
-        "isSigningField": true,
-        "isVLEncoded": false,
-        "nth": 5,
-        "type": "UInt16"
-      }
-    ],
-    [
-      "DiscountedFee",
-      {
-        "isSerialized": true,
-        "isSigningField": true,
-        "isVLEncoded": false,
-        "nth": 6,
-        "type": "UInt16"
-      }
-    ],
-    [
-      "TradingFee",
-      {
         "nth": 5,
         "isVLEncoded": false,
         "isSerialized": true,
@@ -1217,16 +1197,6 @@
         "isSigningField": true,
         "isVLEncoded": false,
         "nth": 13,
-        "type": "Hash256"
-      }
-    ],
-    [
-      "AMMID",
-      {
-        "nth": 14,
-        "isVLEncoded": false,
-        "isSerialized": true,
-        "isSigningField": true,
         "type": "Hash256"
       }
     ],

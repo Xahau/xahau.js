@@ -65,7 +65,8 @@ describe('SetHook', function () {
               CreateCode: acceptHook,
               HookApiVersion: 0,
               HookOnIncoming: '00'.repeat(32),
-              HookOnOutgoing: '00'.repeat(32),
+              // eslint-disable-next-line no-inline-comments -- for readability
+              HookOnOutgoing: `01${'00'.repeat(31)}`, // should be different from HookOnIncoming
               HookNamespace: '00'.repeat(32),
             },
           },

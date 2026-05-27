@@ -1471,7 +1471,7 @@
       }
     ],
     [
-      "GovernanceMarks",
+      "HookCanEmit",
       {
         "isSerialized": true,
         "isSigningField": true,

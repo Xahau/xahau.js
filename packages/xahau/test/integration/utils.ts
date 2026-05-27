@@ -13,6 +13,8 @@ import {
   ECDSA,
   AccountLinesRequest,
   IssuedCurrency,
+  XAHAUD_API_V2,
+  TxResponse,
 } from '../../src'
 import {
   Payment,
@@ -184,9 +186,11 @@ export async function verifySubmittedTransaction(
   hashTx?: string,
 ): Promise<void> {
   const hash = hashTx ?? hashSignedTx(tx)
-  const data = await client.request({
+  const data: TxResponse = await client.request({
     command: 'tx',
     transaction: hash,
+    // The current default version is v1, but we'll be using v2 for this test.
+    api_version: XAHAUD_API_V2,
   })
   // eslint-disable-next-line @typescript-eslint/no-explicit-any -- TODO: handle this API change for 2.0.0
   const decodedTx: any = typeof tx === 'string' ? decode(tx) : tx
@@ -197,7 +201,7 @@ export async function verifySubmittedTransaction(
 
   assert(data.result)
   assert.deepEqual(
-    omit(data.result, [
+    omit(data.result.tx_json, [
       'ctid',
       'date',
       'hash',

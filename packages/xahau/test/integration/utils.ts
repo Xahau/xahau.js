@@ -15,6 +15,7 @@ import {
   IssuedCurrency,
   XAHAUD_API_V2,
   TxResponse,
+  XAH,
 } from '../../src'
 import {
   AccountSet,

@@ -51,4 +51,28 @@ describe('SetHook', function () {
     },
     TIMEOUT,
   )
+
+  it(
+    'hook on incoming/outgoing',
+    async () => {
+      const wallet = await generateFundedWallet(testContext.client)
+      const setHookTx: SetHook = {
+        TransactionType: 'SetHook',
+        Account: wallet.classicAddress,
+        Hooks: [
+          {
+            Hook: {
+              CreateCode: acceptHook,
+              HookApiVersion: 0,
+              HookOnIncoming: '00'.repeat(32),
+              HookOnOutgoing: '00'.repeat(32),
+              HookNamespace: '00'.repeat(32),
+            },
+          },
+        ],
+      }
+      await testTransaction(testContext.client, setHookTx, wallet)
+    },
+    TIMEOUT,
+  )
 })

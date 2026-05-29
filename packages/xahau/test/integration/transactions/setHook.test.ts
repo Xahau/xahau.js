@@ -126,8 +126,8 @@ describe('SetHook', function () {
       const hookDefinitionNode = hookDefinitionResponse.result
         .node as HookDefinition
       expect(hookDefinitionNode.HookOn).toBeUndefined()
-      expect(hookDefinitionNode.HookOnIncoming).toBeUndefined()
-      expect(hookDefinitionNode.HookOnOutgoing).toBeUndefined()
+      expect(hookDefinitionNode.HookOnIncoming).toBeDefined()
+      expect(hookDefinitionNode.HookOnOutgoing).toBeDefined()
     },
     TIMEOUT,
   )

@@ -4,6 +4,9 @@ Subscribe to [the **xrpl-announce** mailing list](https://groups.google.com/g/xr
 
 ## Unreleased Changes
 
+### Added
+* Support for IOUClaimReward Amendment
+
 ## 4.0.4 (2026-05-27)
 
 ### Added

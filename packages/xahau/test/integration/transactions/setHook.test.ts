@@ -1,4 +1,4 @@
-import { SetHook } from '../../../src'
+import { SetHook, Wallet } from '../../../src'
 import { Hook, HookDefinition } from '../../../src/models/ledger'
 import serverUrl from '../serverUrl'
 import {
@@ -15,16 +15,26 @@ const acceptHook =
 
 describe('SetHook', function () {
   let testContext: XrplIntegrationTestContext
+  let wallet: Wallet
 
   beforeEach(async () => {
     testContext = await setupClient(serverUrl)
+    wallet = await generateFundedWallet(testContext.client)
   })
-  afterEach(async () => teardownClient(testContext))
+  afterEach(async () => {
+    // reset Hook
+    const setHookTx: SetHook = {
+      TransactionType: 'SetHook',
+      Account: wallet.classicAddress,
+      Hooks: [{ Hook: { CreateCode: '', Flags: { hsfOverride: true } } }],
+    }
+    await testTransaction(testContext.client, setHookTx, wallet)
+    await teardownClient(testContext)
+  })
 
   it(
     'base',
     async () => {
-      const wallet = await generateFundedWallet(testContext.client)
       const setHookTx: SetHook = {
         TransactionType: 'SetHook',
         Account: wallet.classicAddress,

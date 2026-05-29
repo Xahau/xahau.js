@@ -84,7 +84,8 @@ describe('SetHook', function () {
       expect(hookDefinitionNode.HookApiVersion).toEqual(0)
       expect(hookDefinitionNode.HookOn).toEqual('00'.repeat(32))
       expect(hookDefinitionNode.HookNamespace).toEqual('00'.repeat(32))
-      expect(hook.HookName).toBeUndefined()
+      // @ts-expect-error - HookName is not defined in HookDefinition
+      expect(hookDefinitionNode.HookName).toBeUndefined()
       expect(hookDefinitionNode.HookParameters?.length).toEqual(1)
       const parameter = hookDefinitionNode.HookParameters![0].HookParameter
       expect(parameter.HookParameterName).toEqual('DEADBEEF')

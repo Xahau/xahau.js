@@ -1,4 +1,4 @@
-import { SetHook } from '../../../src'
+import { SetHook, Wallet } from '../../../src'
 import { Hook, HookDefinition } from '../../../src/models/ledger'
 import serverUrl from '../serverUrl'
 import {
@@ -15,16 +15,26 @@ const acceptHook =
 
 describe('SetHook', function () {
   let testContext: XrplIntegrationTestContext
+  let wallet: Wallet
 
   beforeEach(async () => {
     testContext = await setupClient(serverUrl)
+    wallet = await generateFundedWallet(testContext.client)
   })
-  afterEach(async () => teardownClient(testContext))
+  afterEach(async () => {
+    // reset Hook
+    const setHookTx: SetHook = {
+      TransactionType: 'SetHook',
+      Account: wallet.classicAddress,
+      Hooks: [{ Hook: { CreateCode: '', Flags: { hsfOverride: true } } }],
+    }
+    await testTransaction(testContext.client, setHookTx, wallet)
+    await teardownClient(testContext)
+  })
 
   it(
     'base',
     async () => {
-      const wallet = await generateFundedWallet(testContext.client)
       const setHookTx: SetHook = {
         TransactionType: 'SetHook',
         Account: wallet.classicAddress,
@@ -83,7 +93,6 @@ describe('SetHook', function () {
   it(
     'hook on incoming/outgoing',
     async () => {
-      const wallet = await generateFundedWallet(testContext.client)
       const setHookTx: SetHook = {
         TransactionType: 'SetHook',
         Account: wallet.classicAddress,
@@ -101,6 +110,24 @@ describe('SetHook', function () {
         ],
       }
       await testTransaction(testContext.client, setHookTx, wallet)
+
+      const ledgerEntryResponse = await testContext.client.request({
+        command: 'ledger_entry',
+        hook: { account: wallet.classicAddress },
+      })
+      const node = ledgerEntryResponse.result.node as Hook
+      const hook = node.Hooks[0].Hook
+      const hookHash = hook.HookHash!
+
+      const hookDefinitionResponse = await testContext.client.request({
+        command: 'ledger_entry',
+        hook_definition: hookHash,
+      })
+      const hookDefinitionNode = hookDefinitionResponse.result
+        .node as HookDefinition
+      expect(hookDefinitionNode.HookOn).toBeUndefined()
+      expect(hookDefinitionNode.HookOnIncoming).toBeUndefined()
+      expect(hookDefinitionNode.HookOnOutgoing).toBeUndefined()
     },
     TIMEOUT,
   )

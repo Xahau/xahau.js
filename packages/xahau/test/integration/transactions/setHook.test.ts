@@ -1,4 +1,5 @@
 import { SetHook } from '../../../src'
+import { Hook, HookDefinition } from '../../../src/models/ledger'
 import serverUrl from '../serverUrl'
 import {
   setupClient,
@@ -48,6 +49,33 @@ describe('SetHook', function () {
         ],
       }
       await testTransaction(testContext.client, setHookTx, wallet)
+
+      const ledgerEntryResponse = await testContext.client.request({
+        command: 'ledger_entry',
+        hook: { account: wallet.classicAddress },
+      })
+      const node = ledgerEntryResponse.result.node as Hook
+      expect(node.Hooks.length).toEqual(1)
+      const hook = node.Hooks[0].Hook
+      expect(Object.keys(hook).length).toEqual(1)
+      expect(hook.HookHash).toBeDefined()
+      const hookHash = hook.HookHash!
+
+      const hookDefinitionResponse = await testContext.client.request({
+        command: 'ledger_entry',
+        hook_definition: hookHash,
+      })
+      const hookDefinitionNode = hookDefinitionResponse.result
+        .node as HookDefinition
+      expect(hookDefinitionNode.HookHash).toEqual(hookHash)
+      expect(hookDefinitionNode.CreateCode).toEqual(acceptHook)
+      expect(hookDefinitionNode.HookApiVersion).toEqual(0)
+      expect(hookDefinitionNode.HookOn).toEqual('00'.repeat(32))
+      expect(hookDefinitionNode.HookNamespace).toEqual('00'.repeat(32))
+      expect(hookDefinitionNode.HookParameters?.length).toEqual(1)
+      const parameter = hookDefinitionNode.HookParameters![0].HookParameter
+      expect(parameter.HookParameterName).toEqual('DEADBEEF')
+      expect(parameter.HookParameterValue).toEqual('DEADBEEF')
     },
     TIMEOUT,
   )

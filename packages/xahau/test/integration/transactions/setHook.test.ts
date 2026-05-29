@@ -68,8 +68,9 @@ describe('SetHook', function () {
       const node = ledgerEntryResponse.result.node as Hook
       expect(node.Hooks.length).toEqual(1)
       const hook = node.Hooks[0].Hook
-      expect(Object.keys(hook).length).toEqual(1)
+      expect(Object.keys(hook).length).toEqual(2)
       expect(hook.HookHash).toBeDefined()
+      expect(hook.HookName).toBeDefined()
       const hookHash = hook.HookHash!
 
       const hookDefinitionResponse = await testContext.client.request({
@@ -83,6 +84,7 @@ describe('SetHook', function () {
       expect(hookDefinitionNode.HookApiVersion).toEqual(0)
       expect(hookDefinitionNode.HookOn).toEqual('00'.repeat(32))
       expect(hookDefinitionNode.HookNamespace).toEqual('00'.repeat(32))
+      expect(hook.HookName).toBeUndefined()
       expect(hookDefinitionNode.HookParameters?.length).toEqual(1)
       const parameter = hookDefinitionNode.HookParameters![0].HookParameter
       expect(parameter.HookParameterName).toEqual('DEADBEEF')

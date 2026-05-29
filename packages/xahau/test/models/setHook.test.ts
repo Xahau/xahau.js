@@ -32,6 +32,7 @@ describe('SetHook', function () {
             HookApiVersion: 0,
             HookNamespace:
               '4FF9961269BF7630D32E15276569C94470174A5DA79FA567C0F62251AA9A36B9',
+            HookName: 'DEADBEEF',
           },
         },
       ],
@@ -168,4 +169,25 @@ describe('SetHook', function () {
     )
     assert.throws(() => validate(setHookTx), ValidationError, errorMessage)
   })
+
+  it.each(['', '0'.repeat(7), '0'.repeat(33), 'ZZZZZZZZ'])(
+    `throws w/ invalid HookName in Hooks: %s`,
+    function (value: string) {
+      setHookTx.Hooks = [
+        {
+          Hook: {
+            HookName: value,
+          },
+        },
+      ]
+      const errorMessage =
+        'SetHook: HookName in Hook must be a hex string of 8-32 hex characters'
+      assert.throws(
+        () => validateSetHook(setHookTx),
+        ValidationError,
+        errorMessage,
+      )
+      assert.throws(() => validate(setHookTx), ValidationError, errorMessage)
+    },
+  )
 })

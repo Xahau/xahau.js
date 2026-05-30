@@ -114,6 +114,10 @@ export interface Hook {
      * The grants of the hook.
      */
     HookGrants?: HookGrant[]
+    /**
+     * The name of the hook.
+     */
+    HookName?: string
   }
 }
 

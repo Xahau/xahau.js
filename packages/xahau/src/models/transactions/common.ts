@@ -276,6 +276,10 @@ export interface BaseTransaction {
    */
   HookParameters?: HookParameter[]
   /**
+   * The name of the hooks triggered by the transaction.
+   */
+  HookName?: string
+  /**
    * The hook parameters of the transaction.
    */
   EmitDetails?: EmitDetails

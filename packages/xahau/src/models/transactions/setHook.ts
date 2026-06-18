@@ -52,7 +52,7 @@ export function validateSetHook(tx: Record<string, unknown>): void {
       HookOnOutgoing,
       HookCanEmit,
       HookNamespace,
-      HookName
+      HookName,
     } = hookObject.Hook
     if (HookOn !== undefined && !HEX_REGEX.test(HookOn)) {
       throw new ValidationError(

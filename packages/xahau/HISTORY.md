@@ -5,6 +5,7 @@ Subscribe to [the **xrpl-announce** mailing list](https://groups.google.com/g/xr
 ## Unreleased Changes
 
 ### Added
+* Support for HookOnV2 Amendment
 * Support for IOUClaimReward Amendment
 * Support for NamedHooks
 * Support for the `simulate` RPC ([XLS-69](https://github.com/XRPLF/XRPL-Standards/tree/master/XLS-0069-simulate))

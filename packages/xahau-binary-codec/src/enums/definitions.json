@@ -341,16 +341,6 @@
       }
     ],
     [
-      "LastUpdateTime",
-      {
-        "nth": 15,
-        "isVLEncoded": false,
-        "isSerialized": true,
-        "isSigningField": true,
-        "type": "UInt32"
-      }
-    ],
-    [
       "HighQualityIn",
       {
         "isSerialized": true,
@@ -781,16 +771,6 @@
       }
     ],
     [
-      "OracleDocumentID",
-      {
-        "nth": 51,
-        "isVLEncoded": false,
-        "isSerialized": true,
-        "isSigningField": true,
-        "type": "UInt32"
-      }
-    ],
-    [
       "IndexNext",
       {
         "isSerialized": true,
@@ -1077,16 +1057,6 @@
         "isSigningField": true,
         "isVLEncoded": false,
         "nth": 100,
-        "type": "UInt64"
-      }
-    ],
-    [
-      "AssetPrice",
-      {
-        "nth": 23,
-        "isVLEncoded": false,
-        "isSerialized": true,
-        "isSigningField": true,
         "type": "UInt64"
       }
     ],
@@ -2201,26 +2171,6 @@
       }
     ],
     [
-      "AssetClass",
-      {
-        "nth": 28,
-        "isVLEncoded": true,
-        "isSerialized": true,
-        "isSigningField": true,
-        "type": "Blob"
-      }
-    ],
-    [
-      "Provider",
-      {
-        "nth": 29,
-        "isVLEncoded": true,
-        "isSerialized": true,
-        "isSigningField": true,
-        "type": "Blob"
-      }
-    ],
-    [
       "Account",
       {
         "isSerialized": true,
@@ -2801,16 +2751,6 @@
       }
     ],
     [
-      "PriceData",
-      {
-        "nth": 32,
-        "isVLEncoded": false,
-        "isSerialized": true,
-        "isSigningField": true,
-        "type": "STObject"
-      }
-    ],
-    [
       "Signers",
       {
         "isSerialized": true,
@@ -2987,16 +2927,6 @@
         "isSigningField": true,
         "isVLEncoded": false,
         "nth": 24,
-        "type": "STArray"
-      }
-    ],
-    [
-      "PriceDataSeries",
-      {
-        "nth": 24,
-        "isVLEncoded": false,
-        "isSerialized": true,
-        "isSigningField": true,
         "type": "STArray"
       }
     ],

@@ -74,15 +74,15 @@ describe('OracleSet', function () {
       assert.equal(oracle.AssetClass, tx.AssetClass)
       assert.equal(oracle.Provider, tx.Provider)
       assert.equal(oracle.PriceDataSeries.length, 2)
-      assert.equal(oracle.PriceDataSeries[0].PriceData.BaseAsset, 'XRP')
-      assert.equal(oracle.PriceDataSeries[0].PriceData.QuoteAsset, 'USD')
-      assert.equal(oracle.PriceDataSeries[0].PriceData.AssetPrice, '2e4')
-      assert.equal(oracle.PriceDataSeries[0].PriceData.Scale, 3)
+      assert.equal(oracle.PriceDataSeries[1].PriceData.BaseAsset, 'XRP')
+      assert.equal(oracle.PriceDataSeries[1].PriceData.QuoteAsset, 'USD')
+      assert.equal(oracle.PriceDataSeries[1].PriceData.AssetPrice, '2e4')
+      assert.equal(oracle.PriceDataSeries[1].PriceData.Scale, 3)
       assert.equal(oracle.Flags, 0)
 
       // validate the serialization of large AssetPrice values
       assert.equal(
-        oracle.PriceDataSeries[1].PriceData.AssetPrice,
+        oracle.PriceDataSeries[0].PriceData.AssetPrice,
         'ffffffffffffffff',
       )
     },

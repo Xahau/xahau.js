@@ -21,6 +21,21 @@ import { BaseRequest, BaseResponse, LookupByLedgerRequest } from './baseMethod'
 export interface LedgerEntryRequest extends BaseRequest, LookupByLedgerRequest {
   command: 'ledger_entry'
   /**
+   * Retrieve an Automated Market Maker (AMM) object from the ledger.
+   * This is similar to amm_info method, but the ledger_entry version returns only the ledger entry as stored.
+   */
+  amm?: {
+    asset: {
+      currency: string
+      issuer?: string
+    }
+    asset2: {
+      currency: string
+      issuer?: string
+    }
+  }
+
+  /**
    * (Optional) If set to true and the queried object has been deleted,
    * return its complete data prior to its deletion.
    * If set to false or not provided and the queried object has been deleted,

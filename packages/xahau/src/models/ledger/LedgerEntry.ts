@@ -1,5 +1,6 @@
 import AccountRoot from './AccountRoot'
 import Amendments from './Amendments'
+import AMM from './AMM'
 import Check from './Check'
 import Cron from './Cron'
 import DepositPreauth from './DepositPreauth'
@@ -24,6 +25,7 @@ import URIToken from './URIToken'
 type LedgerEntry =
   | AccountRoot
   | Amendments
+  | AMM
   | Cron
   | Check
   | DepositPreauth
@@ -47,6 +49,7 @@ type LedgerEntry =
 
 type LedgerEntryFilter =
   | 'account'
+  | 'amm'
   | 'amendments'
   | 'cron'
   | 'check'

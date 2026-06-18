@@ -7,6 +7,9 @@ import {
   AccountRootFlags,
 } from '../ledger/AccountRoot'
 import { AccountSetTfFlags } from '../transactions/accountSet'
+import { AMMClawbackFlags } from '../transactions/AMMClawback'
+import { AMMDepositFlags } from '../transactions/AMMDeposit'
+import { AMMWithdrawFlags } from '../transactions/AMMWithdraw'
 import { ClaimRewardFlags } from '../transactions/claimReward'
 import { GlobalFlags } from '../transactions/common'
 import { CronSetFlags } from '../transactions/cronSet'
@@ -46,6 +49,9 @@ export function parseAccountRootFlags(
 
 const txToFlag = {
   AccountSet: AccountSetTfFlags,
+  AMMClawback: AMMClawbackFlags,
+  AMMDeposit: AMMDepositFlags,
+  AMMWithdraw: AMMWithdrawFlags,
   OfferCreate: OfferCreateFlags,
   PaymentChannelClaim: PaymentChannelClaimFlags,
   Payment: PaymentFlags,

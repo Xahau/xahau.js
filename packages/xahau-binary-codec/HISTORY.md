@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+### Added
+* Support for the AMMClawback amendment (XLS-73)
 ## 2.1.0 (2024-06-03)
 
 ### Added

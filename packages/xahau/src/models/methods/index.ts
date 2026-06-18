@@ -47,6 +47,7 @@ import {
   AccountTxVersionResponseMap,
   AccountTxTransaction,
 } from './accountTx'
+import { AMMInfoRequest, AMMInfoResponse } from './ammInfo'
 import {
   BaseRequest,
   BaseResponse,
@@ -189,6 +190,8 @@ type Request =
   | AccountTxRequest
   | GatewayBalancesRequest
   | NoRippleCheckRequest
+  // amm methods
+  | AMMInfoRequest
   // ledger methods
   | LedgerRequest
   | LedgerClosedRequest
@@ -269,6 +272,8 @@ type Response<Version extends APIVersion = typeof DEFAULT_API_VERSION> =
   // utility methods
   | PingResponse
   | RandomResponse
+  // AMM methods
+  | AMMInfoResponse
 
 export type RequestResponseMap<
   T,
@@ -411,6 +416,9 @@ export type RequestResponseMap<
   ? PingResponse
   : T extends RandomRequest
   ? RandomResponse
+  : // AMM methods
+  T extends AMMInfoRequest
+  ? AMMInfoResponse
   : Response<Version>
 
 export type MarkerRequest = Request & {
@@ -575,4 +583,7 @@ export {
   RandomRequest,
   RandomResponse,
   ErrorResponse,
+  // AMM methods
+  AMMInfoRequest,
+  AMMInfoResponse,
 }

@@ -13,6 +13,25 @@ export {
   AccountSetFlagsInterface,
   AccountSet,
 } from './accountSet'
+export { AMMBid } from './AMMBid'
+export {
+  AMMClawbackFlags,
+  AMMClawbackFlagsInterface,
+  AMMClawback,
+} from './AMMClawback'
+export { AMMCreate } from './AMMCreate'
+export { AMMDelete } from './AMMDelete'
+export {
+  AMMDepositFlags,
+  AMMDepositFlagsInterface,
+  AMMDeposit,
+} from './AMMDeposit'
+export { AMMVote } from './AMMVote'
+export {
+  AMMWithdrawFlags,
+  AMMWithdrawFlagsInterface,
+  AMMWithdraw,
+} from './AMMWithdraw'
 export { CheckCancel } from './checkCancel'
 export { CheckCash } from './checkCash'
 export { CheckCreate } from './checkCreate'

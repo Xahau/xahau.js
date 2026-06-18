@@ -327,6 +327,7 @@ export function validate(transaction: Record<string, unknown>): void {
 
     default:
       throw new ValidationError(
+        // eslint-disable-next-line max-lines -- allowed here
         `Invalid field TransactionType: ${tx.TransactionType}`,
       )
   }

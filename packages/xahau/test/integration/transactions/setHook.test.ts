@@ -93,4 +93,46 @@ describe('SetHook', function () {
     },
     TIMEOUT,
   )
+
+  it(
+    'hook on incoming/outgoing',
+    async () => {
+      const setHookTx: SetHook = {
+        TransactionType: 'SetHook',
+        Account: wallet.classicAddress,
+        Hooks: [
+          {
+            Hook: {
+              CreateCode: acceptHook,
+              HookApiVersion: 0,
+              HookOnIncoming: '00'.repeat(32),
+              // eslint-disable-next-line no-inline-comments -- for readability
+              HookOnOutgoing: `01${'00'.repeat(31)}`, // should be different from HookOnIncoming
+              HookNamespace: '00'.repeat(32),
+            },
+          },
+        ],
+      }
+      await testTransaction(testContext.client, setHookTx, wallet)
+
+      const ledgerEntryResponse = await testContext.client.request({
+        command: 'ledger_entry',
+        hook: { account: wallet.classicAddress },
+      })
+      const node = ledgerEntryResponse.result.node as Hook
+      const hook = node.Hooks[0].Hook
+      const hookHash = hook.HookHash!
+
+      const hookDefinitionResponse = await testContext.client.request({
+        command: 'ledger_entry',
+        hook_definition: hookHash,
+      })
+      const hookDefinitionNode = hookDefinitionResponse.result
+        .node as HookDefinition
+      expect(hookDefinitionNode.HookOn).toBeUndefined()
+      expect(hookDefinitionNode.HookOnIncoming).toBeDefined()
+      expect(hookDefinitionNode.HookOnOutgoing).toBeDefined()
+    },
+    TIMEOUT,
+  )
 })

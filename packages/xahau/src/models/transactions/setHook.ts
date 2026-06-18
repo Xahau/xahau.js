@@ -29,6 +29,7 @@ const HOOKNAME_REGEX = /^[0-9A-Fa-f]{8,32}$/u
  * @param tx - An SetHook Transaction.
  * @throws When the SetHook is Malformed.
  */
+// eslint-disable-next-line max-lines-per-function -- okay for this method
 export function validateSetHook(tx: Record<string, unknown>): void {
   validateBaseTransaction(tx)
 
@@ -45,10 +46,27 @@ export function validateSetHook(tx: Record<string, unknown>): void {
   for (const hook of tx.Hooks) {
     // eslint-disable-next-line @typescript-eslint/consistent-type-assertions -- Should be a Hook
     const hookObject = hook as Hook
-    const { HookOn, HookCanEmit, HookNamespace, HookName } = hookObject.Hook
+    const {
+      HookOn,
+      HookOnIncoming,
+      HookOnOutgoing,
+      HookCanEmit,
+      HookNamespace,
+      HookName,
+    } = hookObject.Hook
     if (HookOn !== undefined && !HEX_REGEX.test(HookOn)) {
       throw new ValidationError(
         `SetHook: HookOn in Hook must be a 256-bit (32-byte) hexadecimal value`,
+      )
+    }
+    if (HookOnIncoming !== undefined && !HEX_REGEX.test(HookOnIncoming)) {
+      throw new ValidationError(
+        `SetHook: HookOnIncoming in Hook must be a 256-bit (32-byte) hexadecimal value`,
+      )
+    }
+    if (HookOnOutgoing !== undefined && !HEX_REGEX.test(HookOnOutgoing)) {
+      throw new ValidationError(
+        `SetHook: HookOnOutgoing in Hook must be a 256-bit (32-byte) hexadecimal value`,
       )
     }
     if (HookCanEmit !== undefined && !HEX_REGEX.test(HookCanEmit)) {

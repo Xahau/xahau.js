@@ -28,6 +28,16 @@ export default interface HookDefintion
   HookOn?: string
 
   /**
+   * The incoming transactions that triggers to the hook. Represented as a 256Hash
+   */
+  HookOnIncoming?: string
+
+  /**
+   * The outgoing transactions that triggers from the hook. Represented as a 256Hash
+   */
+  HookOnOutgoing?: string
+
+  /**
    * The namespace of the hook.
    */
   HookNamespace?: string

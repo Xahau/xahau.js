@@ -4,6 +4,13 @@ Subscribe to [the **xrpl-announce** mailing list](https://groups.google.com/g/xr
 
 ## Unreleased Changes
 
+### Added
+* Support for HookOnV2 Amendment
+* Support for IOUClaimReward Amendment
+* Support for NamedHooks
+* Support for the `simulate` RPC ([XLS-69](https://github.com/XRPLF/XRPL-Standards/tree/master/XLS-0069-simulate))
+* Support for the Price Oracles amendment (XLS-47).
+
 ## 4.0.4 (2026-05-27)
 
 ### Added
@@ -57,6 +64,9 @@ Subscribe to [the **xrpl-announce** mailing list](https://groups.google.com/g/xr
 * Small fix in the API to use a new flag name `tfNoDirectRipple` instead of the existing flag name `tfNoRippleDirect`
 * Node.js has been upgraded to a minimum version of 18
 * `fetch` now relies on the native javascript environment in browsers and Node.js
+
+### Added
+* Support for the Price Oracles amendment (XLS-47).
 
 ### Added
 * Support for the Price Oracles amendment (XLS-47).

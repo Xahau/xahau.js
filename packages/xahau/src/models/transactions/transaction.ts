@@ -24,6 +24,8 @@ import { Invoke, validateInvoke } from './invoke'
 import { TransactionMetadata } from './metadata'
 import { OfferCancel, validateOfferCancel } from './offerCancel'
 import { OfferCreate, validateOfferCreate } from './offerCreate'
+import { OracleDelete, validateOracleDelete } from './oracleDelete'
+import { OracleSet, validateOracleSet } from './oracleSet'
 import { Payment, validatePayment } from './payment'
 import {
   PaymentChannelClaim,
@@ -79,6 +81,8 @@ export type SubmittableTransaction =
   | Invoke
   | OfferCancel
   | OfferCreate
+  | OracleDelete
+  | OracleSet
   | Payment
   | PaymentChannelClaim
   | PaymentChannelCreate
@@ -249,6 +253,14 @@ export function validate(transaction: Record<string, unknown>): void {
       validateOfferCreate(tx)
       break
 
+    case 'OracleDelete':
+      validateOracleDelete(tx)
+      break
+
+    case 'OracleSet':
+      validateOracleSet(tx)
+      break
+
     case 'Payment':
       validatePayment(tx)
       break
@@ -315,6 +327,7 @@ export function validate(transaction: Record<string, unknown>): void {
 
     default:
       throw new ValidationError(
+        // eslint-disable-next-line max-lines -- allowed here
         `Invalid field TransactionType: ${tx.TransactionType}`,
       )
   }

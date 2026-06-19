@@ -1,4 +1,5 @@
 import { ValidationError } from '../../errors'
+import { Currency } from '../common'
 
 import { BaseTransaction, GlobalFlags, validateBaseTransaction } from './common'
 /**
@@ -56,6 +57,7 @@ export interface ClaimReward extends BaseTransaction {
   Flags?: number | ClaimRewardFlagsInterface
   /** The unique address of the issuer where the reward.c hook is installed. */
   Issuer?: string
+  ClaimCurrency?: Currency
 }
 
 /**

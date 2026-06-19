@@ -32,6 +32,7 @@ describe('SetHook', function () {
             HookApiVersion: 0,
             HookNamespace:
               '4FF9961269BF7630D32E15276569C94470174A5DA79FA567C0F62251AA9A36B9',
+            HookName: 'DEADBEEF',
           },
         },
       ],
@@ -66,6 +67,10 @@ describe('SetHook', function () {
           '0061736D01000000011C0460057F7F7F7F7F017E60037F7F7E017E60027F7F017F60017F017E02230303656E76057472616365000003656E7606616363657074000103656E76025F670002030201030503010002062B077F0141B088040B7F004180080B7F0041A6080B7F004180080B7F0041B088040B7F0041000B7F0041010B07080104686F6F6B00030AC4800001C0800001017F230041106B220124002001200036020C41920841134180084112410010001A410022002000420010011A41012200200010021A200141106A240042000B0B2C01004180080B254163636570742E633A2043616C6C65642E00224163636570742E633A2043616C6C65642E22',
         HookOn:
           'FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFBFFFF7',
+        HookOnIncoming:
+          'FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFBFFFF7',
+        HookOnOutgoing:
+          'FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFBFFFF7',
         Flags: 1,
         HookApiVersion: 0,
         HookNamespace:
@@ -93,30 +98,31 @@ describe('SetHook', function () {
     assert.throws(() => validate(setHookTx), ValidationError, errorMessage)
   })
 
-  it(`throws w/ invalid HookOn in Hooks`, function () {
-    setHookTx.SignerQuorum = 2
-    setHookTx.Hooks = [
-      {
-        Hook: {
-          CreateCode:
-            '0061736D01000000011C0460057F7F7F7F7F017E60037F7F7E017E60027F7F017F60017F017E02230303656E76057472616365000003656E7606616363657074000103656E76025F670002030201030503010002062B077F0141B088040B7F004180080B7F0041A6080B7F004180080B7F0041B088040B7F0041000B7F0041010B07080104686F6F6B00030AC4800001C0800001017F230041106B220124002001200036020C41920841134180084112410010001A410022002000420010011A41012200200010021A200141106A240042000B0B2C01004180080B254163636570742E633A2043616C6C65642E00224163636570742E633A2043616C6C65642E22',
-          HookOn: '',
-          Flags: 1,
-          HookApiVersion: 0,
-          HookNamespace:
-            '4FF9961269BF7630D32E15276569C94470174A5DA79FA567C0F62251AA9A36B9',
+  it.each(['HookOn', 'HookOnIncoming', 'HookOnOutgoing'])(
+    `throws w/ invalid %s in Hooks`,
+    function (field: string) {
+      setHookTx.Hooks = [
+        {
+          Hook: {
+            CreateCode:
+              '0061736D01000000011C0460057F7F7F7F7F017E60037F7F7E017E60027F7F017F60017F017E02230303656E76057472616365000003656E7606616363657074000103656E76025F670002030201030503010002062B077F0141B088040B7F004180080B7F0041A6080B7F004180080B7F0041B088040B7F0041000B7F0041010B07080104686F6F6B00030AC4800001C0800001017F230041106B220124002001200036020C41920841134180084112410010001A410022002000420010011A41012200200010021A200141106A240042000B0B2C01004180080B254163636570742E633A2043616C6C65642E00224163636570742E633A2043616C6C65642E22',
+            [field]: '',
+            Flags: 1,
+            HookApiVersion: 0,
+            HookNamespace:
+              '4FF9961269BF7630D32E15276569C94470174A5DA79FA567C0F62251AA9A36B9',
+          },
         },
-      },
-    ]
-    const errorMessage =
-      'SetHook: HookOn in Hook must be a 256-bit (32-byte) hexadecimal value'
-    assert.throws(
-      () => validateSetHook(setHookTx),
-      ValidationError,
-      errorMessage,
-    )
-    assert.throws(() => validate(setHookTx), ValidationError, errorMessage)
-  })
+      ]
+      const errorMessage = `SetHook: ${field} in Hook must be a 256-bit (32-byte) hexadecimal value`
+      assert.throws(
+        () => validateSetHook(setHookTx),
+        ValidationError,
+        errorMessage,
+      )
+      assert.throws(() => validate(setHookTx), ValidationError, errorMessage)
+    },
+  )
 
   it(`throws w/ invalid HookCanEmit in Hooks`, function () {
     setHookTx.Hooks = [
@@ -168,4 +174,25 @@ describe('SetHook', function () {
     )
     assert.throws(() => validate(setHookTx), ValidationError, errorMessage)
   })
+
+  it.each(['', '0'.repeat(7), '0'.repeat(33), 'ZZZZZZZZ'])(
+    `throws w/ invalid HookName in Hooks: %s`,
+    function (value: string) {
+      setHookTx.Hooks = [
+        {
+          Hook: {
+            HookName: value,
+          },
+        },
+      ]
+      const errorMessage =
+        'SetHook: HookName in Hook must be a hex string of 8-32 hex characters'
+      assert.throws(
+        () => validateSetHook(setHookTx),
+        ValidationError,
+        errorMessage,
+      )
+      assert.throws(() => validate(setHookTx), ValidationError, errorMessage)
+    },
+  )
 })

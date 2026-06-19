@@ -23,6 +23,7 @@ import { LedgerEntry, LedgerEntryFilter } from './LedgerEntry'
 import LedgerHashes from './LedgerHashes'
 import NegativeUNL, { NEGATIVE_UNL_ID } from './NegativeUNL'
 import Offer, { OfferFlags } from './Offer'
+import Oracle from './Oracle'
 import PayChannel from './PayChannel'
 import RippleState, { RippleStateFlags } from './RippleState'
 import SignerList, { SignerListFlags } from './SignerList'
@@ -60,6 +61,7 @@ export {
   NegativeUNL,
   Offer,
   OfferFlags,
+  Oracle,
   PayChannel,
   RippleState,
   RippleStateFlags,

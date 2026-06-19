@@ -1,0 +1,138 @@
+import { SetHook, Wallet } from '../../../src'
+import { Hook, HookDefinition } from '../../../src/models/ledger'
+import serverUrl from '../serverUrl'
+import {
+  setupClient,
+  teardownClient,
+  type XrplIntegrationTestContext,
+} from '../setup'
+import { generateFundedWallet, testTransaction } from '../utils'
+
+// how long before each test case times out
+const TIMEOUT = 20000
+const acceptHook =
+  '0061736D0100000001130360027F7F017F60037F7F7E017E60017F017E02170203656E76025F67000003656E760661636365707400010302010205030100020621057F01418088040B7F004180080B7F004180080B7F00418088040B7F004180080B07080104686F6F6B00020A9D80000199800000410141011080808080001A4100410042001081808080000B'
+
+describe('SetHook', function () {
+  let testContext: XrplIntegrationTestContext
+  let wallet: Wallet
+
+  beforeEach(async () => {
+    testContext = await setupClient(serverUrl)
+    wallet = await generateFundedWallet(testContext.client)
+  })
+  afterEach(async () => {
+    // reset Hook
+    const setHookTx: SetHook = {
+      TransactionType: 'SetHook',
+      Account: wallet.classicAddress,
+      Hooks: [{ Hook: { CreateCode: '', Flags: { hsfOverride: true } } }],
+    }
+    await testTransaction(testContext.client, setHookTx, wallet)
+    await teardownClient(testContext)
+  })
+
+  it(
+    'base',
+    async () => {
+      const setHookTx: SetHook = {
+        TransactionType: 'SetHook',
+        Account: wallet.classicAddress,
+        Hooks: [
+          {
+            Hook: {
+              CreateCode: acceptHook,
+              HookApiVersion: 0,
+              HookOn: '00'.repeat(32),
+              HookCanEmit: '00'.repeat(32),
+              HookName: '484F4F4B',
+              HookParameters: [
+                {
+                  HookParameter: {
+                    HookParameterName: 'DEADBEEF',
+                    HookParameterValue: 'DEADBEEF',
+                  },
+                },
+              ],
+              HookNamespace: '00'.repeat(32),
+            },
+          },
+        ],
+      }
+      await testTransaction(testContext.client, setHookTx, wallet)
+
+      const ledgerEntryResponse = await testContext.client.request({
+        command: 'ledger_entry',
+        hook: { account: wallet.classicAddress },
+      })
+      const node = ledgerEntryResponse.result.node as Hook
+      expect(node.Hooks.length).toEqual(1)
+      const hook = node.Hooks[0].Hook
+      expect(Object.keys(hook).length).toEqual(2)
+      expect(hook.HookHash).toBeDefined()
+      expect(hook.HookName).toBeDefined()
+      const hookHash = hook.HookHash!
+
+      const hookDefinitionResponse = await testContext.client.request({
+        command: 'ledger_entry',
+        hook_definition: hookHash,
+      })
+      const hookDefinitionNode = hookDefinitionResponse.result
+        .node as HookDefinition
+      expect(hookDefinitionNode.HookHash).toEqual(hookHash)
+      expect(hookDefinitionNode.CreateCode).toEqual(acceptHook)
+      expect(hookDefinitionNode.HookApiVersion).toEqual(0)
+      expect(hookDefinitionNode.HookOn).toEqual('00'.repeat(32))
+      expect(hookDefinitionNode.HookNamespace).toEqual('00'.repeat(32))
+      // @ts-expect-error - HookName is not defined in HookDefinition
+      expect(hookDefinitionNode.HookName).toBeUndefined()
+      expect(hookDefinitionNode.HookParameters?.length).toEqual(1)
+      const parameter = hookDefinitionNode.HookParameters![0].HookParameter
+      expect(parameter.HookParameterName).toEqual('DEADBEEF')
+      expect(parameter.HookParameterValue).toEqual('DEADBEEF')
+    },
+    TIMEOUT,
+  )
+
+  it(
+    'hook on incoming/outgoing',
+    async () => {
+      const setHookTx: SetHook = {
+        TransactionType: 'SetHook',
+        Account: wallet.classicAddress,
+        Hooks: [
+          {
+            Hook: {
+              CreateCode: acceptHook,
+              HookApiVersion: 0,
+              HookOnIncoming: '00'.repeat(32),
+              // eslint-disable-next-line no-inline-comments -- for readability
+              HookOnOutgoing: `01${'00'.repeat(31)}`, // should be different from HookOnIncoming
+              HookNamespace: '00'.repeat(32),
+            },
+          },
+        ],
+      }
+      await testTransaction(testContext.client, setHookTx, wallet)
+
+      const ledgerEntryResponse = await testContext.client.request({
+        command: 'ledger_entry',
+        hook: { account: wallet.classicAddress },
+      })
+      const node = ledgerEntryResponse.result.node as Hook
+      const hook = node.Hooks[0].Hook
+      const hookHash = hook.HookHash!
+
+      const hookDefinitionResponse = await testContext.client.request({
+        command: 'ledger_entry',
+        hook_definition: hookHash,
+      })
+      const hookDefinitionNode = hookDefinitionResponse.result
+        .node as HookDefinition
+      expect(hookDefinitionNode.HookOn).toBeUndefined()
+      expect(hookDefinitionNode.HookOnIncoming).toBeDefined()
+      expect(hookDefinitionNode.HookOnOutgoing).toBeDefined()
+    },
+    TIMEOUT,
+  )
+})

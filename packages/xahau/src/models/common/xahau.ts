@@ -87,6 +87,14 @@ export interface Hook {
      */
     HookOn?: string
     /**
+     * The incoming transactions that triggers to the hook. Represented as a 256Hash
+     */
+    HookOnIncoming?: string
+    /**
+     * The outgoing transactions that triggers from the hook. Represented as a 256Hash
+     */
+    HookOnOutgoing?: string
+    /**
      * The transactions that can emit from the hook. Represented as a 256Hash
      */
     HookCanEmit?: string
@@ -106,6 +114,10 @@ export interface Hook {
      * The grants of the hook.
      */
     HookGrants?: HookGrant[]
+    /**
+     * The name of the hook.
+     */
+    HookName?: string
   }
 }
 

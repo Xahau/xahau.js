@@ -128,6 +128,7 @@ describe('server_info (xahaud)', function () {
         'node_size',
         'initial_sync_duration_us',
         'ports',
+        'git',
       ]
       assert.deepEqual(
         omit(response.result.info, removeKeys),

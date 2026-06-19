@@ -79,6 +79,10 @@ import {
   GatewayBalancesResponse,
 } from './gatewayBalances'
 import {
+  GetAggregatePriceRequest,
+  GetAggregatePriceResponse,
+} from './getAggregatePrice'
+import {
   LedgerBinary,
   LedgerModifiedOfferCreateTransaction,
   LedgerQueueData,
@@ -133,6 +137,14 @@ import {
   StateAccountingFinal,
 } from './serverInfo'
 import { ServerStateRequest, ServerStateResponse } from './serverState'
+import {
+  SimulateBinaryRequest,
+  SimulateBinaryResponse,
+  SimulateJsonRequest,
+  SimulateJsonResponse,
+  SimulateRequest,
+  SimulateResponse,
+} from './simulate'
 import { SubmitRequest, SubmitResponse } from './submit'
 import {
   SubmitMultisignedRequest,
@@ -188,6 +200,7 @@ type Request =
   | LedgerDataRequest
   | LedgerEntryRequest
   // transaction methods
+  | SimulateRequest
   | SubmitRequest
   | SubmitMultisignedRequest
   | TransactionEntryRequest
@@ -212,6 +225,8 @@ type Request =
   // utility methods
   | PingRequest
   | RandomRequest
+  // Price Oracle methods
+  | GetAggregatePriceRequest
 
 /**
  * @category Responses
@@ -235,6 +250,7 @@ type Response<Version extends APIVersion = typeof DEFAULT_API_VERSION> =
   | LedgerDataResponse
   | LedgerEntryResponse
   // transaction methods
+  | SimulateResponse
   | SubmitResponse
   | SubmitMultisignedVersionResponseMap<Version>
   | TransactionEntryResponse
@@ -259,6 +275,8 @@ type Response<Version extends APIVersion = typeof DEFAULT_API_VERSION> =
   // utility methods
   | PingResponse
   | RandomResponse
+  // Price Oracle methods
+  | GetAggregatePriceResponse
 
 export type RequestResponseMap<
   T,
@@ -279,6 +297,8 @@ export type RequestResponseMap<
   ? AccountTxVersionResponseMap<Version>
   : T extends GatewayBalancesRequest
   ? GatewayBalancesResponse
+  : T extends GetAggregatePriceRequest
+  ? GetAggregatePriceResponse
   : T extends NoRippleCheckRequest
   ? NoRippleCheckResponse
   : // NOTE: The order of these LedgerRequest types is important
@@ -355,6 +375,12 @@ export type RequestResponseMap<
   ? LedgerDataResponse
   : T extends LedgerEntryRequest
   ? LedgerEntryResponse
+  : T extends SimulateBinaryRequest
+  ? SimulateBinaryResponse
+  : T extends SimulateJsonRequest
+  ? SimulateJsonResponse
+  : T extends SimulateRequest
+  ? SimulateJsonResponse
   : T extends SubmitRequest
   ? SubmitResponse
   : T extends SubmitMultisignedRequest
@@ -465,6 +491,8 @@ export {
   GatewayBalance,
   GatewayBalancesRequest,
   GatewayBalancesResponse,
+  GetAggregatePriceRequest,
+  GetAggregatePriceResponse,
   NoRippleCheckRequest,
   NoRippleCheckResponse,
   // ledger methods
@@ -486,6 +514,8 @@ export {
   LedgerEntryRequest,
   LedgerEntryResponse,
   // transaction methods with types
+  SimulateRequest,
+  SimulateResponse,
   SubmitRequest,
   SubmitResponse,
   SubmitMultisignedRequest,

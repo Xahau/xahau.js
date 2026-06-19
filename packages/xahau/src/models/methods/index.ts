@@ -79,6 +79,10 @@ import {
   GatewayBalancesResponse,
 } from './gatewayBalances'
 import {
+  GetAggregatePriceRequest,
+  GetAggregatePriceResponse,
+} from './getAggregatePrice'
+import {
   LedgerBinary,
   LedgerModifiedOfferCreateTransaction,
   LedgerQueueData,
@@ -221,6 +225,8 @@ type Request =
   // utility methods
   | PingRequest
   | RandomRequest
+  // Price Oracle methods
+  | GetAggregatePriceRequest
 
 /**
  * @category Responses
@@ -269,6 +275,8 @@ type Response<Version extends APIVersion = typeof DEFAULT_API_VERSION> =
   // utility methods
   | PingResponse
   | RandomResponse
+  // Price Oracle methods
+  | GetAggregatePriceResponse
 
 export type RequestResponseMap<
   T,
@@ -289,6 +297,8 @@ export type RequestResponseMap<
   ? AccountTxVersionResponseMap<Version>
   : T extends GatewayBalancesRequest
   ? GatewayBalancesResponse
+  : T extends GetAggregatePriceRequest
+  ? GetAggregatePriceResponse
   : T extends NoRippleCheckRequest
   ? NoRippleCheckResponse
   : // NOTE: The order of these LedgerRequest types is important
@@ -481,6 +491,8 @@ export {
   GatewayBalance,
   GatewayBalancesRequest,
   GatewayBalancesResponse,
+  GetAggregatePriceRequest,
+  GetAggregatePriceResponse,
   NoRippleCheckRequest,
   NoRippleCheckResponse,
   // ledger methods

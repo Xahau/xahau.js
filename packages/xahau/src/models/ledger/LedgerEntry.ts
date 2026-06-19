@@ -14,6 +14,7 @@ import ImportVLSequence from './ImportVLSequence'
 import LedgerHashes from './LedgerHashes'
 import NegativeUNL from './NegativeUNL'
 import Offer from './Offer'
+import Oracle from './Oracle'
 import PayChannel from './PayChannel'
 import RippleState from './RippleState'
 import SignerList from './SignerList'
@@ -38,6 +39,7 @@ type LedgerEntry =
   | LedgerHashes
   | NegativeUNL
   | Offer
+  | Oracle
   | PayChannel
   | RippleState
   | SignerList
@@ -60,6 +62,7 @@ type LedgerEntryFilter =
   | 'import_vl_sequence'
   | 'hashes'
   | 'offer'
+  | 'oracle'
   | 'payment_channel'
   | 'signer_list'
   | 'state'

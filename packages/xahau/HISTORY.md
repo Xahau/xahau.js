@@ -1,8 +1,8 @@
-# xrpl.js Release History
-
-Subscribe to [the **xrpl-announce** mailing list](https://groups.google.com/g/xrpl-announce) for release announcements. We recommend that xrpl.js (ripple-lib) users stay up-to-date with the latest stable release.
+# xahau.js Release History
 
 ## Unreleased Changes
+
+## 4.1.0 (2026-06-23)
 
 ### Added
 * Support for HookOnV2 Amendment

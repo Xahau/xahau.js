@@ -4,7 +4,7 @@
 name: Node.js CI
 
 env:
-  XAHAUD_VERSION: 2026.6.16-dev+3330
+  XAHAUD_VERSION: 2026.6.21-release+3350
 
 on:
   push:

@@ -1,6 +1,6 @@
 {
   "name": "xahau-binary-codec",
-  "version": "2.2.0-alpha.0",
+  "version": "2.2.0",
   "description": "Xahau Network binary codec",
   "files": [
     "dist/*",

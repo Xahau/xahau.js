@@ -1,6 +1,6 @@
 {
   "name": "xahau",
-  "version": "4.1.0-alpha.0",
+  "version": "4.1.0",
   "license": "ISC",
   "description": "A TypeScript/JavaScript API for interacting with the Xahau Network in Node.js and the browser",
   "files": [
@@ -29,7 +29,7 @@
     "bignumber.js": "^9.0.0",
     "eventemitter3": "^5.0.1",
     "xahau-address-codec": "^5.0.0",
-    "xahau-binary-codec": "^2.2.0-alpha.0",
+    "xahau-binary-codec": "^2.2.0",
     "xahau-keypairs": "^2.0.0"
   },
   "devDependencies": {

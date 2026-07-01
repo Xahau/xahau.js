@@ -2,6 +2,9 @@
 
 ## Unreleased Changes
 
+### Fixed
+* Fix HookName validation on HookName deletion
+
 ## 4.1.0 (2026-06-23)
 
 ### Added

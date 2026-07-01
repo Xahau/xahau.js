@@ -175,7 +175,7 @@ describe('SetHook', function () {
     assert.throws(() => validate(setHookTx), ValidationError, errorMessage)
   })
 
-  it.each(['', '0'.repeat(7), '0'.repeat(33), 'ZZZZZZZZ'])(
+  it.each(['00', '0000', '000000', '0'.repeat(7), '0'.repeat(33), 'ZZZZZZZZ'])(
     `throws w/ invalid HookName in Hooks: %s`,
     function (value: string) {
       setHookTx.Hooks = [
@@ -195,4 +195,16 @@ describe('SetHook', function () {
       assert.throws(() => validate(setHookTx), ValidationError, errorMessage)
     },
   )
+
+  it(`valid HookName "" (deletion) in Hooks`, function () {
+    setHookTx.Hooks = [
+      {
+        Hook: {
+          HookName: '',
+        },
+      },
+    ]
+    assert.doesNotThrow(() => validateSetHook(setHookTx))
+    assert.doesNotThrow(() => validate(setHookTx))
+  })
 })

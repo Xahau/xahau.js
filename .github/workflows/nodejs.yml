@@ -145,6 +145,9 @@ jobs:
             --env CI=true \
             ubuntu:latest /opt/xahau/bin/xahaud -a --conf /opt/xahau/etc/xahaud.cfg
 
+      - name: Check docker container log
+        run: docker logs xahaud-service
+
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v3
         with:

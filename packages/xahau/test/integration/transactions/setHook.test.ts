@@ -135,4 +135,49 @@ describe('SetHook', function () {
     },
     TIMEOUT,
   )
+
+  it('hook name update', async () => {
+    let setHookTx: SetHook = {
+      TransactionType: 'SetHook',
+      Account: wallet.classicAddress,
+      Hooks: [
+        {
+          Hook: {
+            CreateCode: acceptHook,
+            HookApiVersion: 0,
+            HookName: '484F4F4B',
+            HookOn: '00'.repeat(32),
+            HookNamespace: '00'.repeat(32),
+          },
+        },
+      ],
+    }
+    await testTransaction(testContext.client, setHookTx, wallet)
+    {
+      const ledgerEntryResponse = await testContext.client.request({
+        command: 'ledger_entry',
+        hook: { account: wallet.classicAddress },
+      })
+      const node = ledgerEntryResponse.result.node as Hook
+      const hook = node.Hooks[0].Hook
+      expect(hook.HookName).toEqual('484F4F4B')
+    }
+
+    // delete HookName
+    setHookTx = {
+      TransactionType: 'SetHook',
+      Account: wallet.classicAddress,
+      Hooks: [{ Hook: { HookName: '' } }],
+    }
+    await testTransaction(testContext.client, setHookTx, wallet)
+    {
+      const ledgerEntryResponse = await testContext.client.request({
+        command: 'ledger_entry',
+        hook: { account: wallet.classicAddress },
+      })
+      const node = ledgerEntryResponse.result.node as Hook
+      const hook = node.Hooks[0].Hook
+      expect(hook.HookName).toBeUndefined()
+    }
+  })
 })

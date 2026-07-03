@@ -79,7 +79,11 @@ export function validateSetHook(tx: Record<string, unknown>): void {
         `SetHook: HookNamespace in Hook must be a 256-bit (32-byte) hexadecimal value`,
       )
     }
-    if (HookName !== undefined && !HOOKNAME_REGEX.test(HookName)) {
+    if (
+      HookName !== undefined &&
+      HookName.length !== 0 &&
+      !HOOKNAME_REGEX.test(HookName)
+    ) {
       throw new ValidationError(
         `SetHook: HookName in Hook must be a hex string of 8-32 hex characters`,
       )

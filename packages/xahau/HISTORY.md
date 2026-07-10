@@ -2,6 +2,9 @@
 
 ## Unreleased Changes
 
+### Fixed
+* Add missing HookCanEmit field to HookDefinition
+
 ### 4.1.1 (2026-07-03)
 
 ### Fixed

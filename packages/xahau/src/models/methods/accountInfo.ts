@@ -1,4 +1,5 @@
 import { APIVersion, DEFAULT_API_VERSION, XAHAUD_API_V1 } from '../common'
+import { Hook } from '../common/xahau'
 import { AccountRoot, SignerList } from '../ledger'
 
 import { BaseRequest, BaseResponse, LookupByLedgerRequest } from './baseMethod'
@@ -20,6 +21,11 @@ export interface AccountInfoRequest extends BaseRequest, LookupByLedgerRequest {
    * from servers in Reporting Mode.
    */
   queue?: boolean
+  /**
+   * Include the effective Hook configuration of each hook slot of this
+   * account. Empty slots are returned as empty `Hook` objects.
+   */
+  hooks?: boolean
   /**
    * Request SignerList objects associated with this account.
    */
@@ -145,6 +151,12 @@ interface BaseAccountInfoResponse extends BaseResponse {
      * A map of account flags parsed out.  This will only be available for xahaud nodes 1.11.0 and higher.
      */
     account_flags?: AccountInfoAccountFlags
+    /**
+     * The effective Hook configuration of each hook slot of this account. Only
+     * included if the request set `hooks` to true. Empty slots are returned as
+     * empty `Hook` objects.
+     */
+    hooks?: Hook[]
     /**
      * The ledger index of the current in-progress ledger, which was used when
      * retrieving this information.

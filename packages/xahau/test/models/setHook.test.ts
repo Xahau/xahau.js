@@ -67,10 +67,6 @@ describe('SetHook', function () {
           '0061736D01000000011C0460057F7F7F7F7F017E60037F7F7E017E60027F7F017F60017F017E02230303656E76057472616365000003656E7606616363657074000103656E76025F670002030201030503010002062B077F0141B088040B7F004180080B7F0041A6080B7F004180080B7F0041B088040B7F0041000B7F0041010B07080104686F6F6B00030AC4800001C0800001017F230041106B220124002001200036020C41920841134180084112410010001A410022002000420010011A41012200200010021A200141106A240042000B0B2C01004180080B254163636570742E633A2043616C6C65642E00224163636570742E633A2043616C6C65642E22',
         HookOn:
           'FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFBFFFF7',
-        HookOnIncoming:
-          'FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFBFFFF7',
-        HookOnOutgoing:
-          'FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFBFFFF7',
         Flags: 1,
         HookApiVersion: 0,
         HookNamespace:
@@ -123,6 +119,57 @@ describe('SetHook', function () {
       assert.throws(() => validate(setHookTx), ValidationError, errorMessage)
     },
   )
+
+  it(`throws w/ HookOn and HookOnIncoming/HookOnOutgoing together`, function () {
+    Object.assign(setHookTx.Hooks[0].Hook, {
+      HookOnIncoming:
+        'FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFBFFFF7',
+      HookOnOutgoing:
+        'FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFBFFFF6',
+    })
+    const errorMessage =
+      'SetHook: HookOn and HookOnIncoming/HookOnOutgoing in Hook are mutually exclusive'
+    assert.throws(
+      () => validateSetHook(setHookTx),
+      ValidationError,
+      errorMessage,
+    )
+    assert.throws(() => validate(setHookTx), ValidationError, errorMessage)
+  })
+
+  it(`throws w/ only one of HookOnIncoming/HookOnOutgoing`, function () {
+    Object.assign(setHookTx.Hooks[0].Hook, {
+      HookOn: undefined,
+      HookOnIncoming:
+        'FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFBFFFF7',
+    })
+    const errorMessage =
+      'SetHook: HookOnIncoming and HookOnOutgoing in Hook must be specified together'
+    assert.throws(
+      () => validateSetHook(setHookTx),
+      ValidationError,
+      errorMessage,
+    )
+    assert.throws(() => validate(setHookTx), ValidationError, errorMessage)
+  })
+
+  it(`throws w/ equal HookOnIncoming and HookOnOutgoing`, function () {
+    Object.assign(setHookTx.Hooks[0].Hook, {
+      HookOn: undefined,
+      HookOnIncoming:
+        'FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFBFFFF7',
+      HookOnOutgoing:
+        'FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFBFFFF7'.toLowerCase(),
+    })
+    const errorMessage =
+      'SetHook: HookOnIncoming and HookOnOutgoing in Hook must be different, use HookOn instead'
+    assert.throws(
+      () => validateSetHook(setHookTx),
+      ValidationError,
+      errorMessage,
+    )
+    assert.throws(() => validate(setHookTx), ValidationError, errorMessage)
+  })
 
   it(`throws w/ invalid HookCanEmit in Hooks`, function () {
     setHookTx.Hooks = [

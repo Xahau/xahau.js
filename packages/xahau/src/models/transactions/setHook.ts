@@ -29,7 +29,7 @@ const HOOKNAME_REGEX = /^[0-9A-Fa-f]{8,32}$/u
  * @param tx - An SetHook Transaction.
  * @throws When the SetHook is Malformed.
  */
-// eslint-disable-next-line max-lines-per-function -- okay for this method
+// eslint-disable-next-line max-lines-per-function, max-statements -- okay for this method
 export function validateSetHook(tx: Record<string, unknown>): void {
   validateBaseTransaction(tx)
 
@@ -67,6 +67,28 @@ export function validateSetHook(tx: Record<string, unknown>): void {
     if (HookOnOutgoing !== undefined && !HEX_REGEX.test(HookOnOutgoing)) {
       throw new ValidationError(
         `SetHook: HookOnOutgoing in Hook must be a 256-bit (32-byte) hexadecimal value`,
+      )
+    }
+    if (
+      HookOn !== undefined &&
+      (HookOnIncoming !== undefined || HookOnOutgoing !== undefined)
+    ) {
+      throw new ValidationError(
+        `SetHook: HookOn and HookOnIncoming/HookOnOutgoing in Hook are mutually exclusive`,
+      )
+    }
+    if ((HookOnIncoming === undefined) !== (HookOnOutgoing === undefined)) {
+      throw new ValidationError(
+        `SetHook: HookOnIncoming and HookOnOutgoing in Hook must be specified together`,
+      )
+    }
+    if (
+      HookOnIncoming !== undefined &&
+      HookOnOutgoing !== undefined &&
+      HookOnIncoming.toUpperCase() === HookOnOutgoing.toUpperCase()
+    ) {
+      throw new ValidationError(
+        `SetHook: HookOnIncoming and HookOnOutgoing in Hook must be different, use HookOn instead`,
       )
     }
     if (HookCanEmit !== undefined && !HEX_REGEX.test(HookCanEmit)) {

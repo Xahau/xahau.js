@@ -88,10 +88,12 @@ export interface Hook {
     HookOn?: string
     /**
      * The incoming transactions that triggers to the hook. Represented as a 256Hash
+     * Requires HookOnV2_1; must be used together with HookOnOutgoing, must differ from it, and is mutually exclusive with HookOn.
      */
     HookOnIncoming?: string
     /**
      * The outgoing transactions that triggers from the hook. Represented as a 256Hash
+     * Requires HookOnV2_1; must be used together with HookOnIncoming, must differ from it, and is mutually exclusive with HookOn.
      */
     HookOnOutgoing?: string
     /**

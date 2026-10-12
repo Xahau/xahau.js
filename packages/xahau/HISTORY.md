@@ -2,6 +2,9 @@
 
 ## Unreleased Changes
 
+### Added
+* Support for HookOnV2_1 Amendment (replaces HookOnV2): validate HookOn / HookOnIncoming / HookOnOutgoing combinations in SetHook
+
 ### 4.1.1 (2026-07-03)
 
 ### Fixed

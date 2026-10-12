@@ -163,11 +163,11 @@ describe('SetHook', function () {
       expect(hook.HookName).toEqual('484F4F4B')
     }
 
-    // TODO: restore the HookName deletion step (HookName: '') once xahaud no longer crashes on it; deleting a HookName with an empty value is a valid SetHook operation, but xahaud 2026.10.12-dev+4111 segfaults when it is submitted.
+    // delete HookName
     setHookTx = {
       TransactionType: 'SetHook',
       Account: wallet.classicAddress,
-      Hooks: [{ Hook: { HookName: '484F4F4B32' } }],
+      Hooks: [{ Hook: { HookName: '' } }],
     }
     await testTransaction(testContext.client, setHookTx, wallet)
     {
@@ -177,7 +177,7 @@ describe('SetHook', function () {
       })
       const node = ledgerEntryResponse.result.node as Hook
       const hook = node.Hooks[0].Hook
-      expect(hook.HookName).toEqual('484F4F4B32')
+      expect(hook.HookName).toBeUndefined()
     }
   })
 })

@@ -4,6 +4,7 @@
 
 ### Added
 * Support for HookOnV2_1 Amendment (replaces HookOnV2): validate HookOn / HookOnIncoming / HookOnOutgoing combinations in SetHook
+* Support for EscrowDestinationCancel Amendment (documentation and integration tests; no API change)
 
 ### 4.1.1 (2026-07-03)
 

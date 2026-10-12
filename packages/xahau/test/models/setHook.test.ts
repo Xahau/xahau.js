@@ -44,6 +44,16 @@ describe('SetHook', function () {
     assert.doesNotThrow(() => validate(setHookTx))
   })
 
+  it(`verifies valid HookOnIncoming/HookOnOutgoing pair`, function () {
+    delete setHookTx.Hooks[0].Hook.HookOn
+    setHookTx.Hooks[0].Hook.HookOnIncoming =
+      'FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFBFFFF7'
+    setHookTx.Hooks[0].Hook.HookOnOutgoing =
+      'FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFBFFFF6'
+    assert.doesNotThrow(() => validateSetHook(setHookTx))
+    assert.doesNotThrow(() => validate(setHookTx))
+  })
+
   it(`throws w/ invalid Hooks`, function () {
     setHookTx.Hooks = 'khgfgyhujk'
 

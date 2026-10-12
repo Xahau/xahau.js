@@ -217,21 +217,32 @@ describe('account_info', function () {
       }
       await testTransaction(testContext.client, setHookTx, wallet)
 
-      const request: AccountInfoRequest = {
-        command: 'account_info',
-        account: wallet.classicAddress,
-        hooks: true,
-      }
-      const response = await testContext.client.request(request)
-      assert.isArray(response.result.hooks)
-      assert.isDefined(response.result.hooks![0].Hook.HookHash)
-      assert.equal(response.result.hooks![0].Hook.HookOn, hookOn)
+      try {
+        const request: AccountInfoRequest = {
+          command: 'account_info',
+          account: wallet.classicAddress,
+          hooks: true,
+        }
+        const response = await testContext.client.request(request)
+        assert.isArray(response.result.hooks)
+        assert.isDefined(response.result.hooks![0].Hook.HookHash)
+        assert.equal(response.result.hooks![0].Hook.HookOn, hookOn)
 
-      const withoutHooks = await testContext.client.request({
-        command: 'account_info',
-        account: wallet.classicAddress,
-      })
-      assert.notProperty(withoutHooks.result, 'hooks')
+        const withoutHooks = await testContext.client.request({
+          command: 'account_info',
+          account: wallet.classicAddress,
+        })
+        assert.notProperty(withoutHooks.result, 'hooks')
+      } finally {
+        // The HookDefinition is shared by code hash, so release it to let
+        // other tests see a fresh definition.
+        const resetHookTx: SetHook = {
+          TransactionType: 'SetHook',
+          Account: wallet.classicAddress,
+          Hooks: [{ Hook: { CreateCode: '', Flags: { hsfOverride: true } } }],
+        }
+        await testTransaction(testContext.client, resetHookTx, wallet)
+      }
     },
     TIMEOUT,
   )

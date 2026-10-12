@@ -68,6 +68,49 @@ describe('BaseTransaction', function () {
     assert.doesNotThrow(() => validateBaseTransaction(txJson))
   })
 
+  it(`Verifies valid HookName`, function () {
+    const txJson = {
+      Account: 'r97KeayHuEsDwyU1yPBVtMLLoQr79QcRFe',
+      TransactionType: 'Payment',
+      HookName: 'DEADBEEF',
+    }
+
+    assert.doesNotThrow(() => validateBaseTransaction(txJson))
+  })
+
+  it.each([
+    ['empty', ''],
+    ['non-hex', 'ZZZZZZZZ'],
+    ['too short', 'DEADBE'],
+    ['too long', 'DE'.repeat(17)],
+  ])(`Handles invalid HookName: %s`, function (_name, value) {
+    const invalidHookName = {
+      Account: 'r97KeayHuEsDwyU1yPBVtMLLoQr79QcRFe',
+      TransactionType: 'Payment',
+      HookName: value,
+    } as any
+
+    assert.throws(
+      () => validateBaseTransaction(invalidHookName),
+      ValidationError,
+      'BaseTransaction: HookName must be a hex string of 8-32 hex characters',
+    )
+  })
+
+  it(`Handles non-string HookName`, function () {
+    const invalidHookName = {
+      Account: 'r97KeayHuEsDwyU1yPBVtMLLoQr79QcRFe',
+      TransactionType: 'Payment',
+      HookName: 1234,
+    } as any
+
+    assert.throws(
+      () => validateBaseTransaction(invalidHookName),
+      ValidationError,
+      'Payment: invalid field HookName',
+    )
+  })
+
   it(`Handles invalid Fee`, function () {
     const invalidFee = {
       Account: 'r97KeayHuEsDwyU1yPBVtMLLoQr79QcRFe',

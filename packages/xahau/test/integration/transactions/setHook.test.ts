@@ -163,7 +163,7 @@ describe('SetHook', function () {
       expect(hook.HookName).toEqual('484F4F4B')
     }
 
-    // fix20260929: an empty HookName is temMALFORMED, so HookName can only be replaced, not deleted
+    // TODO: restore the HookName deletion step (HookName: '') once xahaud no longer crashes on it; deleting a HookName with an empty value is a valid SetHook operation, but xahaud 2026.10.12-dev+4111 segfaults when it is submitted.
     setHookTx = {
       TransactionType: 'SetHook',
       Account: wallet.classicAddress,

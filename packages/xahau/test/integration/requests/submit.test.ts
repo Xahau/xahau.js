@@ -109,7 +109,7 @@ describe('submit', function () {
   it(
     'submit a manifest',
     async () => {
-      const master = deriveKeypair(generateSeed())
+      const master = deriveKeypair(generateSeed({ algorithm: 'ed25519' }))
       const ephemeral = deriveKeypair(generateSeed())
       const manifest = {
         Sequence: 1,

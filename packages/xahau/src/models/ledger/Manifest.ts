@@ -10,6 +10,11 @@ import { BaseLedgerEntry, HasPreviousTxnID } from './BaseLedgerEntry'
  */
 export default interface Manifest extends BaseLedgerEntry, HasPreviousTxnID {
   LedgerEntryType: 'Manifest'
+  /**
+   * A bit-map of Boolean flags enabled for this entry. Currently, there are
+   * no flags defined for Manifest entries.
+   */
+  Flags: number
   /** The account derived from the master public key. */
   Account: string
   /** The master public key of the validator. */
@@ -26,11 +31,15 @@ export default interface Manifest extends BaseLedgerEntry, HasPreviousTxnID {
   MasterSignature: string
   /** The signature of the manifest made with the ephemeral key. */
   Signature?: string
-  /** The ledger index of the master copy of this manifest. */
+  /**
+   * The ledger index of the paired copy: the ephemeral-key copy for the master
+   * entry, and the master copy for the ephemeral entry.
+   */
   ManifestID?: string
   /**
-   * A hint indicating which page of the owner directory links to this object.
-   * Only present on the master copy.
+   * A hint indicating which page of the global manifest directory links to this
+   * object (not the owner directory, so `account_objects` does not list
+   * Manifest entries). Only present on the master copy.
    */
   OwnerNode?: string
 }

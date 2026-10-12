@@ -2,6 +2,11 @@ import { SetManifest, SubmittableTransaction } from '../transactions'
 
 import { BaseRequest, BaseResponse } from './baseMethod'
 
+/**
+ * A {@link SubmitRequest} that submits a signed transaction blob.
+ *
+ * @category Requests
+ */
 export interface SubmitTxBlobRequest extends BaseRequest {
   command: 'submit'
   /** The complete transaction in hex string format. */
@@ -14,6 +19,11 @@ export interface SubmitTxBlobRequest extends BaseRequest {
   fail_hard?: boolean
 }
 
+/**
+ * A {@link SubmitRequest} that submits a validator manifest.
+ *
+ * @category Requests
+ */
 export interface SubmitManifestRequest extends BaseRequest {
   command: 'submit'
   tx_blob?: never

@@ -1,4 +1,4 @@
-/* eslint-disable max-lines-per-function -- need to work with a lot of Tx verifications */
+/* eslint-disable max-lines-per-function, max-lines -- need to work with a lot of Tx verifications */
 
 import { ValidationError } from '../../errors'
 import { IssuedCurrencyAmount, Memo } from '../common'
@@ -42,6 +42,7 @@ import {
 import { Remit, validateRemit } from './remit'
 import { SetFee } from './setFee'
 import { SetHook, validateSetHook } from './setHook'
+import { SetManifest } from './setManifest'
 import { SetRegularKey, validateSetRegularKey } from './setRegularKey'
 import { SetRemarks, validateSetRemarks } from './setRemarks'
 import { SignerListSet, validateSignerListSet } from './signerListSet'
@@ -105,7 +106,12 @@ export type SubmittableTransaction =
  *
  * @category Transaction Models
  */
-export type PseudoTransaction = Cron | EnableAmendment | SetFee | UNLModify
+export type PseudoTransaction =
+  | Cron
+  | EnableAmendment
+  | SetFee
+  | SetManifest
+  | UNLModify
 
 /**
  * All transactions that can live on the XAHL
@@ -327,7 +333,6 @@ export function validate(transaction: Record<string, unknown>): void {
 
     default:
       throw new ValidationError(
-        // eslint-disable-next-line max-lines -- allowed here
         `Invalid field TransactionType: ${tx.TransactionType}`,
       )
   }

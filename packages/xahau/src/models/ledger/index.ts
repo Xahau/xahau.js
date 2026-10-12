@@ -21,6 +21,7 @@ import ImportVLSequence from './ImportVLSequence'
 import { Ledger, LedgerV1 } from './Ledger'
 import { LedgerEntry, LedgerEntryFilter } from './LedgerEntry'
 import LedgerHashes from './LedgerHashes'
+import Manifest from './Manifest'
 import NegativeUNL, { NEGATIVE_UNL_ID } from './NegativeUNL'
 import Offer, { OfferFlags } from './Offer'
 import Oracle from './Oracle'
@@ -57,6 +58,7 @@ export {
   LedgerEntry,
   LedgerHashes,
   Majority,
+  Manifest,
   NEGATIVE_UNL_ID,
   NegativeUNL,
   Offer,

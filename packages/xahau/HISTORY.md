@@ -4,6 +4,7 @@
 
 ### Added
 * Support for HookOnV2_1 Amendment (replaces HookOnV2): validate HookOn / HookOnIncoming / HookOnOutgoing combinations in SetHook
+* Support for OnChainManifests Amendment (`SetManifest` pseudo-transaction, `Manifest` ledger entry, `manifest` parameter on `submit`)
 
 ### 4.1.1 (2026-07-03)
 

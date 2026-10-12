@@ -87,6 +87,8 @@ export default interface AccountRoot extends BaseLedgerEntry, HasPreviousTxnID {
   HookStateScale?: number
   /* The cron job that is associated with this account. */
   Cron?: string
+  /** The ledger index of the validator manifest associated with this account. */
+  ManifestID?: string
 }
 
 /**

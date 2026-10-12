@@ -1,5 +1,6 @@
 import { assert } from 'chai'
-import { decode } from 'xahau-binary-codec'
+import { decode, encode } from 'xahau-binary-codec'
+import { deriveKeypair, generateSeed, sign } from 'xahau-keypairs'
 
 import {
   AccountSet,
@@ -7,6 +8,7 @@ import {
   SubmitResponse,
   hashes,
   SubmittableTransaction,
+  Wallet,
 } from '../../../src'
 import { convertStringToHex } from '../../../src/utils'
 import serverUrl from '../serverUrl'
@@ -15,7 +17,7 @@ import {
   teardownClient,
   type XrplIntegrationTestContext,
 } from '../setup'
-import { ledgerAccept, verifySubmittedTransaction } from '../utils'
+import { fundAccount, ledgerAccept, verifySubmittedTransaction } from '../utils'
 
 // how long before each test case times out
 const TIMEOUT = 20000
@@ -81,6 +83,73 @@ describe('submit', function () {
       }
 
       assert.deepEqual(submitResponse, expectedResponse)
+    },
+    TIMEOUT,
+  )
+
+  it(
+    'submit with an invalid manifest',
+    async () => {
+      try {
+        await testContext.client.request({
+          command: 'submit',
+          manifest: '00',
+        })
+        assert.fail('Expected an error to be thrown')
+      } catch (error) {
+        assert.equal(
+          (error as { data?: { error?: string } }).data?.error,
+          'invalidManifest',
+        )
+      }
+    },
+    TIMEOUT,
+  )
+
+  it(
+    'submit a manifest',
+    async () => {
+      const master = deriveKeypair(generateSeed())
+      const ephemeral = deriveKeypair(generateSeed())
+      const manifest = {
+        Sequence: 1,
+        PublicKey: master.publicKey,
+        SigningPubKey: ephemeral.publicKey,
+      }
+      // "MAN\0" prefix followed by the manifest without signatures
+      const payload = `4D414E00${encode(manifest)}`
+      const manifestHex = encode({
+        ...manifest,
+        Signature: sign(payload, ephemeral.privateKey),
+        MasterSignature: sign(payload, master.privateKey),
+      })
+
+      const masterWallet = new Wallet(master.publicKey, master.privateKey)
+      await fundAccount(testContext.client, masterWallet)
+
+      const response = await testContext.client.request({
+        command: 'submit',
+        manifest: manifestHex,
+      })
+      assert.equal(response.result.engine_result, 'tesSUCCESS')
+      await ledgerAccept(testContext.client)
+
+      const info = await testContext.client.request({
+        command: 'account_info',
+        account: masterWallet.classicAddress,
+      })
+      const manifestID = info.result.account_data.ManifestID
+      assert.isString(manifestID)
+
+      // ledger_entry has no dedicated selector for Manifest, use the index
+      const entry = await testContext.client.request({
+        command: 'ledger_entry',
+        index: manifestID,
+      })
+      assert.deepInclude(entry.result.node, {
+        LedgerEntryType: 'Manifest',
+        PublicKey: master.publicKey,
+      })
     },
     TIMEOUT,
   )

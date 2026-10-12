@@ -135,6 +135,9 @@ describe('server_definitions', function () {
         'TYPES',
         'HOOK',
         'features',
+        'TRANSACTION_FLAGS',
+        'TRANSACTION_FLAGS_INDICES',
+        'native_currency_code',
       ])
 
       assert.equal(result.hash, hash)

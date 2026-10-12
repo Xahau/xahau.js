@@ -37,10 +37,17 @@ export interface ServerDefinitionsFeature {
   ledger_enabled: boolean
   /** The name of the amendment. */
   name: string
-  /** Whether this server supports the amendment. */
-  supported: boolean
-  /** Whether this server votes against the amendment. `'Obsolete'` for retired amendments. */
-  vetoed: boolean | string
+  /**
+   * Whether this server supports the amendment. Omitted for amendments forced
+   * on by configuration that this server does not support.
+   */
+  supported?: boolean
+  /**
+   * Whether this server votes against the amendment. `'Obsolete'` for retired
+   * amendments. Omitted for amendments forced on by configuration that this
+   * server does not support.
+   */
+  vetoed?: boolean | 'Obsolete'
 }
 
 /**

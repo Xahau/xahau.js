@@ -6,7 +6,7 @@
 * Support for HookOnV2_1 Amendment (replaces HookOnV2): validate HookOn / HookOnIncoming / HookOnOutgoing combinations in SetHook
 * Support for the `hook_validate` RPC
 * Support for the `hooks` option of `account_info`
-* Types for the `HOOK` section and `ledger_enabled` feature flag of `server_definitions`
+* Types for the `HOOK`, `features` (with `ledger_enabled`), `TRANSACTION_FLAGS`, `TRANSACTION_FLAGS_INDICES` and `native_currency_code` fields of `server_definitions`
 
 ### 4.1.1 (2026-07-03)
 

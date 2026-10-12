@@ -23,7 +23,9 @@ export interface AccountInfoRequest extends BaseRequest, LookupByLedgerRequest {
   queue?: boolean
   /**
    * Include the effective Hook configuration of each hook slot of this
-   * account. Empty slots are returned as empty `Hook` objects.
+   * account. Empty slots are returned as empty `Hook` objects. The returned
+   * array mirrors the account's Hooks object and is empty if the account has
+   * no Hook object.
    */
   hooks?: boolean
   /**
@@ -154,7 +156,8 @@ interface BaseAccountInfoResponse extends BaseResponse {
     /**
      * The effective Hook configuration of each hook slot of this account. Only
      * included if the request set `hooks` to true. Empty slots are returned as
-     * empty `Hook` objects.
+     * empty `Hook` objects. The array mirrors the account's Hooks object and
+     * is empty if the account has no Hook object.
      */
     hooks?: Hook[]
     /**

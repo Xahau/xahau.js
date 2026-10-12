@@ -32,6 +32,7 @@ describe('hook_validate', function () {
       assert.equal(response.type, 'response')
       assert.equal(response.result.valid, true)
       assert.typeOf(response.result.instruction_count_hook, 'string')
+      assert.typeOf(response.result.instruction_count_cbak, 'string')
       assert.typeOf(response.result.log, 'array')
     },
     TIMEOUT,

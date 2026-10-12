@@ -118,6 +118,7 @@ export interface Hook {
     HookGrants?: HookGrant[]
     /**
      * The name of the hook.
+     * 4–16 bytes as hex. An empty value is rejected (temMALFORMED since fix20260929).
      */
     HookName?: string
   }

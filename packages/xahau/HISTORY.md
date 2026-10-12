@@ -5,6 +5,9 @@
 ### Added
 * Support for HookOnV2_1 Amendment (replaces HookOnV2): validate HookOn / HookOnIncoming / HookOnOutgoing combinations in SetHook
 
+### Changed
+* An empty `HookName` in SetHook is rejected again: it is `temMALFORMED` on ledger since the fix20260929 amendment
+
 ### 4.1.1 (2026-07-03)
 
 ### Fixed

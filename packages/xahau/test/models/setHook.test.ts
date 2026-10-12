@@ -222,36 +222,29 @@ describe('SetHook', function () {
     assert.throws(() => validate(setHookTx), ValidationError, errorMessage)
   })
 
-  it.each(['00', '0000', '000000', '0'.repeat(7), '0'.repeat(33), 'ZZZZZZZZ'])(
-    `throws w/ invalid HookName in Hooks: %s`,
-    function (value: string) {
-      setHookTx.Hooks = [
-        {
-          Hook: {
-            HookName: value,
-          },
-        },
-      ]
-      const errorMessage =
-        'SetHook: HookName in Hook must be a hex string of 8-32 hex characters'
-      assert.throws(
-        () => validateSetHook(setHookTx),
-        ValidationError,
-        errorMessage,
-      )
-      assert.throws(() => validate(setHookTx), ValidationError, errorMessage)
-    },
-  )
-
-  it(`valid HookName "" (deletion) in Hooks`, function () {
+  it.each([
+    '',
+    '00',
+    '0000',
+    '000000',
+    '0'.repeat(7),
+    '0'.repeat(33),
+    'ZZZZZZZZ',
+  ])(`throws w/ invalid HookName in Hooks: %s`, function (value: string) {
     setHookTx.Hooks = [
       {
         Hook: {
-          HookName: '',
+          HookName: value,
         },
       },
     ]
-    assert.doesNotThrow(() => validateSetHook(setHookTx))
-    assert.doesNotThrow(() => validate(setHookTx))
+    const errorMessage =
+      'SetHook: HookName in Hook must be a hex string of 8-32 hex characters'
+    assert.throws(
+      () => validateSetHook(setHookTx),
+      ValidationError,
+      errorMessage,
+    )
+    assert.throws(() => validate(setHookTx), ValidationError, errorMessage)
   })
 })

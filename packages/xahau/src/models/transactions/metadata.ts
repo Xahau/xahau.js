@@ -91,6 +91,8 @@ export function isDeletedNode(node: Node): node is DeletedNode {
 export interface TransactionMetadataBase {
   HookExecutions?: HookExecution[]
   HookEmissions?: HookEmission[]
+  /** The RNG state seen by the first random number drawn by the Hooks of this transaction. */
+  RandomData?: string
   AffectedNodes: Node[]
   DeliveredAmount?: Amount
   // "unavailable" possible for transactions before 2014-01-20

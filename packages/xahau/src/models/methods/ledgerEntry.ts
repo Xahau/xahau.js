@@ -159,6 +159,12 @@ export interface LedgerEntryRequest extends BaseRequest, LookupByLedgerRequest {
   payment_channel?: string
 
   /**
+   * The Random object (RNG amendment) to retrieve. It is a singleton: pass
+   * `true`, or the object ID of the Random entry as hexadecimal.
+   */
+  random?: true | string
+
+  /**
    * Object specifying the RippleState (trust line) object to retrieve. The
    * accounts and currency sub-fields are required to uniquely specify the
    * rippleState entry to retrieve.

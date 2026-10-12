@@ -4,6 +4,7 @@
 
 ### Added
 * Support for HookOnV2_1 Amendment (replaces HookOnV2): validate HookOn / HookOnIncoming / HookOnOutgoing combinations in SetHook
+* Support for RNG Amendment (`Entropy` pseudo-transaction, `Random` ledger entry, `random` selector on `ledger_entry`, `RandomData` in transaction metadata)
 
 ### 4.1.1 (2026-07-03)
 

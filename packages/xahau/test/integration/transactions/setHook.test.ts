@@ -163,11 +163,11 @@ describe('SetHook', function () {
       expect(hook.HookName).toEqual('484F4F4B')
     }
 
-    // delete HookName
+    // fix20260929: an empty HookName is temMALFORMED, so HookName can only be replaced, not deleted
     setHookTx = {
       TransactionType: 'SetHook',
       Account: wallet.classicAddress,
-      Hooks: [{ Hook: { HookName: '' } }],
+      Hooks: [{ Hook: { HookName: '484F4F4B32' } }],
     }
     await testTransaction(testContext.client, setHookTx, wallet)
     {
@@ -177,7 +177,7 @@ describe('SetHook', function () {
       })
       const node = ledgerEntryResponse.result.node as Hook
       const hook = node.Hooks[0].Hook
-      expect(hook.HookName).toBeUndefined()
+      expect(hook.HookName).toEqual('484F4F4B32')
     }
   })
 })

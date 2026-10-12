@@ -83,6 +83,7 @@ describe('BaseTransaction', function () {
     ['non-hex', 'ZZZZZZZZ'],
     ['too short', 'DEADBE'],
     ['too long', 'DE'.repeat(17)],
+    ['odd length', 'DEADBEEF0'],
   ])(`Handles invalid HookName: %s`, function (_name, value) {
     const invalidHookName = {
       Account: 'r97KeayHuEsDwyU1yPBVtMLLoQr79QcRFe',

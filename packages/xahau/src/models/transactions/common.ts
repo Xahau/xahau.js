@@ -54,7 +54,7 @@ const ISSUE_SIZE = 2
 const ISSUED_CURRENCY_SIZE = 3
 
 // 4-16 bytes as hex
-const HOOK_NAME_REGEX = /^[0-9A-Fa-f]{8,32}$/u
+export const HOOK_NAME_REGEX = /^(?:[0-9A-Fa-f]{2}){4,16}$/u
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return value !== null && typeof value === 'object'

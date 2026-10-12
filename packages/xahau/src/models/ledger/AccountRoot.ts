@@ -85,7 +85,7 @@ export default interface AccountRoot extends BaseLedgerEntry, HasPreviousTxnID {
   AccountIndex?: number
   TouchCount?: number
   HookStateScale?: number
-  /** Incremented on every AccountSet that carries the AppLoader field. */
+  /** Incremented on every AccountSet that carries AppLoader, including removal. */
   AppLoaderSequence?: number
   /* The cron job that is associated with this account. */
   Cron?: string

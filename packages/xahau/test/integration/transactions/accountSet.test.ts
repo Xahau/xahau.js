@@ -5,6 +5,7 @@ import {
   AccountSet,
   convertStringToHex,
   LedgerEntryRequest,
+  XahaudError,
 } from '../../../src'
 import { AppLoader } from '../../../src/models/ledger'
 import serverUrl from '../serverUrl'
@@ -79,12 +80,20 @@ describe('AccountSet', function () {
       }
       await testTransaction(testContext.client, remove, testContext.wallet)
 
+      let error: unknown
       try {
         await testContext.client.request(entryRequest)
-        assert.fail('expected ledger_entry to throw entryNotFound')
-      } catch (error) {
-        assert.include(JSON.stringify(error), 'entryNotFound')
+      } catch (err) {
+        error = err
       }
+      assert.instanceOf(error, XahaudError)
+      assert.equal(
+        ((error as XahaudError).data as { error: string }).error,
+        'entryNotFound',
+      )
+
+      const infoAfter = await testContext.client.request(infoRequest)
+      assert.equal(infoAfter.result.account_data.AppLoaderSequence, 2)
     },
     TIMEOUT,
   )

@@ -157,6 +157,16 @@ describe('EscrowCancel', function () {
         await getXAHBalance(testContext.client, testContext.wallet),
       )
       assert.isAbove(finalBalanceOwner, Number(initialBalanceOwner) - 10000)
+
+      // The Escrow ledger object is removed.
+      const escrows = (
+        await testContext.client.request({
+          command: 'account_objects',
+          account: testContext.wallet.classicAddress,
+          type: 'escrow',
+        })
+      ).result.account_objects
+      assert.equal(escrows.length, 0)
     },
     TIMEOUT,
   )

@@ -11,9 +11,10 @@ import {
 /**
  * Return escrowed amount to the sender.
  *
- * The sender must be the escrow owner, the destination, or anyone once
- * `CancelAfter` has passed. With the EscrowDestinationCancel amendment, the
- * destination may cancel at any time (self-escrows excepted).
+ * Anyone may cancel once `CancelAfter` has passed; without `CancelAfter` the
+ * escrow cannot be cancelled. With the EscrowDestinationCancel amendment, the
+ * destination may cancel at any time, even without `CancelAfter`, unless the
+ * escrow is a self-escrow (owner and destination are the same account).
  *
  * @category Transaction Models
  */

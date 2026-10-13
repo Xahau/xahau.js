@@ -3,6 +3,7 @@ import AccountRoot, {
   AccountRootFlagsInterface,
 } from './AccountRoot'
 import Amendments, { Majority, AMENDMENTS_ID } from './Amendments'
+import AppLoader from './AppLoader'
 import Check from './Check'
 import Cron from './Cron'
 import DepositPreauth from './DepositPreauth'
@@ -38,6 +39,7 @@ export {
   AccountRootFlagsInterface,
   AMENDMENTS_ID,
   Amendments,
+  AppLoader,
   Check,
   Cron,
   DepositPreauth,

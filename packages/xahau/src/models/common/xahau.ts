@@ -117,7 +117,8 @@ export interface Hook {
      */
     HookGrants?: HookGrant[]
     /**
-     * The name of the hook.
+     * The name of the hook. An empty value removes the HookName from the
+     * installed hook.
      */
     HookName?: string
   }

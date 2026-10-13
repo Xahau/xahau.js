@@ -11,6 +11,11 @@ import {
 /**
  * Return escrowed amount to the sender.
  *
+ * Anyone may cancel once `CancelAfter` has passed; without `CancelAfter` the
+ * escrow cannot be cancelled. With the EscrowDestinationCancel amendment, the
+ * destination may cancel at any time, even without `CancelAfter`, unless the
+ * escrow is a self-escrow (owner and destination are the same account).
+ *
  * @category Transaction Models
  */
 export interface EscrowCancel extends BaseTransaction {

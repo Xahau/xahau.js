@@ -82,6 +82,7 @@ import {
   GetAggregatePriceRequest,
   GetAggregatePriceResponse,
 } from './getAggregatePrice'
+import { HookValidateRequest, HookValidateResponse } from './hookValidate'
 import {
   LedgerBinary,
   LedgerModifiedOfferCreateTransaction,
@@ -117,6 +118,7 @@ import {
   PathFindPathOption,
 } from './pathFind'
 import { PingRequest, PingResponse } from './ping'
+import { PwaValidateRequest, PwaValidateResponse } from './pwaValidate'
 import { RandomRequest, RandomResponse } from './random'
 import {
   RipplePathFindPathOption,
@@ -127,6 +129,8 @@ import {
 import {
   ServerDefinitionsRequest,
   ServerDefinitionsResponse,
+  ServerDefinitionsFeature,
+  ServerDefinitionsHookApi,
 } from './serverDefinitions'
 import {
   JobType,
@@ -228,8 +232,11 @@ type Request =
   | ServerStateRequest
   | FeatureRequest
   // utility methods
+  | HookValidateRequest
   | PingRequest
   | RandomRequest
+  // PWA methods
+  | PwaValidateRequest
   // Price Oracle methods
   | GetAggregatePriceRequest
 
@@ -278,8 +285,11 @@ type Response<Version extends APIVersion = typeof DEFAULT_API_VERSION> =
   | ServerStateResponse
   | FeatureResponse
   // utility methods
+  | HookValidateResponse
   | PingResponse
   | RandomResponse
+  // PWA methods
+  | PwaValidateResponse
   // Price Oracle methods
   | GetAggregatePriceResponse
 
@@ -304,6 +314,8 @@ export type RequestResponseMap<
   ? GatewayBalancesResponse
   : T extends GetAggregatePriceRequest
   ? GetAggregatePriceResponse
+  : T extends HookValidateRequest
+  ? HookValidateResponse
   : T extends NoRippleCheckRequest
   ? NoRippleCheckResponse
   : // NOTE: The order of these LedgerRequest types is important
@@ -424,6 +436,8 @@ export type RequestResponseMap<
   ? FeatureOneResponse
   : T extends PingRequest
   ? PingResponse
+  : T extends PwaValidateRequest
+  ? PwaValidateResponse
   : T extends RandomRequest
   ? RandomResponse
   : Response<Version>
@@ -498,6 +512,8 @@ export {
   GatewayBalancesResponse,
   GetAggregatePriceRequest,
   GetAggregatePriceResponse,
+  HookValidateRequest,
+  HookValidateResponse,
   NoRippleCheckRequest,
   NoRippleCheckResponse,
   // ledger methods
@@ -578,6 +594,8 @@ export {
   ManifestResponse,
   ServerDefinitionsRequest,
   ServerDefinitionsResponse,
+  ServerDefinitionsFeature,
+  ServerDefinitionsHookApi,
   ServerInfoRequest,
   ServerInfoResponse,
   ServerStateRequest,
@@ -591,6 +609,8 @@ export {
   // utility methods
   PingRequest,
   PingResponse,
+  PwaValidateRequest,
+  PwaValidateResponse,
   RandomRequest,
   RandomResponse,
   ErrorResponse,

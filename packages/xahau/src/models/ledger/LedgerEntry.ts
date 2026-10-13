@@ -1,5 +1,6 @@
 import AccountRoot from './AccountRoot'
 import Amendments from './Amendments'
+import AppLoader from './AppLoader'
 import Check from './Check'
 import Cron from './Cron'
 import DepositPreauth from './DepositPreauth'
@@ -17,6 +18,7 @@ import NegativeUNL from './NegativeUNL'
 import Offer from './Offer'
 import Oracle from './Oracle'
 import PayChannel from './PayChannel'
+import Random from './Random'
 import RippleState from './RippleState'
 import SignerList from './SignerList'
 import Ticket from './Ticket'
@@ -26,6 +28,7 @@ import URIToken from './URIToken'
 type LedgerEntry =
   | AccountRoot
   | Amendments
+  | AppLoader
   | Cron
   | Check
   | DepositPreauth
@@ -43,6 +46,7 @@ type LedgerEntry =
   | Offer
   | Oracle
   | PayChannel
+  | Random
   | RippleState
   | SignerList
   | Ticket
@@ -52,6 +56,7 @@ type LedgerEntry =
 type LedgerEntryFilter =
   | 'account'
   | 'amendments'
+  | 'app_loader'
   | 'cron'
   | 'check'
   | 'deposit_preauth'
@@ -67,6 +72,7 @@ type LedgerEntryFilter =
   | 'offer'
   | 'oracle'
   | 'payment_channel'
+  | 'random'
   | 'signer_list'
   | 'state'
   | 'ticket'

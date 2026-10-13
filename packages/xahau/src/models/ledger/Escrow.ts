@@ -30,7 +30,9 @@ export default interface Escrow extends BaseLedgerEntry, HasPreviousTxnID {
    */
   Condition?: string
   /**
-   * The time after which this Escrow is considered expired.
+   * The time after which this Escrow is considered expired. With the
+   * EscrowDestinationCancel amendment, the destination (unless it is also the
+   * owner) may cancel at any time, even before this time or when it is unset.
    */
   CancelAfter?: number
   /**

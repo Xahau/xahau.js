@@ -49,6 +49,11 @@ export interface LedgerEntryRequest extends BaseRequest, LookupByLedgerRequest {
    */
   account_root?: string
 
+  /**
+   * Retrieve the AppLoader object of the given account, by its address.
+   */
+  app_loader?: string
+
   /** The object ID of a Check object to retrieve. */
   check?: string
 
@@ -157,6 +162,12 @@ export interface LedgerEntryRequest extends BaseRequest, LookupByLedgerRequest {
 
   /** The object ID of a PayChannel object to retrieve. */
   payment_channel?: string
+
+  /**
+   * The Random object (RNG amendment) to retrieve. It is a singleton: pass
+   * `true`, or the object ID of the Random entry as hexadecimal.
+   */
+  random?: true | string
 
   /**
    * Object specifying the RippleState (trust line) object to retrieve. The

@@ -16,6 +16,7 @@ import { Cron } from './cron'
 import { CronSet, validateCronSet } from './cronSet'
 import { DepositPreauth, validateDepositPreauth } from './depositPreauth'
 import { EnableAmendment } from './enableAmendment'
+import { Entropy } from './entropy'
 import { EscrowCancel, validateEscrowCancel } from './escrowCancel'
 import { EscrowCreate, validateEscrowCreate } from './escrowCreate'
 import { EscrowFinish, validateEscrowFinish } from './escrowFinish'
@@ -109,6 +110,7 @@ export type SubmittableTransaction =
 export type PseudoTransaction =
   | Cron
   | EnableAmendment
+  | Entropy
   | SetFee
   | SetManifest
   | UNLModify

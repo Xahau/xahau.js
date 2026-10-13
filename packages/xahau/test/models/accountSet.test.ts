@@ -202,4 +202,57 @@ describe('AccountSet', function () {
       'AccountSet: HookStateScale must be greater than or equal to 1',
     )
   })
+
+  it(`verifies valid AppLoader`, function () {
+    account.AppLoader = '3C68746D6C3E'
+    assert.doesNotThrow(() => validateAccountSet(account))
+    assert.doesNotThrow(() => validate(account))
+
+    account.AppLoader = ''
+    assert.doesNotThrow(() => validateAccountSet(account))
+    assert.doesNotThrow(() => validate(account))
+
+    account.AppLoader = 'AB'.repeat(4096)
+    assert.doesNotThrow(() => validateAccountSet(account))
+    assert.doesNotThrow(() => validate(account))
+  })
+
+  it(`throws w/ invalid AppLoader`, function () {
+    account.AppLoader = 123
+
+    assert.throws(
+      () => validateAccountSet(account),
+      ValidationError,
+      'AccountSet: invalid field AppLoader',
+    )
+    assert.throws(
+      () => validate(account),
+      ValidationError,
+      'AccountSet: invalid field AppLoader',
+    )
+
+    account.AppLoader = '<html>'
+    assert.throws(
+      () => validateAccountSet(account),
+      ValidationError,
+      'AccountSet: invalid AppLoader',
+    )
+    assert.throws(
+      () => validate(account),
+      ValidationError,
+      'AccountSet: invalid AppLoader',
+    )
+
+    account.AppLoader = 'AB'.repeat(4097)
+    assert.throws(
+      () => validateAccountSet(account),
+      ValidationError,
+      'AccountSet: AppLoader must be at most 4096 bytes',
+    )
+    assert.throws(
+      () => validate(account),
+      ValidationError,
+      'AccountSet: AppLoader must be at most 4096 bytes',
+    )
+  })
 })

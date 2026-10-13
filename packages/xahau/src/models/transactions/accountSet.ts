@@ -1,10 +1,12 @@
 import { ValidationError } from '../../errors'
+import { isHex } from '../utils'
 
 import {
   Account,
   BaseTransaction,
   isAccount,
   isNumber,
+  isString,
   validateBaseTransaction,
   validateOptionalField,
 } from './common'
@@ -168,12 +170,19 @@ export interface AccountSet extends BaseTransaction {
    * The allowed scale of the hook state.
    */
   HookStateScale?: number
+  /**
+   * Hex-encoded HTML document (max 4096 bytes) for the account's PWA loader.
+   * An empty string removes the document. Requires the PWALoader amendment.
+   * Costs an extra fee of 1 drop per byte.
+   */
+  AppLoader?: string
 }
 
 const MIN_TICK_SIZE = 3
 const MAX_TICK_SIZE = 15
 const MAX_HOOK_STATE_SCALE = 16
 const MIN_HOOK_STATE_SCALE = 1
+const MAX_APP_LOADER_BYTES = 4096
 
 /**
  * Verify the form and type of an AccountSet at runtime.
@@ -251,5 +260,18 @@ export function validateAccountSet(tx: Record<string, unknown>): void {
     throw new ValidationError(
       `AccountSet: HookStateScale must be greater than or equal to ${MIN_HOOK_STATE_SCALE}`,
     )
+  }
+
+  validateOptionalField(tx, 'AppLoader', isString)
+
+  if (typeof tx.AppLoader === 'string') {
+    if (!isHex(tx.AppLoader) && tx.AppLoader !== '') {
+      throw new ValidationError('AccountSet: invalid AppLoader')
+    }
+    if (tx.AppLoader.length > MAX_APP_LOADER_BYTES * 2) {
+      throw new ValidationError(
+        `AccountSet: AppLoader must be at most ${MAX_APP_LOADER_BYTES} bytes`,
+      )
+    }
   }
 }

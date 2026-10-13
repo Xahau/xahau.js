@@ -104,4 +104,70 @@ describe('EscrowCancel', function () {
     },
     TIMEOUT,
   )
+
+  it(
+    'destination can cancel before CancelAfter',
+    async () => {
+      const destination = await generateFundedWallet(testContext.client)
+
+      const CLOSE_TIME: number = (
+        await testContext.client.request({
+          command: 'ledger',
+          ledger_index: 'validated',
+        })
+      ).result.ledger.close_time
+
+      const initialBalanceOwner = await getXAHBalance(
+        testContext.client,
+        testContext.wallet,
+      )
+
+      const createTx: EscrowCreate = {
+        Account: testContext.wallet.classicAddress,
+        TransactionType: 'EscrowCreate',
+        Amount: '10000',
+        Destination: destination.classicAddress,
+        CancelAfter: CLOSE_TIME + 1000,
+        FinishAfter: CLOSE_TIME + 500,
+      }
+
+      const createResponse = await testTransaction(
+        testContext.client,
+        createTx,
+        testContext.wallet,
+      )
+
+      const sequence = createResponse.result.tx_json.Sequence
+
+      if (!sequence) {
+        throw new Error('sequence did not exist')
+      }
+
+      const cancelTx: EscrowCancel = {
+        TransactionType: 'EscrowCancel',
+        Account: destination.classicAddress,
+        Owner: testContext.wallet.classicAddress,
+        OfferSequence: sequence,
+      }
+
+      await testTransaction(testContext.client, cancelTx, destination)
+
+      // The escrowed funds are returned to the owner; only the fees are lost.
+      const finalBalanceOwner = Number(
+        await getXAHBalance(testContext.client, testContext.wallet),
+      )
+      assert.isAbove(finalBalanceOwner, Number(initialBalanceOwner) - 10000)
+
+      // The Escrow ledger object is removed.
+      const escrows = (
+        await testContext.client.request({
+          command: 'account_objects',
+          account: testContext.wallet.classicAddress,
+          type: 'escrow',
+        })
+      ).result.account_objects
+      assert.equal(escrows.length, 0)
+    },
+    TIMEOUT,
+  )
 })

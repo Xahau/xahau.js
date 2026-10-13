@@ -3,7 +3,7 @@
 ## Unreleased
 
 ### Added
-* Update `definitions.json` for xahaud 2026.10.12-dev+4111 (RNG, PWALoader, OnChainManifests amendments)
+* Update `definitions.json` for xahaud 2026.10.13-dev+4117 (RNG, PWALoader, OnChainManifests amendments)
 
 ### Removed
 * Remove legacy entries from `definitions.json` that xahaud no longer reports: transaction types `Contract`, `NicknameSet`, `SpinalTap`; ledger entry types `Contract`, `Nickname`, `GeneratorMap`, `Any`; result codes `temXCHAIN_TOO_MANY_ATTESTATIONS`, `tecLAST_POSSIBLE_ENTRY`.

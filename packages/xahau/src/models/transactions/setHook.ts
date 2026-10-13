@@ -1,7 +1,11 @@
 import { ValidationError } from '../../errors'
 import { Hook } from '../common/xahau'
 
-import { BaseTransaction, validateBaseTransaction } from './common'
+import {
+  BaseTransaction,
+  HOOK_NAME_REGEX,
+  validateBaseTransaction,
+} from './common'
 
 /**
  *
@@ -18,10 +22,6 @@ export interface SetHook extends BaseTransaction {
 
 const MAX_HOOKS = 10
 const HEX_REGEX = /^[0-9A-Fa-f]{64}$/u
-/**
- * 4-16 bytes in hex
- */
-const HOOKNAME_REGEX = /^[0-9A-Fa-f]{8,32}$/u
 
 /**
  * Verify the form and type of an SetHook at runtime.
@@ -104,7 +104,7 @@ export function validateSetHook(tx: Record<string, unknown>): void {
     if (
       HookName !== undefined &&
       HookName.length !== 0 &&
-      !HOOKNAME_REGEX.test(HookName)
+      !HOOK_NAME_REGEX.test(HookName)
     ) {
       throw new ValidationError(
         `SetHook: HookName in Hook must be a hex string of 8-32 hex characters`,

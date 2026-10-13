@@ -6,9 +6,16 @@
 * Support for HookOnV2_1 Amendment (replaces HookOnV2): validate HookOn / HookOnIncoming / HookOnOutgoing combinations in SetHook
 * Support for PWALoader Amendment (`AppLoader` field on AccountSet, `AppLoader` ledger entry, `pwa_validate` RPC)
 * Support for EscrowDestinationCancel Amendment (documentation and integration tests; no API change)
+* Support for RNG Amendment (`Entropy` pseudo-transaction, `Random` ledger entry, `random` selector on `ledger_entry`, `RandomData` in transaction metadata)
 * Support for the `hook_validate` RPC
 * Support for the `hooks` option of `account_info`
 * Types for the `HOOK`, `features` (with `ledger_enabled`), `TRANSACTION_FLAGS`, `TRANSACTION_FLAGS_INDICES` and `native_currency_code` fields of `server_definitions`
+
+### Fixed
+* Add missing HookCanEmit field to HookDefinition
+
+### Changed
+* Validate the transaction-level `HookName` field: 4–16 bytes as hex, and an empty value is rejected (temMALFORMED since the fix20260929 amendment)
 
 ### 4.1.1 (2026-07-03)
 

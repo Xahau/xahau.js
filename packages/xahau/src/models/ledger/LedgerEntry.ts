@@ -17,6 +17,7 @@ import NegativeUNL from './NegativeUNL'
 import Offer from './Offer'
 import Oracle from './Oracle'
 import PayChannel from './PayChannel'
+import Random from './Random'
 import RippleState from './RippleState'
 import SignerList from './SignerList'
 import Ticket from './Ticket'
@@ -43,6 +44,7 @@ type LedgerEntry =
   | Offer
   | Oracle
   | PayChannel
+  | Random
   | RippleState
   | SignerList
   | Ticket
@@ -67,6 +69,7 @@ type LedgerEntryFilter =
   | 'offer'
   | 'oracle'
   | 'payment_channel'
+  | 'random'
   | 'signer_list'
   | 'state'
   | 'ticket'

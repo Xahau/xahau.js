@@ -26,6 +26,7 @@ import NegativeUNL, { NEGATIVE_UNL_ID } from './NegativeUNL'
 import Offer, { OfferFlags } from './Offer'
 import Oracle from './Oracle'
 import PayChannel from './PayChannel'
+import Random from './Random'
 import RippleState, { RippleStateFlags } from './RippleState'
 import SignerList, { SignerListFlags } from './SignerList'
 import Ticket from './Ticket'
@@ -65,6 +66,7 @@ export {
   OfferFlags,
   Oracle,
   PayChannel,
+  Random,
   RippleState,
   RippleStateFlags,
   SignerList,

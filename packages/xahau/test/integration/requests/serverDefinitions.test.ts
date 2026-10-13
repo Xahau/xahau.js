@@ -91,6 +91,25 @@ describe('server_definitions', function () {
   )
 
   it(
+    'HOOK and features',
+    async () => {
+      const request: ServerDefinitionsRequest = {
+        command: 'server_definitions',
+      }
+      const result = (await testContext.client.request(request)).result
+      assert.hasAllKeys(result.HOOK, ['API', 'KEYLET_TYPES', 'RETURN_CODES'])
+      assert.hasAllKeys(result.HOOK!.API.accept, ['return', 'params'])
+      assert.typeOf(result.HOOK!.API.accept.params, 'array')
+
+      Object.values(result.features!).forEach((feature) => {
+        assert.typeOf(feature.enabled, 'boolean')
+        assert.typeOf(feature.ledger_enabled, 'boolean')
+      })
+    },
+    TIMEOUT,
+  )
+
+  it(
     'with same hash',
     async () => {
       const initialRequest: ServerDefinitionsRequest = {
@@ -114,6 +133,11 @@ describe('server_definitions', function () {
         'TRANSACTION_RESULTS',
         'TRANSACTION_TYPES',
         'TYPES',
+        'HOOK',
+        'features',
+        'TRANSACTION_FLAGS',
+        'TRANSACTION_FLAGS_INDICES',
+        'native_currency_code',
       ])
 
       assert.equal(result.hash, hash)

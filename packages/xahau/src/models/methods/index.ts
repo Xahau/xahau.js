@@ -82,6 +82,7 @@ import {
   GetAggregatePriceRequest,
   GetAggregatePriceResponse,
 } from './getAggregatePrice'
+import { HookValidateRequest, HookValidateResponse } from './hookValidate'
 import {
   LedgerBinary,
   LedgerModifiedOfferCreateTransaction,
@@ -128,6 +129,8 @@ import {
 import {
   ServerDefinitionsRequest,
   ServerDefinitionsResponse,
+  ServerDefinitionsFeature,
+  ServerDefinitionsHookApi,
 } from './serverDefinitions'
 import {
   JobType,
@@ -224,6 +227,7 @@ type Request =
   | ServerStateRequest
   | FeatureRequest
   // utility methods
+  | HookValidateRequest
   | PingRequest
   | RandomRequest
   // PWA methods
@@ -276,6 +280,7 @@ type Response<Version extends APIVersion = typeof DEFAULT_API_VERSION> =
   | ServerStateResponse
   | FeatureResponse
   // utility methods
+  | HookValidateResponse
   | PingResponse
   | RandomResponse
   // PWA methods
@@ -304,6 +309,8 @@ export type RequestResponseMap<
   ? GatewayBalancesResponse
   : T extends GetAggregatePriceRequest
   ? GetAggregatePriceResponse
+  : T extends HookValidateRequest
+  ? HookValidateResponse
   : T extends NoRippleCheckRequest
   ? NoRippleCheckResponse
   : // NOTE: The order of these LedgerRequest types is important
@@ -500,6 +507,8 @@ export {
   GatewayBalancesResponse,
   GetAggregatePriceRequest,
   GetAggregatePriceResponse,
+  HookValidateRequest,
+  HookValidateResponse,
   NoRippleCheckRequest,
   NoRippleCheckResponse,
   // ledger methods
@@ -578,6 +587,8 @@ export {
   ManifestResponse,
   ServerDefinitionsRequest,
   ServerDefinitionsResponse,
+  ServerDefinitionsFeature,
+  ServerDefinitionsHookApi,
   ServerInfoRequest,
   ServerInfoResponse,
   ServerStateRequest,

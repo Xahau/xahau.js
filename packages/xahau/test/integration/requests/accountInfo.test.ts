@@ -1,16 +1,19 @@
 import { assert } from 'chai'
 import omit from 'lodash/omit'
 
-import { AccountInfoRequest } from '../../../src'
+import { AccountInfoRequest, SetHook } from '../../../src'
 import serverUrl from '../serverUrl'
 import {
   setupClient,
   teardownClient,
   type XrplIntegrationTestContext,
 } from '../setup'
+import { generateFundedWallet, testTransaction } from '../utils'
 
 // how long before each test case times out
 const TIMEOUT = 20000
+const acceptHook =
+  '0061736D0100000001130360027F7F017F60037F7F7E017E60017F017E02170203656E76025F67000003656E760661636365707400010302010205030100020621057F01418088040B7F004180080B7F004180080B7F00418088040B7F004180080B07080104686F6F6B00020A9D80000199800000410141011080808080001A4100410042001081808080000B'
 
 describe('account_info', function () {
   let testContext: XrplIntegrationTestContext
@@ -179,6 +182,67 @@ describe('account_info', function () {
       const response = await testContext.client.request(request)
       // expect(response.result.account_data.signer_lists).toBeUndefined()
       expect(response.result.account_data.signer_lists).toEqual([])
+    },
+    TIMEOUT,
+  )
+
+  it(
+    'hooks',
+    async () => {
+      const wallet = await generateFundedWallet(testContext.client)
+      const hookOn = '00'.repeat(32)
+      const setHookTx: SetHook = {
+        TransactionType: 'SetHook',
+        Account: wallet.classicAddress,
+        Hooks: [
+          {
+            Hook: {
+              CreateCode: acceptHook,
+              HookApiVersion: 0,
+              HookOn: hookOn,
+              HookCanEmit: '00'.repeat(32),
+              HookName: '484F4F4B',
+              HookParameters: [
+                {
+                  HookParameter: {
+                    HookParameterName: 'DEADBEEF',
+                    HookParameterValue: 'DEADBEEF',
+                  },
+                },
+              ],
+              HookNamespace: '00'.repeat(32),
+            },
+          },
+        ],
+      }
+      await testTransaction(testContext.client, setHookTx, wallet)
+
+      try {
+        const request: AccountInfoRequest = {
+          command: 'account_info',
+          account: wallet.classicAddress,
+          hooks: true,
+        }
+        const response = await testContext.client.request(request)
+        assert.isArray(response.result.hooks)
+        assert.isDefined(response.result.hooks![0].Hook.HookHash)
+        assert.equal(response.result.hooks![0].Hook.HookOn, hookOn)
+
+        const withoutHooks = await testContext.client.request({
+          command: 'account_info',
+          account: wallet.classicAddress,
+        })
+        assert.notProperty(withoutHooks.result, 'hooks')
+      } finally {
+        // The HookDefinition is shared by code hash, so release it to let
+        // other tests see a fresh definition.
+        const resetHookTx: SetHook = {
+          TransactionType: 'SetHook',
+          Account: wallet.classicAddress,
+          Hooks: [{ Hook: { CreateCode: '', Flags: { hsfOverride: true } } }],
+        }
+        await testTransaction(testContext.client, resetHookTx, wallet)
+      }
     },
     TIMEOUT,
   )

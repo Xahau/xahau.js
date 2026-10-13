@@ -1,6 +1,10 @@
 import { assert } from 'chai'
 
-import { LedgerEntryRequest, LedgerEntryResponse } from '../../../src'
+import {
+  LedgerEntryRequest,
+  LedgerEntryResponse,
+  XahaudError,
+} from '../../../src'
 import serverUrl from '../serverUrl'
 import {
   setupClient,
@@ -53,6 +57,30 @@ describe('ledger_entry', function () {
 
       assert.equal(ledgerEntryResponse.type, 'response')
       assert.deepEqual(ledgerEntryResponse, expectedResponse)
+    },
+    TIMEOUT,
+  )
+
+  it(
+    'random',
+    async () => {
+      // The Random entry is created by validators' Entropy pseudo-transactions.
+      // A standalone node has no validators, so the entry does not exist.
+      let thrown: unknown
+      try {
+        await testContext.client.request({
+          command: 'ledger_entry',
+          random: true,
+          ledger_index: 'validated',
+        })
+      } catch (error) {
+        thrown = error
+      }
+      assert.instanceOf(thrown, XahaudError)
+      assert.equal(
+        (thrown as XahaudError & { data: { error: string } }).data.error,
+        'entryNotFound',
+      )
     },
     TIMEOUT,
   )

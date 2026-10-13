@@ -118,6 +118,7 @@ import {
   PathFindPathOption,
 } from './pathFind'
 import { PingRequest, PingResponse } from './ping'
+import { PwaValidateRequest, PwaValidateResponse } from './pwaValidate'
 import { RandomRequest, RandomResponse } from './random'
 import {
   RipplePathFindPathOption,
@@ -229,6 +230,8 @@ type Request =
   | HookValidateRequest
   | PingRequest
   | RandomRequest
+  // PWA methods
+  | PwaValidateRequest
   // Price Oracle methods
   | GetAggregatePriceRequest
 
@@ -280,6 +283,8 @@ type Response<Version extends APIVersion = typeof DEFAULT_API_VERSION> =
   | HookValidateResponse
   | PingResponse
   | RandomResponse
+  // PWA methods
+  | PwaValidateResponse
   // Price Oracle methods
   | GetAggregatePriceResponse
 
@@ -426,6 +431,8 @@ export type RequestResponseMap<
   ? FeatureOneResponse
   : T extends PingRequest
   ? PingResponse
+  : T extends PwaValidateRequest
+  ? PwaValidateResponse
   : T extends RandomRequest
   ? RandomResponse
   : Response<Version>
@@ -595,6 +602,8 @@ export {
   // utility methods
   PingRequest,
   PingResponse,
+  PwaValidateRequest,
+  PwaValidateResponse,
   RandomRequest,
   RandomResponse,
   ErrorResponse,

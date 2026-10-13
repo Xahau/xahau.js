@@ -14,6 +14,7 @@ import { BaseRequest, BaseResponse, LookupByLedgerRequest } from './baseMethod'
 export type AccountObjectType = Exclude<
   LedgerEntryFilter,
   | 'amendments'
+  | 'app_loader'
   | 'fee'
   | 'hashes'
   | 'hook_definition'

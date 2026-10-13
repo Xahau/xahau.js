@@ -49,6 +49,11 @@ export interface LedgerEntryRequest extends BaseRequest, LookupByLedgerRequest {
    */
   account_root?: string
 
+  /**
+   * Retrieve the AppLoader object of the given account, by its address.
+   */
+  app_loader?: string
+
   /** The object ID of a Check object to retrieve. */
   check?: string
 

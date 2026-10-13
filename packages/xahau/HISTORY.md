@@ -4,6 +4,7 @@
 
 ### Added
 * Support for HookOnV2_1 Amendment (replaces HookOnV2): validate HookOn / HookOnIncoming / HookOnOutgoing combinations in SetHook
+* Support for PWALoader Amendment (`AppLoader` field on AccountSet, `AppLoader` ledger entry, `pwa_validate` RPC)
 
 ### 4.1.1 (2026-07-03)
 

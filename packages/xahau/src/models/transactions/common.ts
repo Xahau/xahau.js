@@ -53,6 +53,9 @@ const XAH_CURRENCY_SIZE = 1
 const ISSUE_SIZE = 2
 const ISSUED_CURRENCY_SIZE = 3
 
+// 4-16 bytes as hex
+export const HOOK_NAME_REGEX = /^(?:[0-9A-Fa-f]{2}){4,16}$/u
+
 function isRecord(value: unknown): value is Record<string, unknown> {
   return value !== null && typeof value === 'object'
 }
@@ -276,13 +279,24 @@ export interface BaseTransaction {
    */
   HookParameters?: HookParameter[]
   /**
-   * The name of the hooks triggered by the transaction.
+   * The name of the hook to trigger, 4–16 bytes as hex. An empty value is
+   * rejected (temMALFORMED since the fix20260929 amendment).
    */
   HookName?: string
   /**
    * The hook parameters of the transaction.
    */
   EmitDetails?: EmitDetails
+}
+
+function validateHookName(common: Record<string, unknown>): void {
+  validateOptionalField(common, 'HookName', isString)
+  const { HookName } = common
+  if (isString(HookName) && !HOOK_NAME_REGEX.test(HookName)) {
+    throw new ValidationError(
+      'BaseTransaction: HookName must be a hex string of 8-32 hex characters',
+    )
+  }
 }
 
 /**
@@ -341,6 +355,8 @@ export function validateBaseTransaction(common: Record<string, unknown>): void {
   validateOptionalField(common, 'TxnSignature', isString)
 
   validateOptionalField(common, 'NetworkID', isNumber)
+
+  validateHookName(common)
 }
 
 /**

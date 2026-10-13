@@ -7,6 +7,9 @@
 * Support for PWALoader Amendment (`AppLoader` field on AccountSet, `AppLoader` ledger entry, `pwa_validate` RPC)
 * Support for EscrowDestinationCancel Amendment (documentation and integration tests; no API change)
 
+### Changed
+* Validate the transaction-level `HookName` field: 4–16 bytes as hex, and an empty value is rejected (temMALFORMED since the fix20260929 amendment)
+
 ### 4.1.1 (2026-07-03)
 
 ### Fixed

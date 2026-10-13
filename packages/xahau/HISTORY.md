@@ -7,6 +7,9 @@
 * Support for PWALoader Amendment (`AppLoader` field on AccountSet, `AppLoader` ledger entry, `pwa_validate` RPC)
 * Support for EscrowDestinationCancel Amendment (documentation and integration tests; no API change)
 
+### Fixed
+* Add missing HookCanEmit field to HookDefinition
+
 ### 4.1.1 (2026-07-03)
 
 ### Fixed

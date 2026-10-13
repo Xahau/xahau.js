@@ -11,6 +11,9 @@
 ### Fixed
 * Add missing HookCanEmit field to HookDefinition
 
+### Changed
+* Validate the transaction-level `HookName` field: 4–16 bytes as hex, and an empty value is rejected (temMALFORMED since the fix20260929 amendment)
+
 ### 4.1.1 (2026-07-03)
 
 ### Fixed

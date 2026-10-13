@@ -4,6 +4,7 @@
 
 ### Added
 * Support for HookOnV2_1 Amendment (replaces HookOnV2): validate HookOn / HookOnIncoming / HookOnOutgoing combinations in SetHook
+* Support for PWALoader Amendment (`AppLoader` field on AccountSet, `AppLoader` ledger entry, `pwa_validate` RPC)
 
 ### Changed
 * Validate the transaction-level `HookName` field: 4–16 bytes as hex, and an empty value is rejected (temMALFORMED since the fix20260929 amendment)

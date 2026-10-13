@@ -40,6 +40,7 @@ describe('server_definitions', function () {
         'TRANSACTION_TYPES',
         'TYPES',
         'features',
+        'HOOK',
         'native_currency_code',
       ])
 

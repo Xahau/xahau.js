@@ -44,7 +44,7 @@ describe('encode and decode using new types as a parameter', function () {
     definitions.FIELDS.push([
       'NewFieldDefinition',
       {
-        nth: 101,
+        nth: 200,
         isVLEncoded: false,
         isSerialized: true,
         isSigningField: true,
@@ -93,7 +93,7 @@ describe('encode and decode using new types as a parameter', function () {
     definitions.FIELDS.push([
       'NewField',
       {
-        nth: 101,
+        nth: 200,
         isVLEncoded: false,
         isSerialized: true,
         isSigningField: true,

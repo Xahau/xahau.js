@@ -13,6 +13,7 @@ import HookDefinition from './HookDefinition'
 import HookState from './HookState'
 import ImportVLSequence from './ImportVLSequence'
 import LedgerHashes from './LedgerHashes'
+import Manifest from './Manifest'
 import NegativeUNL from './NegativeUNL'
 import Offer from './Offer'
 import Oracle from './Oracle'
@@ -40,6 +41,7 @@ type LedgerEntry =
   | HookState
   | ImportVLSequence
   | LedgerHashes
+  | Manifest
   | NegativeUNL
   | Offer
   | Oracle
@@ -66,6 +68,7 @@ type LedgerEntryFilter =
   | 'hook_definition'
   | 'import_vl_sequence'
   | 'hashes'
+  | 'manifest'
   | 'offer'
   | 'oracle'
   | 'payment_channel'

@@ -43,6 +43,7 @@ import {
 import { Remit, validateRemit } from './remit'
 import { SetFee } from './setFee'
 import { SetHook, validateSetHook } from './setHook'
+import { SetManifest } from './setManifest'
 import { SetRegularKey, validateSetRegularKey } from './setRegularKey'
 import { SetRemarks, validateSetRemarks } from './setRemarks'
 import { SignerListSet, validateSignerListSet } from './signerListSet'
@@ -111,6 +112,7 @@ export type PseudoTransaction =
   | EnableAmendment
   | Entropy
   | SetFee
+  | SetManifest
   | UNLModify
 
 /**

@@ -1,24 +1,53 @@
-import { SubmittableTransaction } from '../transactions'
+import { SetManifest, SubmittableTransaction } from '../transactions'
 
 import { BaseRequest, BaseResponse } from './baseMethod'
 
 /**
- * The submit method applies a transaction and sends it to the network to be
- * confirmed and included in future ledgers. Expects a response in the form of a
- * {@link SubmitResponse}.
+ * A {@link SubmitRequest} that submits a signed transaction blob.
  *
  * @category Requests
  */
-export interface SubmitRequest extends BaseRequest {
+export interface SubmitTxBlobRequest extends BaseRequest {
   command: 'submit'
   /** The complete transaction in hex string format. */
   tx_blob: string
+  manifest?: never
   /**
    * If true, and the transaction fails locally, do not retry or relay the
    * transaction to other servers. The default is false.
    */
   fail_hard?: boolean
 }
+
+/**
+ * A {@link SubmitRequest} that submits a validator manifest.
+ *
+ * @category Requests
+ */
+export interface SubmitManifestRequest extends BaseRequest {
+  command: 'submit'
+  tx_blob?: never
+  /**
+   * A validator manifest in hex string format. The node builds the canonical
+   * SetManifest transaction from it. Requires the OnChainManifests amendment.
+   */
+  manifest: string
+  /**
+   * If true, and the transaction fails locally, do not retry or relay the
+   * transaction to other servers. The default is false.
+   */
+  fail_hard?: boolean
+}
+
+/**
+ * The submit method applies a transaction and sends it to the network to be
+ * confirmed and included in future ledgers. Exactly one of `tx_blob` or
+ * `manifest` must be given. Expects a response in the form of a
+ * {@link SubmitResponse}.
+ *
+ * @category Requests
+ */
+export type SubmitRequest = SubmitTxBlobRequest | SubmitManifestRequest
 
 /**
  * Response expected from a {@link SubmitRequest}.
@@ -39,7 +68,7 @@ export interface SubmitResponse extends BaseResponse {
     /** The complete transaction in hex string format. */
     tx_blob: string
     /** The complete transaction in JSON format. */
-    tx_json: SubmittableTransaction & { hash?: string }
+    tx_json: (SubmittableTransaction | SetManifest) & { hash?: string }
     /**
      * The value true indicates that the transaction was applied, queued,
      * broadcast, or kept for later. The value `false` indicates that none of

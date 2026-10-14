@@ -149,7 +149,12 @@ import {
   SimulateRequest,
   SimulateResponse,
 } from './simulate'
-import { SubmitRequest, SubmitResponse } from './submit'
+import {
+  SubmitManifestRequest,
+  SubmitRequest,
+  SubmitResponse,
+  SubmitTxBlobRequest,
+} from './submit'
 import {
   SubmitMultisignedRequest,
   SubmitMultisignedResponse,
@@ -533,6 +538,8 @@ export {
   SimulateRequest,
   SimulateResponse,
   SubmitRequest,
+  SubmitTxBlobRequest,
+  SubmitManifestRequest,
   SubmitResponse,
   SubmitMultisignedRequest,
   SubmitMultisignedResponse,

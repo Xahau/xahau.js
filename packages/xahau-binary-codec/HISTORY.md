@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 2.3.0 (2026-10-14)
+
 ### Added
 * Update `definitions.json` for xahaud 2026.10.13-dev+4117 (RNG, PWALoader, OnChainManifests amendments)
 

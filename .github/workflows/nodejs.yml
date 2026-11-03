@@ -183,6 +183,56 @@ jobs:
         if: always()
         run: docker stop xahaud-service
 
+  definitions:
+    runs-on: ubuntu-latest
+    needs: download-binary
+    timeout-minutes: 10
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Restore binary
+        uses: actions/cache/restore@v5
+        with:
+          path: xahaud
+          key: ${{ runner.os }}-xahaud-${{ env.XAHAUD_VERSION }}
+
+      - name: Run docker in background
+        run: |
+          docker run --detach --rm \
+            --name xahaud-service \
+            -p 5005:5005 \
+            -p 6006:6006 \
+            --volume "${{ github.workspace }}/.ci-config/":"/opt/xahau/etc/" \
+            --volume "${{ github.workspace }}/xahaud":"/opt/xahau/bin/xahaud" \
+            --health-cmd="wget localhost:6006 || exit 1" \
+            --health-interval=5s \
+            --health-retries=10 \
+            --health-timeout=2s \
+            --env GITHUB_ACTIONS=true \
+            --env CI=true \
+            ubuntu:latest /opt/xahau/bin/xahaud -a --conf /opt/xahau/etc/xahaud.cfg
+
+      - name: Use Node.js 22.x
+        uses: actions/setup-node@v3
+        with:
+          node-version: 22.x
+
+      - name: Wait for xahaud
+        run: |
+          for i in $(seq 1 30); do
+            if curl -sf -X POST http://localhost:5005 -d '{"method":"server_info"}' >/dev/null; then exit 0; fi
+            sleep 2
+          done
+          echo "xahaud did not answer on port 5005" && docker logs xahaud-service && exit 1
+
+      - name: Check definitions.json against server_definitions
+        run: node scripts/check-definitions.js http://localhost:5005
+
+      - name: Stop docker container
+        if: always()
+        run: docker stop xahaud-service
+
   browser:
     runs-on: ubuntu-latest
     needs: download-binary

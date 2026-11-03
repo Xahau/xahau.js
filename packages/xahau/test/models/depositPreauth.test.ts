@@ -1,7 +1,10 @@
-import { assert } from 'chai'
-
-import { validate, ValidationError } from '../../src'
 import { validateDepositPreauth } from '../../src/models/transactions/depositPreauth'
+import { assertTxIsValid, assertTxValidationError } from '../testUtils'
+
+const assertValid = (tx: any): void =>
+  assertTxIsValid(tx, validateDepositPreauth)
+const assertInvalid = (tx: any, message: string): void =>
+  assertTxValidationError(tx, validateDepositPreauth, message)
 
 /**
  * DepositPreauth Transaction Verification Testing.
@@ -9,7 +12,7 @@ import { validateDepositPreauth } from '../../src/models/transactions/depositPre
  * Providing runtime verification testing for each specific transaction type.
  */
 describe('DepositPreauth', function () {
-  let depositPreauth
+  let depositPreauth: any
 
   beforeEach(function () {
     depositPreauth = {
@@ -20,91 +23,55 @@ describe('DepositPreauth', function () {
 
   it('verifies valid DepositPreauth when only Authorize is provided', function () {
     depositPreauth.Authorize = 'rsA2LpzuawewSBQXkiju3YQTMzW13pAAdW'
-    assert.doesNotThrow(() => validateDepositPreauth(depositPreauth))
-    assert.doesNotThrow(() => validate(depositPreauth))
+    assertValid(depositPreauth)
   })
 
   it('verifies valid DepositPreauth when only Unauthorize is provided', function () {
     depositPreauth.Unauthorize = 'raKEEVSGnKSD9Zyvxu4z6Pqpm4ABH8FS6n'
-    assert.doesNotThrow(() => validateDepositPreauth(depositPreauth))
-    assert.doesNotThrow(() => validate(depositPreauth))
+    assertValid(depositPreauth)
   })
 
   it('throws when both Authorize and Unauthorize are provided', function () {
     depositPreauth.Authorize = 'rsA2LpzuawewSBQXkiju3YQTMzW13pAAdW'
     depositPreauth.Unauthorize = 'raKEEVSGnKSD9Zyvxu4z6Pqpm4ABH8FS6n'
-    assert.throws(
-      () => validateDepositPreauth(depositPreauth),
-      ValidationError,
-      "DepositPreauth: can't provide both Authorize and Unauthorize fields",
-    )
-    assert.throws(
-      () => validate(depositPreauth),
-      ValidationError,
+    assertInvalid(
+      depositPreauth,
       "DepositPreauth: can't provide both Authorize and Unauthorize fields",
     )
   })
 
   it('throws when neither Authorize nor Unauthorize are provided', function () {
-    assert.throws(
-      () => validateDepositPreauth(depositPreauth),
-      ValidationError,
-      'DepositPreauth: must provide either Authorize or Unauthorize field',
-    )
-    assert.throws(
-      () => validate(depositPreauth),
-      ValidationError,
+    assertInvalid(
+      depositPreauth,
       'DepositPreauth: must provide either Authorize or Unauthorize field',
     )
   })
 
   it('throws when Authorize is not a string', function () {
     depositPreauth.Authorize = 1234
-    assert.throws(
-      () => validateDepositPreauth(depositPreauth),
-      ValidationError,
-      'DepositPreauth: Authorize must be a string',
-    )
-    assert.throws(
-      () => validate(depositPreauth),
-      ValidationError,
-      'DepositPreauth: Authorize must be a string',
-    )
+    assertInvalid(depositPreauth, 'DepositPreauth: Authorize must be a string')
   })
 
   it('throws when an Account attempts to preauthorize its own address', function () {
     depositPreauth.Authorize = depositPreauth.Account
-    assert.throws(
-      () => validateDepositPreauth(depositPreauth),
-      ValidationError,
+    assertInvalid(
+      depositPreauth,
       "DepositPreauth: Account can't preauthorize its own address",
     )
   })
 
   it('throws when Unauthorize is not a string', function () {
     depositPreauth.Unauthorize = 1234
-    assert.throws(
-      () => validateDepositPreauth(depositPreauth),
-      ValidationError,
-      'DepositPreauth: Unauthorize must be a string',
-    )
-    assert.throws(
-      () => validate(depositPreauth),
-      ValidationError,
+    assertInvalid(
+      depositPreauth,
       'DepositPreauth: Unauthorize must be a string',
     )
   })
 
   it('throws when an Account attempts to unauthorize its own address', function () {
     depositPreauth.Unauthorize = depositPreauth.Account
-    assert.throws(
-      () => validateDepositPreauth(depositPreauth),
-      ValidationError,
-      "DepositPreauth: Account can't unauthorize its own address",
-    )
-    assert.throws(
-      () => validate(depositPreauth),
-      ValidationError,
+    assertInvalid(
+      depositPreauth,
       "DepositPreauth: Account can't unauthorize its own address",
     )
   })

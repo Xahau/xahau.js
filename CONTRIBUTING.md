@@ -77,6 +77,20 @@ Breaking down the command:
 * `xahauci/xahaud` is an image that is regularly updated with the latest `xahaud` releases
 * `/opt/xahau/bin/xahaud -a --conf /opt/xahau/etc/xahaud.cfg` starts `xahaud` in standalone mode
 
+### Faucet Tests
+
+Faucet tests are designed to ensure the functionality of account funding and other interactions that require a funded wallet, typically by interacting with a Faucet service. These tests are crucial for verifying real-world scenarios where new accounts need to be activated on the Xahau Ledger.
+
+To run Faucet tests locally, you'll first need to ensure your development environment is set up and the project is built. Faucet tests do not require a locally running `xahaud` instance to execute.
+
+From the root directory of xahau.js, run the following commands:
+
+```bash
+npm install
+npm run build
+npm run test:faucet
+```
+
 ### Browser Tests
 
 There are two ways to run browser tests.

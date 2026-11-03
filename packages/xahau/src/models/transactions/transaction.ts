@@ -110,12 +110,7 @@ export type SubmittableTransaction =
  * @category Transaction Models
  */
 export type PseudoTransaction =
-  | Cron
-  | EnableAmendment
-  | Entropy
-  | SetFee
-  | SetManifest
-  | UNLModify
+  Cron | EnableAmendment | Entropy | SetFee | SetManifest | UNLModify
 
 /**
  * All transactions that can live on the XAHL

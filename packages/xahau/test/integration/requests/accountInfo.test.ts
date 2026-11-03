@@ -159,9 +159,8 @@ describe('account_info', function () {
         signer_lists: true,
         api_version: 1,
       }
-      const response = await testContext.client.request<AccountInfoRequest>(
-        request,
-      )
+      const response =
+        await testContext.client.request<AccountInfoRequest>(request)
       expect(response.result.account_data.signer_lists).toEqual([])
       // @ts-expect-error -- signer_lists is expected to be undefined
       expect(response.result.signer_lists).toBeUndefined()

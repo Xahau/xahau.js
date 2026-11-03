@@ -122,9 +122,8 @@ describe('account_tx', function () {
         ledger_index: 'validated',
         api_version: 1,
       }
-      const response = await testContext.client.request<AccountTxRequest>(
-        request,
-      )
+      const response =
+        await testContext.client.request<AccountTxRequest>(request)
       const expected = {
         result: {
           account: testContext.wallet.classicAddress,

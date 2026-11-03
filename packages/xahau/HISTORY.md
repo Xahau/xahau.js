@@ -4,6 +4,7 @@
 
 ### Added
 * Adds utility function `convertTxFlagsToNumber`
+* Export signing and binary codec utilities
 
 ### Changed
 * Deprecated `setTransactionFlagsToNumber`. Start using convertTxFlagsToNumber instead
@@ -15,6 +16,8 @@
 * Fail faster on `tem` errors with `submitAndWait`
 * Improved type-checking in models
 * Allow `DeliverMax` in `Payment` transaction
+* Prevent Node.js process termination when WebSocket send() errors after the connection is closed.
+* Better faucet error handling
 
 ## 4.2.0 (2026-10-14)
 

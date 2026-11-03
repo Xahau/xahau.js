@@ -29,8 +29,8 @@ export interface FundingOptions {
    * attempt to determine the correct path automatically. In other environments,
    * or if you would like to customize the faucet path in devnet or testnet,
    * you should provide the path using this option.
-   * Ex: client.fundWallet(null,{'xahau-test.net/accounts', '/accounts'})
-   * specifies a request to 'xahau-test.net/accounts/accounts' to fund a new wallet.
+   * Ex: client.fundWallet(null,{'faucet.altnet.rippletest.net', '/accounts'})
+   * specifies a request to 'faucet.altnet.rippletest.net/accounts' to fund a new wallet.
    */
   faucetPath?: string
   /**
@@ -41,7 +41,7 @@ export interface FundingOptions {
 }
 
 /**
- * Parameters to pass into a faucet request to fund an XAH account.
+ * Parameters to pass into a faucet request to fund an XRP account.
  */
 export interface FaucetRequestBody {
   /**
@@ -49,7 +49,7 @@ export interface FaucetRequestBody {
    */
   destination?: string
   /**
-   * The total amount of XAH to fund the account with.
+   * The total amount of XRP to fund the account with.
    */
   xrpAmount?: string
   /**
@@ -59,7 +59,7 @@ export interface FaucetRequestBody {
   usageContext?: string
   /**
    * Information about the context of where the faucet is being called from.
-   * Ex: xahau.js or xahau-py
+   * Ex: xrpl.js or xrpl-py
    */
   userAgent: string
 }
@@ -106,7 +106,7 @@ export interface FundWalletOptions {
 
 /**
  *
- * Helper function to request funding from a faucet. Should not be called directly from outside the xahau.js library.
+ * Helper function to request funding from a faucet. Should not be called directly from outside the xrpl.js library.
  *
  * @param options - See below
  * @param options.faucetHost - A custom host for a faucet server. On devnet,
@@ -119,12 +119,12 @@ export interface FundWalletOptions {
  * attempt to determine the correct path automatically. In other environments,
  * or if you would like to customize the faucet path in devnet or testnet,
  * you should provide the path using this option.
- * Ex: client.fundWallet(null,{'xahau-test.net/accounts', '/accounts'})
- * specifies a request to 'xahau-test.net/accounts/accounts' to fund a new wallet.
+ * Ex: client.fundWallet(null,{'faucet.altnet.rippletest.net', '/accounts'})
+ * specifies a request to 'faucet.altnet.rippletest.net/accounts' to fund a new wallet.
  * @param options.amount - A custom amount to fund, if undefined or null, the default amount will be 1000.
- * @param client - A connection to the XAHL to send requests and transactions.
- * @param startingBalance - The amount of XAH in the given walletToFund on ledger already.
- * @param walletToFund - An existing XAHL Wallet to fund.
+ * @param client - A connection to the XRPL to send requests and transactions.
+ * @param startingBalance - The amount of XRP in the given walletToFund on ledger already.
+ * @param walletToFund - An existing XRPL Wallet to fund.
  * @param postBody - The content to send the faucet to indicate which address to fund, how much to fund it, and
  * where the request is coming from.
  * @returns A promise that resolves to a funded wallet and the balance within it.
@@ -153,12 +153,11 @@ export async function requestFunding(
     body: JSON.stringify(postBody),
   })
 
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- it can be anything
-  const body = await response.json()
   if (
     response.ok &&
     response.headers.get('Content-Type')?.startsWith('application/json')
   ) {
+    const body: unknown = await response.json()
     // eslint-disable-next-line @typescript-eslint/consistent-type-assertions -- It's a FaucetWallet
     const classicAddress = (body as FaucetWallet).account.classicAddress
     return processSuccessfulResponse(
@@ -168,7 +167,7 @@ export async function requestFunding(
       startingBalance,
     )
   }
-  return processError(response, body)
+  return processError(response)
 }
 
 // eslint-disable-next-line max-params -- Only used as a helper function, lines inc due to added balance.
@@ -186,7 +185,7 @@ async function processSuccessfulResponse(
       new XRPLFaucetError(`The faucet account is undefined`),
     )
   }
-  // Check at regular interval if the address is enabled on the XAHL and funded
+  // Check at regular interval if the address is enabled on the XRPL and funded
   const updatedBalance = await getUpdatedBalance(
     client,
     classicAddress,
@@ -206,21 +205,31 @@ async function processSuccessfulResponse(
   )
 }
 
-async function processError(response: Response, body): Promise<never> {
+interface ErrorData {
+  body?: unknown
+  contentType?: string
+  statusCode: number
+}
+
+async function processError(response: Response): Promise<never> {
+  const errorData: ErrorData = {
+    contentType: response.headers.get('Content-Type') ?? undefined,
+    statusCode: response.status,
+  }
+  const clone = response.clone()
+  try {
+    const body: unknown = await response.json()
+    errorData.body = body
+  } catch {
+    errorData.body = await clone.text()
+  }
   return Promise.reject(
-    new XRPLFaucetError(
-      `Request failed: ${JSON.stringify({
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- json response could be anything
-        body: body || {},
-        contentType: response.headers.get('Content-Type'),
-        statusCode: response.status,
-      })}`,
-    ),
+    new XRPLFaucetError(`Request failed: ${JSON.stringify(errorData)}`),
   )
 }
 
 /**
- * Check at regular interval if the address is enabled on the XAHL and funded.
+ * Check at regular interval if the address is enabled on the XRPL and funded.
  *
  * @param client - Client.
  * @param address - The account address to check.

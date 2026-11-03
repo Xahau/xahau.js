@@ -8,8 +8,7 @@ import { BaseLedgerEntry, HasPreviousTxnID } from './BaseLedgerEntry'
  * @category Ledger Entries
  */
 export default interface HookDefintion
-  extends BaseLedgerEntry,
-    HasPreviousTxnID {
+  extends BaseLedgerEntry, HasPreviousTxnID {
   LedgerEntryType: 'HookDefintion'
 
   /**

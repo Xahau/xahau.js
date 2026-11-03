@@ -1,3 +1,4 @@
+/* eslint-disable import/no-deprecated -- using deprecated setTransactionFlagsToNumber to ensure no breaking changes */
 import { assert } from 'chai'
 
 import {

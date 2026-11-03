@@ -1,4 +1,3 @@
-/* eslint-disable no-param-reassign -- param reassign is safe */
 /* eslint-disable no-bitwise -- flags require bitwise operations */
 import { ValidationError } from '../../errors'
 import { Hook, HookFlags, MintURITokenFlags } from '../common/xahau'
@@ -55,12 +54,20 @@ const txToFlag = {
   CronSet: CronSetFlags,
 }
 
+function isTxToFlagKey(
+  transactionType: string,
+): transactionType is keyof typeof txToFlag {
+  return transactionType in txToFlag
+}
+
+/* eslint-disable no-param-reassign -- nested flags are converted in place */
 /**
- * Sets a transaction's flags to its numeric representation.
+ * Sets the flags of Xahau-specific nested objects (`Hook`, `MintURIToken`, `Remark`)
+ * to their numeric representation. The nested objects are modified in place.
  *
- * @param tx - A transaction to set its flags to its numeric representation.
+ * @param tx - A transaction whose nested flags should be converted.
  */
-export function setTransactionFlagsToNumber(tx: Transaction): void {
+export function setNestedFlagsToNumber(tx: Transaction): void {
   if (tx.TransactionType === 'SetHook' && Array.isArray(tx.Hooks)) {
     tx.Hooks.forEach((hook: Hook) => {
       if (typeof hook.Hook.Flags === 'object') {
@@ -90,18 +97,50 @@ export function setTransactionFlagsToNumber(tx: Transaction): void {
       })
     }
   }
+}
+/* eslint-enable no-param-reassign */
 
-  if (tx.Flags == null) {
-    tx.Flags = 0
-    return
+/**
+ * Sets a transaction's flags to its numeric representation.
+ *
+ * @deprecated
+ * This utility function is deprecated.
+ * Use convertTxFlagsToNumber() instead and use the returned value to modify the Transaction.Flags from the caller.
+ *
+ * @param tx - A transaction to set its flags to its numeric representation.
+ */
+export function setTransactionFlagsToNumber(tx: Transaction): void {
+  // eslint-disable-next-line no-console -- intended deprecation warning
+  console.warn(
+    'This function is deprecated. Use convertTxFlagsToNumber() instead and use the returned value to modify the Transaction.Flags from the caller.',
+  )
+  setNestedFlagsToNumber(tx)
+
+  if (tx.Flags) {
+    // eslint-disable-next-line no-param-reassign -- intended param reassign in setter, retain old functionality for compatibility
+    tx.Flags = convertTxFlagsToNumber(tx)
+  }
+}
+
+/**
+ * Returns a Transaction's Flags as its numeric representation.
+ *
+ * @param tx - A Transaction to parse Flags for
+ * @returns A numerical representation of a Transaction's Flags
+ */
+export function convertTxFlagsToNumber(tx: Transaction): number {
+  if (!tx.Flags) {
+    return 0
   }
   if (typeof tx.Flags === 'number') {
-    return
+    return tx.Flags
   }
 
-  tx.Flags = txToFlag[tx.TransactionType]
-    ? convertFlagsToNumber(tx.Flags, txToFlag[tx.TransactionType])
-    : 0
+  if (isTxToFlagKey(tx.TransactionType)) {
+    return convertFlagsToNumber(tx.Flags, txToFlag[tx.TransactionType])
+  }
+
+  return 0
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any -- added ValidationError check for flagEnum
@@ -110,7 +149,7 @@ function convertFlagsToNumber(flags: GlobalFlags, flagEnum: any): number {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- safe member access
     if (flagEnum[flag] == null) {
       throw new ValidationError(
-        `flag ${flag} doesn't exist in flagEnum: ${JSON.stringify(flagEnum)}`,
+        `Invalid flag ${flag}. Valid flags are ${JSON.stringify(flagEnum)}`,
       )
     }
     // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- safe member access
@@ -125,22 +164,24 @@ function convertFlagsToNumber(flags: GlobalFlags, flagEnum: any): number {
  * @returns A map with all flags as booleans.
  */
 export function parseTransactionFlags(tx: Transaction): object {
-  setTransactionFlagsToNumber(tx)
-  if (typeof tx.Flags !== 'number' || !tx.Flags || tx.Flags === 0) {
+  const flags = convertTxFlagsToNumber(tx)
+  if (flags === 0) {
     return {}
   }
 
-  const flags = tx.Flags
-  const flagsMap = {}
+  const booleanFlagMap = {}
 
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- safe member access
-  const flagEnum = txToFlag[tx.TransactionType]
-  Object.values(flagEnum).forEach((flag) => {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- safe member access
-    if (typeof flag === 'string' && isFlagEnabled(flags, flagEnum[flag])) {
-      flagsMap[flag] = true
-    }
-  })
+  if (isTxToFlagKey(tx.TransactionType)) {
+    const transactionTypeFlags = txToFlag[tx.TransactionType]
+    Object.values(transactionTypeFlags).forEach((flag) => {
+      if (
+        typeof flag === 'string' &&
+        isFlagEnabled(flags, transactionTypeFlags[flag])
+      ) {
+        booleanFlagMap[flag] = true
+      }
+    })
+  }
 
-  return flagsMap
+  return booleanFlagMap
 }

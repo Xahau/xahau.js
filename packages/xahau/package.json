@@ -46,9 +46,6 @@
     "typedoc": "0.26.10",
     "ws": "^8.14.2"
   },
-  "resolutions": {
-    "elliptic": "^6.5.4"
-  },
   "scripts": {
     "build": "run-s build:lib build:web",
     "build:lib": "tsc --build tsconfig.build.json",

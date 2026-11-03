@@ -5,6 +5,7 @@
 ### BREAKING CHANGES
 * `ED25519` is the default signing-algorithm used in the `Wallet.fromMnemonic` method. Users can explicitly specify `ecdsa-secp256k1` to retrieve the cryptographic material created using older versions of this package.
 * `Wallet.fromSeed` and `Wallet.fromSecret` no longer default to ed25519 when `opts.algorithm` is omitted. The algorithm is now inferred from the seed prefix: `sEd…` seeds derive an ed25519 keypair, all other family seeds (`s…`) derive a secp256k1 keypair. Callers that want ed25519 keys from an `s…` family seed must now pass `algorithm: ECDSA.ed25519` explicitly.
+* `Wallet.fromEntropy` now requires `entropy` to be a `Uint8Array` or an array of byte values of exactly 16 bytes, and throws `ValidationError` otherwise. Input of any other type or length is no longer accepted. Convert a hex string to bytes before passing it: `Wallet.fromEntropy(hexToBytes(hex))`.
 * `bignumber.js` is upgraded to v10, which throws on invalid numeric input instead of returning `NaN`.
 
 ### Added

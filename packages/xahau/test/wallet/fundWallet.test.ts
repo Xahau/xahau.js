@@ -2,9 +2,9 @@ import { assert } from 'chai'
 
 import {
   FaucetNetwork,
-  FaucetNetworkPaths,
+  faucetNetworkPaths,
   getFaucetHost,
-  getDefaultFaucetPath,
+  getFaucetPath,
 } from '../../src/Wallet/defaultFaucets'
 import {
   setupClient,
@@ -45,12 +45,12 @@ describe('Get Faucet host ', function () {
   })
 
   it('returns the correct faucetPath for Devnet host', function () {
-    const expectedFaucetPath = FaucetNetworkPaths[FaucetNetwork.Devnet]
+    const expectedFaucetPath = faucetNetworkPaths[FaucetNetwork.Devnet]
     // @ts-expect-error Intentionally modifying private data for test
     testContext.client.connection.url = FaucetNetwork.Devnet
 
     assert.strictEqual(
-      getDefaultFaucetPath(getFaucetHost(testContext.client)),
+      getFaucetPath(getFaucetHost(testContext.client)),
       expectedFaucetPath,
     )
   })
@@ -58,7 +58,7 @@ describe('Get Faucet host ', function () {
   it('returns the correct faucetPath for undefined host', function () {
     const expectedFaucetPath = '/accounts'
 
-    assert.strictEqual(getDefaultFaucetPath(undefined), expectedFaucetPath)
+    assert.strictEqual(getFaucetPath(undefined), expectedFaucetPath)
   })
 
   it('throws if not connected to a known faucet host', function () {

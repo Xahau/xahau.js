@@ -16,7 +16,7 @@ export enum FaucetNetwork {
   Devnet = 'jshooks.xahau-test.net',
 }
 
-export const FaucetNetworkPaths: Record<string, string> = {
+export const faucetNetworkPaths: Record<string, string> = {
   [FaucetNetwork.Testnet]: '/accounts',
   [FaucetNetwork.Devnet]: '/accounts',
 }
@@ -48,11 +48,11 @@ export function getFaucetHost(client: Client): FaucetNetwork | undefined {
  *
  * @param hostname - hostname.
  * @returns A String with the correct path for the input hostname.
- * If hostname undefined or cannot find (key, value) pair in {@link FaucetNetworkPaths}, defaults to '/accounts'
+ * If hostname undefined or cannot find (key, value) pair in {@link faucetNetworkPaths}, defaults to '/accounts'
  */
-export function getDefaultFaucetPath(hostname: string | undefined): string {
+export function getFaucetPath(hostname: string | undefined): string {
   if (hostname === undefined) {
     return '/accounts'
   }
-  return FaucetNetworkPaths[hostname] || '/accounts'
+  return faucetNetworkPaths[hostname] || '/accounts'
 }

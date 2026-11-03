@@ -5,6 +5,10 @@
 ### Fixed
 * Throw an error during serialization if a field is unknown, rather than silently throwing it away.
 * Error if a decimal is passed into a `UInt`-typed field.
+* Fix: Include the last byte in the comparison operator of `Hash[128|256]` types.
+* Fix: Validate the input of non-numeric values for `Amount` field.
+* Fix: Add validation checks for negative inputs to `read`, `peek` and `skip` methods in the binary-codec.
+* Fix: `Amount.toJSON()` no longer mutates the internal buffer for native XAH amounts; subsequent calls and re-serializations now return consistent values.
 
 ## 2.3.0 (2026-10-14)
 

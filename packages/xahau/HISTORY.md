@@ -2,9 +2,16 @@
 
 ## Unreleased Changes
 
+### BREAKING CHANGES
+* `ED25519` is the default signing-algorithm used in the `Wallet.fromMnemonic` method. Users can explicitly specify `ecdsa-secp256k1` to retrieve the cryptographic material created using older versions of this package.
+* `Wallet.fromSeed` and `Wallet.fromSecret` no longer default to ed25519 when `opts.algorithm` is omitted. The algorithm is now inferred from the seed prefix: `sEd…` seeds derive an ed25519 keypair, all other family seeds (`s…`) derive a secp256k1 keypair. Callers that want ed25519 keys from an `s…` family seed must now pass `algorithm: ECDSA.ed25519` explicitly.
+* `bignumber.js` is upgraded to v10, which throws on invalid numeric input instead of returning `NaN`.
+
 ### Added
 * Adds utility function `convertTxFlagsToNumber`
 * Export signing and binary codec utilities
+* Add type narrowing for `LedgerEntryRequest` based on the `binary` flag
+* Add `ignore_default` to `AccountLinesRequest` and `limit` to `AccountLinesResponse`
 * Add `faucetProtocol` (http or https) option to `fundWallet` method. Makes `fundWallet` work with locally running faucet servers.
 
 ### Changed
@@ -19,6 +26,9 @@
 * Allow `DeliverMax` in `Payment` transaction
 * Prevent Node.js process termination when WebSocket send() errors after the connection is closed.
 * Better faucet error handling
+* Fix event listener accumulation bug where `'connected'` event handlers would fire multiple times after each reconnection.
+* Disallow the input of Authorization Credentials over insecure WebSocket connections (`ws[+unix]?://`) to prevent MITM eavesdropping of sensitive data.
+* Private key material is redacted from `getAlgorithmFromKey` error messages.
 
 ## 4.2.0 (2026-10-14)
 

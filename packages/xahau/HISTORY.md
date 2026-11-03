@@ -11,6 +11,10 @@
 ### Fixed
 * `parseTransactionFlags` no longer modifies the transaction passed to it
 * `TransactionStream` model includes `hash` field in APIv2
+* Fix `AccountRoot` ledger object to correctly parse `FirstNFTokenSequence` field
+* Fail faster on `tem` errors with `submitAndWait`
+* Improved type-checking in models
+* Allow `DeliverMax` in `Payment` transaction
 
 ## 4.2.0 (2026-10-14)
 

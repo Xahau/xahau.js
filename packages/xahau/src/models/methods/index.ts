@@ -107,7 +107,14 @@ import {
   LedgerDataRequest,
   LedgerDataResponse,
 } from './ledgerData'
-import { LedgerEntryRequest, LedgerEntryResponse } from './ledgerEntry'
+import {
+  LedgerEntryBinaryRequest,
+  LedgerEntryJsonRequest,
+  LedgerEntryRequest,
+  LedgerEntryBinaryResponse,
+  LedgerEntryJsonResponse,
+  LedgerEntryResponse,
+} from './ledgerEntry'
 import { ManifestRequest, ManifestResponse } from './manifest'
 import { NoRippleCheckRequest, NoRippleCheckResponse } from './norippleCheck'
 import {
@@ -391,8 +398,12 @@ export type RequestResponseMap<
   ? LedgerCurrentResponse
   : T extends LedgerDataRequest
   ? LedgerDataResponse
+  : T extends LedgerEntryBinaryRequest
+  ? LedgerEntryBinaryResponse
+  : T extends LedgerEntryJsonRequest
+  ? LedgerEntryJsonResponse
   : T extends LedgerEntryRequest
-  ? LedgerEntryResponse
+  ? LedgerEntryJsonResponse
   : T extends SimulateBinaryRequest
   ? SimulateBinaryResponse
   : T extends SimulateJsonRequest
@@ -533,7 +544,11 @@ export {
   LedgerDataBinaryLedgerEntry,
   LedgerDataResponse,
   LedgerDataLedgerState,
+  LedgerEntryBinaryRequest,
+  LedgerEntryJsonRequest,
   LedgerEntryRequest,
+  LedgerEntryBinaryResponse,
+  LedgerEntryJsonResponse,
   LedgerEntryResponse,
   // transaction methods with types
   SimulateRequest,

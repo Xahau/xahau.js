@@ -38,5 +38,41 @@ describe('Amount', function () {
     }
     expect(amt.toJSON()).toEqual(rewritten)
   })
+
+  it('toJSON() does not mutate internal buffer for native XRP amounts', function () {
+    const amt = Amount.from('1000000')
+    const serializedHexBeforeJsonCalls = amt.toHex()
+    const firstJsonResult = amt.toJSON()
+    const secondJsonResult = amt.toJSON()
+    expect(secondJsonResult).toEqual(firstJsonResult)
+    expect(amt.toHex()).toEqual(serializedHexBeforeJsonCalls)
+  })
+
+  it('toJSON() does not mutate internal buffer for IOU amounts', function () {
+    const amt = Amount.from({
+      value: '1',
+      issuer: '0000000000000000000000000000000000000000',
+      currency: 'USD',
+    })
+    const serializedHexBeforeJsonCalls = amt.toHex()
+    const firstJsonResult = amt.toJSON()
+    const secondJsonResult = amt.toJSON()
+    expect(secondJsonResult).toEqual(firstJsonResult)
+    expect(amt.toHex()).toEqual(serializedHexBeforeJsonCalls)
+  })
+
+  it('toJSON() does not mutate internal buffer for negative IOU amounts', function () {
+    const amt = Amount.from({
+      value: '-1',
+      issuer: '0000000000000000000000000000000000000000',
+      currency: 'USD',
+    })
+    const serializedHexBeforeJsonCalls = amt.toHex()
+    const firstJsonResult = amt.toJSON()
+    const secondJsonResult = amt.toJSON()
+    expect(secondJsonResult).toEqual(firstJsonResult)
+    expect(amt.toHex()).toEqual(serializedHexBeforeJsonCalls)
+  })
+
   amountErrorTests()
 })

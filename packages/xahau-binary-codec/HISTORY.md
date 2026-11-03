@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+### Fixed
+* Throw an error during serialization if a field is unknown, rather than silently throwing it away.
+
 ## 2.3.0 (2026-10-14)
 
 ### Added

@@ -4,7 +4,7 @@ import { encode } from 'xahau-binary-codec'
 import { type Client } from '..'
 import { ValidationError } from '../errors'
 import { AccountInfoRequest } from '../models/methods'
-import { Transaction } from '../models/transactions'
+import { Payment, Transaction } from '../models/transactions'
 
 import { getFeeEstimateXrp } from './getFeeXah'
 
@@ -191,4 +191,31 @@ export async function setLatestValidatedLedgerSequence(
   const ledgerSequence = await client.getLedgerIndex()
   // eslint-disable-next-line no-param-reassign -- param reassign is safe
   tx.LastLedgerSequence = ledgerSequence + LEDGER_OFFSET
+}
+
+/**
+ * Replaces Amount with DeliverMax if needed.
+ *
+ * @param tx - The transaction object.
+ * @throws ValidationError if Amount and DeliverMax are both provided but do not match.
+ */
+export function handleDeliverMax(tx: Payment): void {
+  if (tx.DeliverMax != null) {
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- needed here
+    if (tx.Amount == null) {
+      // If only DeliverMax is provided, use it to populate the Amount field
+      // eslint-disable-next-line no-param-reassign -- known RPC-level property
+      tx.Amount = tx.DeliverMax
+    }
+
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- needed here
+    if (tx.Amount != null && tx.Amount !== tx.DeliverMax) {
+      throw new ValidationError(
+        'PaymentTransaction: Amount and DeliverMax fields must be identical when both are provided',
+      )
+    }
+
+    // eslint-disable-next-line no-param-reassign -- needed here
+    delete tx.DeliverMax
+  }
 }

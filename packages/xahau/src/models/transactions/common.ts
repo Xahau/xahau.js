@@ -261,7 +261,7 @@ export function validateOptionalField<
 
 /* eslint-enable @typescript-eslint/restrict-template-expressions -- checked before */
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface -- no global flags right now, so this is fine
+// eslint-disable-next-line @typescript-eslint/no-empty-interface, @typescript-eslint/no-empty-object-type -- no global flags yet
 export interface GlobalFlags {}
 
 /**

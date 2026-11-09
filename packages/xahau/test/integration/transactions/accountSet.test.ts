@@ -86,11 +86,10 @@ describe('AccountSet', function () {
       } catch (err) {
         error = err
       }
-      assert.instanceOf(error, XahaudError)
-      assert.equal(
-        ((error as XahaudError).data as { error: string }).error,
-        'entryNotFound',
-      )
+      if (!(error instanceof XahaudError)) {
+        assert.fail('expected a XahaudError')
+      }
+      assert.equal((error.data as { error: string }).error, 'entryNotFound')
 
       const infoAfter = await testContext.client.request(infoRequest)
       assert.equal(infoAfter.result.account_data.AppLoaderSequence, 2)

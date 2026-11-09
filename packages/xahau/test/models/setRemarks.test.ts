@@ -1,7 +1,9 @@
-import { assert } from 'chai'
-
-import { validate, ValidationError } from '../../src'
 import { validateSetRemarks } from '../../src/models/transactions/setRemarks'
+import { assertTxIsValid, assertTxValidationError } from '../testUtils'
+
+const assertValid = (tx: any): void => assertTxIsValid(tx, validateSetRemarks)
+const assertInvalid = (tx: any, message: string): void =>
+  assertTxValidationError(tx, validateSetRemarks, message)
 
 /**
  * SetRemarks Transaction Verification Testing.
@@ -30,41 +32,38 @@ describe('SetRemarks', function () {
   })
 
   it(`verifies valid SetRemarks`, function () {
-    assert.doesNotThrow(() => validateSetRemarks(tx))
-    assert.doesNotThrow(() => validate(tx))
+    assertValid(tx)
 
     tx.Remarks[0].Remark.Flags = { tfImmutable: true }
-    assert.doesNotThrow(() => validateSetRemarks(tx))
-    assert.doesNotThrow(() => validate(tx))
+    assertValid(tx)
 
     tx.Remarks = [{ Remark: { RemarkName: 'DEADBEEF' } }]
-    assert.doesNotThrow(() => validateSetRemarks(tx))
-    assert.doesNotThrow(() => validate(tx))
+    assertValid(tx)
   })
 
   it(`throws w/ invalid ObjectID`, function () {
     delete tx.ObjectID
-    let errorMessage = 'SetRemarks: ObjectID is required'
-    assert.throws(() => validateSetRemarks(tx), ValidationError, errorMessage)
-    assert.throws(() => validate(tx), ValidationError, errorMessage)
+    let errorMessage = 'SetRemarks: missing field ObjectID'
+    assertInvalid(tx, errorMessage)
+
+    tx.ObjectID = 1
+    errorMessage = 'SetRemarks: invalid field ObjectID'
+    assertInvalid(tx, errorMessage)
 
     tx.ObjectID = 'DEADBEEF'
     errorMessage =
       'SetRemarks: ObjectID must be a 256-bit (32-byte) hexadecimal value'
-    assert.throws(() => validateSetRemarks(tx), ValidationError, errorMessage)
-    assert.throws(() => validate(tx), ValidationError, errorMessage)
+    assertInvalid(tx, errorMessage)
   })
 
   it(`throws w/ invalid Remarks`, function () {
     delete tx.Remarks
-    let errorMessage = 'SetRemarks: Remarks is required'
-    assert.throws(() => validateSetRemarks(tx), ValidationError, errorMessage)
-    assert.throws(() => validate(tx), ValidationError, errorMessage)
+    let errorMessage = 'SetRemarks: missing field Remarks'
+    assertInvalid(tx, errorMessage)
 
     tx.Remarks = 'DEABEEF'
-    errorMessage = 'SetRemarks: Remarks must be an array'
-    assert.throws(() => validateSetRemarks(tx), ValidationError, errorMessage)
-    assert.throws(() => validate(tx), ValidationError, errorMessage)
+    errorMessage = 'SetRemarks: invalid field Remarks'
+    assertInvalid(tx, errorMessage)
 
     tx.Remarks = Array(33)
       .fill(null)
@@ -75,8 +74,7 @@ describe('SetRemarks', function () {
         },
       }))
     errorMessage = `SetRemarks: maximum of 32 remarks allowed in Remarks`
-    assert.throws(() => validateSetRemarks(tx), ValidationError, errorMessage)
-    assert.throws(() => validate(tx), ValidationError, errorMessage)
+    assertInvalid(tx, errorMessage)
 
     tx.Remarks = [
       {
@@ -87,8 +85,7 @@ describe('SetRemarks', function () {
       },
     ]
     errorMessage = `SetRemarks: maximum of 256 bytes allowed in RemarkName`
-    assert.throws(() => validateSetRemarks(tx), ValidationError, errorMessage)
-    assert.throws(() => validate(tx), ValidationError, errorMessage)
+    assertInvalid(tx, errorMessage)
 
     tx.Remarks = [
       {
@@ -99,7 +96,6 @@ describe('SetRemarks', function () {
       },
     ]
     errorMessage = `SetRemarks: maximum of 256 bytes allowed in RemarkValue`
-    assert.throws(() => validateSetRemarks(tx), ValidationError, errorMessage)
-    assert.throws(() => validate(tx), ValidationError, errorMessage)
+    assertInvalid(tx, errorMessage)
   })
 })

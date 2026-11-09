@@ -55,6 +55,6 @@ export function validateURITokenBurn(tx: Record<string, unknown>): void {
   validateBaseTransaction(tx)
 
   if (tx.URITokenID == null) {
-    throw new ValidationError('NFTokenBurn: missing field URITokenID')
+    throw new ValidationError('URITokenBurn: missing field URITokenID')
   }
 }

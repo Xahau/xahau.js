@@ -1,7 +1,9 @@
-import { assert } from 'chai'
-
-import { validate, ValidationError } from '../../src'
 import { validateClaimReward } from '../../src/models/transactions/claimReward'
+import { assertTxIsValid, assertTxValidationError } from '../testUtils'
+
+const assertValid = (tx: any): void => assertTxIsValid(tx, validateClaimReward)
+const assertInvalid = (tx: any, message: string): void =>
+  assertTxValidationError(tx, validateClaimReward, message)
 
 /**
  * ClaimReward Transaction Verification Testing.
@@ -17,8 +19,7 @@ describe('ClaimReward', function () {
       Fee: '12',
     } as any
 
-    assert.doesNotThrow(() => validateClaimReward(validClaim))
-    assert.doesNotThrow(() => validate(validClaim))
+    assertValid(validClaim)
   })
 
   it(`throws w/ invalid Issuer`, function () {
@@ -29,16 +30,7 @@ describe('ClaimReward', function () {
       Fee: '12',
     } as any
 
-    assert.throws(
-      () => validateClaimReward(invalidIssuer),
-      ValidationError,
-      'ClaimReward: Issuer must be a string',
-    )
-    assert.throws(
-      () => validate(invalidIssuer),
-      ValidationError,
-      'ClaimReward: Issuer must be a string',
-    )
+    assertInvalid(invalidIssuer, 'ClaimReward: invalid field Issuer')
   })
   it(`throws w/ redundant Issuer`, function () {
     const invalidIssuer = {
@@ -48,14 +40,8 @@ describe('ClaimReward', function () {
       Fee: '12',
     } as any
 
-    assert.throws(
-      () => validateClaimReward(invalidIssuer),
-      ValidationError,
-      'ClaimReward: Account and Issuer cannot be the same',
-    )
-    assert.throws(
-      () => validate(invalidIssuer),
-      ValidationError,
+    assertInvalid(
+      invalidIssuer,
       'ClaimReward: Account and Issuer cannot be the same',
     )
   })

@@ -1,7 +1,9 @@
-import { assert } from 'chai'
-
-import { validate, ValidationError } from '../../src'
 import { validateSetHook } from '../../src/models/transactions/setHook'
+import { assertTxIsValid, assertTxValidationError } from '../testUtils'
+
+const assertValid = (tx: any): void => assertTxIsValid(tx, validateSetHook)
+const assertInvalid = (tx: any, message: string): void =>
+  assertTxValidationError(tx, validateSetHook, message)
 
 /**
  * SetHook Transaction Verification Testing.
@@ -40,8 +42,7 @@ describe('SetHook', function () {
   })
 
   it(`verifies valid SetHook`, function () {
-    assert.doesNotThrow(() => validateSetHook(setHookTx))
-    assert.doesNotThrow(() => validate(setHookTx))
+    assertValid(setHookTx)
   })
 
   it(`verifies valid HookOnIncoming/HookOnOutgoing pair`, function () {
@@ -50,23 +51,15 @@ describe('SetHook', function () {
       'FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFBFFFF7'
     setHookTx.Hooks[0].Hook.HookOnOutgoing =
       'FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFBFFFF6'
-    assert.doesNotThrow(() => validateSetHook(setHookTx))
-    assert.doesNotThrow(() => validate(setHookTx))
+    assertValid(setHookTx)
   })
 
   it(`throws w/ invalid Hooks`, function () {
     setHookTx.Hooks = 'khgfgyhujk'
+    assertInvalid(setHookTx, 'SetHook: invalid field Hooks')
 
-    assert.throws(
-      () => validateSetHook(setHookTx),
-      ValidationError,
-      'SetHook: invalid Hooks',
-    )
-    assert.throws(
-      () => validate(setHookTx),
-      ValidationError,
-      'SetHook: invalid Hooks',
-    )
+    delete setHookTx.Hooks
+    assertInvalid(setHookTx, 'SetHook: missing field Hooks')
   })
 
   it(`throws w/ maximum of 10 members allowed in Hooks`, function () {
@@ -96,12 +89,7 @@ describe('SetHook', function () {
     setHookTx.Hooks.push(hook)
 
     const errorMessage = 'SetHook: maximum of 10 hooks allowed in Hooks'
-    assert.throws(
-      () => validateSetHook(setHookTx),
-      ValidationError,
-      errorMessage,
-    )
-    assert.throws(() => validate(setHookTx), ValidationError, errorMessage)
+    assertInvalid(setHookTx, errorMessage)
   })
 
   it.each(['HookOn', 'HookOnIncoming', 'HookOnOutgoing'])(
@@ -121,12 +109,7 @@ describe('SetHook', function () {
         },
       ]
       const errorMessage = `SetHook: ${field} in Hook must be a 256-bit (32-byte) hexadecimal value`
-      assert.throws(
-        () => validateSetHook(setHookTx),
-        ValidationError,
-        errorMessage,
-      )
-      assert.throws(() => validate(setHookTx), ValidationError, errorMessage)
+      assertInvalid(setHookTx, errorMessage)
     },
   )
 
@@ -139,12 +122,7 @@ describe('SetHook', function () {
     })
     const errorMessage =
       'SetHook: HookOn and HookOnIncoming/HookOnOutgoing in Hook are mutually exclusive'
-    assert.throws(
-      () => validateSetHook(setHookTx),
-      ValidationError,
-      errorMessage,
-    )
-    assert.throws(() => validate(setHookTx), ValidationError, errorMessage)
+    assertInvalid(setHookTx, errorMessage)
   })
 
   it(`throws w/ only one of HookOnIncoming/HookOnOutgoing`, function () {
@@ -155,12 +133,7 @@ describe('SetHook', function () {
     })
     const errorMessage =
       'SetHook: HookOnIncoming and HookOnOutgoing in Hook must be specified together'
-    assert.throws(
-      () => validateSetHook(setHookTx),
-      ValidationError,
-      errorMessage,
-    )
-    assert.throws(() => validate(setHookTx), ValidationError, errorMessage)
+    assertInvalid(setHookTx, errorMessage)
   })
 
   it(`throws w/ equal HookOnIncoming and HookOnOutgoing`, function () {
@@ -173,12 +146,7 @@ describe('SetHook', function () {
     })
     const errorMessage =
       'SetHook: HookOnIncoming and HookOnOutgoing in Hook must be different, use HookOn instead'
-    assert.throws(
-      () => validateSetHook(setHookTx),
-      ValidationError,
-      errorMessage,
-    )
-    assert.throws(() => validate(setHookTx), ValidationError, errorMessage)
+    assertInvalid(setHookTx, errorMessage)
   })
 
   it(`throws w/ invalid HookCanEmit in Hooks`, function () {
@@ -199,12 +167,7 @@ describe('SetHook', function () {
     ]
     const errorMessage =
       'SetHook: HookCanEmit in Hook must be a 256-bit (32-byte) hexadecimal value'
-    assert.throws(
-      () => validateSetHook(setHookTx),
-      ValidationError,
-      errorMessage,
-    )
-    assert.throws(() => validate(setHookTx), ValidationError, errorMessage)
+    assertInvalid(setHookTx, errorMessage)
   })
 
   it(`throws w/ invalid HookNamespace in Hooks`, function () {
@@ -224,12 +187,7 @@ describe('SetHook', function () {
     ]
     const errorMessage =
       'SetHook: HookNamespace in Hook must be a 256-bit (32-byte) hexadecimal value'
-    assert.throws(
-      () => validateSetHook(setHookTx),
-      ValidationError,
-      errorMessage,
-    )
-    assert.throws(() => validate(setHookTx), ValidationError, errorMessage)
+    assertInvalid(setHookTx, errorMessage)
   })
 
   it.each([
@@ -250,12 +208,7 @@ describe('SetHook', function () {
     ]
     const errorMessage =
       'SetHook: HookName in Hook must be a hex string of 8-32 hex characters'
-    assert.throws(
-      () => validateSetHook(setHookTx),
-      ValidationError,
-      errorMessage,
-    )
-    assert.throws(() => validate(setHookTx), ValidationError, errorMessage)
+    assertInvalid(setHookTx, errorMessage)
   })
 
   it(`valid HookName "" (deletion) in Hooks`, function () {
@@ -266,7 +219,6 @@ describe('SetHook', function () {
         },
       },
     ]
-    assert.doesNotThrow(() => validateSetHook(setHookTx))
-    assert.doesNotThrow(() => validate(setHookTx))
+    assertValid(setHookTx)
   })
 })

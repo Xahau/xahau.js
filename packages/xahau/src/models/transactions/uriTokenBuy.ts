@@ -1,7 +1,12 @@
 import { ValidationError } from '../../errors'
 import { Amount } from '../common'
 
-import { BaseTransaction, isAmount, validateBaseTransaction } from './common'
+import {
+  BaseTransaction,
+  isAmount,
+  validateBaseTransaction,
+  validateRequiredField,
+} from './common'
 
 /**
  * Map of flags to boolean values representing {@link URITokenBuy} transaction
@@ -77,7 +82,5 @@ export function validateURITokenBuy(tx: Record<string, unknown>): void {
     throw new ValidationError('URITokenBuy: missing field URITokenID')
   }
 
-  if (!isAmount(tx.Amount)) {
-    throw new ValidationError('URITokenBuy: invalid Amount')
-  }
+  validateRequiredField(tx, 'Amount', isAmount)
 }

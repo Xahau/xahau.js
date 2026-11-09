@@ -1,6 +1,12 @@
 import { ValidationError } from '../../errors'
 
-import { BaseTransaction, validateBaseTransaction } from './common'
+import {
+  BaseTransaction,
+  isArray,
+  isString,
+  validateBaseTransaction,
+  validateRequiredField,
+} from './common'
 
 export enum RemarkFlags {
   tfImmutable = 0x00000001,
@@ -43,23 +49,15 @@ const MAX_REMARK_VALUE_LENGTH = 256
 export function validateSetRemarks(tx: Record<string, unknown>): void {
   validateBaseTransaction(tx)
 
-  if (tx.ObjectID == null) {
-    throw new ValidationError('SetRemarks: ObjectID is required')
-  }
+  validateRequiredField(tx, 'ObjectID', isString)
 
-  if (typeof tx.ObjectID !== 'string' || !HEX_REGEX.test(tx.ObjectID)) {
+  if (!HEX_REGEX.test(tx.ObjectID)) {
     throw new ValidationError(
       'SetRemarks: ObjectID must be a 256-bit (32-byte) hexadecimal value',
     )
   }
 
-  if (tx.Remarks == null) {
-    throw new ValidationError('SetRemarks: Remarks is required')
-  }
-
-  if (!Array.isArray(tx.Remarks)) {
-    throw new ValidationError('SetRemarks: Remarks must be an array')
-  }
+  validateRequiredField(tx, 'Remarks', isArray)
 
   if (tx.Remarks.length > MAX_REMARKS) {
     throw new ValidationError(

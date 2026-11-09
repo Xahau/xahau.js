@@ -1,7 +1,13 @@
 import { ValidationError } from '../../errors'
 import { Currency } from '../common'
 
-import { BaseTransaction, GlobalFlags, validateBaseTransaction } from './common'
+import {
+  BaseTransaction,
+  GlobalFlags,
+  isString,
+  validateBaseTransaction,
+  validateOptionalField,
+} from './common'
 /**
  * Transaction Flags for an ClaimReward Transaction.
  *
@@ -69,9 +75,7 @@ export interface ClaimReward extends BaseTransaction {
 export function validateClaimReward(tx: Record<string, unknown>): void {
   validateBaseTransaction(tx)
 
-  if (tx.Issuer !== undefined && typeof tx.Issuer !== 'string') {
-    throw new ValidationError('ClaimReward: Issuer must be a string')
-  }
+  validateOptionalField(tx, 'Issuer', isString)
 
   if (tx.Account === tx.Issuer) {
     throw new ValidationError(

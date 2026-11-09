@@ -8,6 +8,7 @@
 
 ### Changed
 * Deprecated `setTransactionFlagsToNumber`. Start using convertTxFlagsToNumber instead
+* Validation errors for Xahau transactions (ClaimReward, CronSet, Import, Invoke, Remit, SetHook, SetRemarks, URIToken*) now use the `<TransactionType>: missing field <Field>` / `<TransactionType>: invalid field <Field>` format for missing and mistyped fields; rule-specific messages are unchanged
 
 ### Fixed
 * `parseTransactionFlags` no longer modifies the transaction passed to it

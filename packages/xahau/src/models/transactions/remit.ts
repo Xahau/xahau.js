@@ -2,7 +2,15 @@ import { ValidationError } from '../../errors'
 import { AmountEntry, MintURIToken } from '../common/xahau'
 import { isHex } from '../utils'
 
-import { BaseTransaction, isAmount, validateBaseTransaction } from './common'
+import {
+  BaseTransaction,
+  isAmount,
+  isArray,
+  isString,
+  validateBaseTransaction,
+  validateOptionalField,
+  validateRequiredField,
+} from './common'
 
 const MAX_URI_LENGTH = 512
 const DIGEST_LENGTH = 64
@@ -82,11 +90,9 @@ export function validateRemit(tx: Record<string, unknown>): void {
     checkMintURIToken(tx)
   }
 
-  if (tx.Blob !== undefined && typeof tx.Blob !== 'string') {
-    throw new ValidationError('Remit: Blob must be a string')
-  }
+  validateOptionalField(tx, 'Blob', isString)
 
-  if (tx.Blob !== undefined && typeof tx.Blob === 'string') {
+  if (tx.Blob !== undefined) {
     if (!isHex(tx.Blob)) {
       throw new ValidationError('Remit: Blob must be a hex string')
     }
@@ -97,9 +103,8 @@ export function validateRemit(tx: Record<string, unknown>): void {
 }
 
 function checkAmounts(tx: Record<string, unknown>): void {
-  if (!Array.isArray(tx.Amounts)) {
-    throw new ValidationError('Remit: Amounts must be an array')
-  }
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- entries are validated below
+  validateRequiredField(tx, 'Amounts', isArray<any>)
   if (tx.Amounts.length < 1) {
     throw new ValidationError('Remit: empty field Amounts')
   }
@@ -144,9 +149,7 @@ function checkAmounts(tx: Record<string, unknown>): void {
 }
 
 function checkURITokenIDs(tx: Record<string, unknown>): void {
-  if (!Array.isArray(tx.URITokenIDs)) {
-    throw new ValidationError('Remit: invalid field URITokenIDs')
-  }
+  validateRequiredField(tx, 'URITokenIDs', isArray)
   if (tx.URITokenIDs.length < 1) {
     throw new ValidationError('Remit: empty field URITokenIDs')
   }
@@ -177,10 +180,11 @@ function checkMintURIToken(tx: Record<string, unknown>): void {
   if (!isRecord(tx.MintURIToken)) {
     throw new ValidationError('Remit: invalid MintURIToken')
   }
-  if (tx.MintURIToken.URI === undefined) {
-    throw new ValidationError('Remit: missing field MintURIToken.URI')
-  }
-  if (typeof tx.MintURIToken.URI !== 'string' || !isHex(tx.MintURIToken.URI)) {
+  validateRequiredField(tx.MintURIToken, 'URI', isString, {
+    txType: 'Remit',
+    paramName: 'MintURIToken.URI',
+  })
+  if (!isHex(tx.MintURIToken.URI)) {
     throw new ValidationError('Remit: MintURIToken.URI must be a hex string')
   }
   if (tx.MintURIToken.URI.length > MAX_URI_LENGTH) {
@@ -188,12 +192,10 @@ function checkMintURIToken(tx: Record<string, unknown>): void {
       `Remit: URI must be less than ${MAX_URI_LENGTH} characters`,
     )
   }
-  if (
-    tx.MintURIToken.Digest !== undefined &&
-    typeof tx.MintURIToken.Digest !== 'string'
-  ) {
-    throw new ValidationError(`Remit: MintURIToken.Digest must be a string`)
-  }
+  validateOptionalField(tx.MintURIToken, 'Digest', isString, {
+    txType: 'Remit',
+    paramName: 'MintURIToken.Digest',
+  })
   if (
     tx.MintURIToken.Digest !== undefined &&
     !isHex(tx.MintURIToken.Digest) &&

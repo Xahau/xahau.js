@@ -1,7 +1,9 @@
-import { assert } from 'chai'
-
-import { validate, ValidationError } from '../../src'
 import { validateInvoke } from '../../src/models/transactions/invoke'
+import { assertTxIsValid, assertTxValidationError } from '../testUtils'
+
+const assertValid = (tx: any): void => assertTxIsValid(tx, validateInvoke)
+const assertInvalid = (tx: any, message: string): void =>
+  assertTxValidationError(tx, validateInvoke, message)
 
 /**
  * Invoke Transaction Verification Testing.
@@ -17,8 +19,7 @@ describe('Invoke', function () {
       Fee: '12',
     } as any
 
-    assert.doesNotThrow(() => validateInvoke(validInvoke))
-    assert.doesNotThrow(() => validate(validInvoke))
+    assertValid(validInvoke)
   })
 
   it(`throws w/ redundant Issuer`, function () {
@@ -29,14 +30,8 @@ describe('Invoke', function () {
       Fee: '12',
     } as any
 
-    assert.throws(
-      () => validateInvoke(invalidIssuer),
-      ValidationError,
-      'Invoke: Destination and Account must not be equal',
-    )
-    assert.throws(
-      () => validate(invalidIssuer),
-      ValidationError,
+    assertInvalid(
+      invalidIssuer,
       'Invoke: Destination and Account must not be equal',
     )
   })

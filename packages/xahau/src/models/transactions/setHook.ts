@@ -4,7 +4,9 @@ import { Hook } from '../common/xahau'
 import {
   BaseTransaction,
   HOOK_NAME_REGEX,
+  isArray,
   validateBaseTransaction,
+  validateRequiredField,
 } from './common'
 
 /**
@@ -29,13 +31,11 @@ const HEX_REGEX = /^[0-9A-Fa-f]{64}$/u
  * @param tx - An SetHook Transaction.
  * @throws When the SetHook is Malformed.
  */
-// eslint-disable-next-line max-lines-per-function, max-statements -- okay for this method
+// eslint-disable-next-line max-lines-per-function -- okay for this method
 export function validateSetHook(tx: Record<string, unknown>): void {
   validateBaseTransaction(tx)
 
-  if (!Array.isArray(tx.Hooks)) {
-    throw new ValidationError('SetHook: invalid Hooks')
-  }
+  validateRequiredField(tx, 'Hooks', isArray)
 
   if (tx.Hooks.length > MAX_HOOKS) {
     throw new ValidationError(

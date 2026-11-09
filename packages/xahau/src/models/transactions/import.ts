@@ -1,7 +1,13 @@
 import { ValidationError } from '../../errors'
 import { isHex } from '../utils'
 
-import { BaseTransaction, validateBaseTransaction } from './common'
+import {
+  BaseTransaction,
+  isString,
+  validateBaseTransaction,
+  validateOptionalField,
+  validateRequiredField,
+} from './common'
 
 const MAX_BLOB_LENGTH = 512
 
@@ -31,19 +37,15 @@ export interface Import extends BaseTransaction {
 export function validateImport(tx: Record<string, unknown>): void {
   validateBaseTransaction(tx)
 
-  if (tx.Issuer !== undefined && typeof tx.Issuer !== 'string') {
-    throw new ValidationError('Import: Issuer must be a string')
-  }
+  validateOptionalField(tx, 'Issuer', isString)
 
   if (tx.Account === tx.Issuer) {
     throw new ValidationError('Import: Issuer and Account must not be equal')
   }
 
-  if (typeof tx.Blob !== 'string') {
-    throw new ValidationError('Import: Blob must be a string')
-  }
+  validateRequiredField(tx, 'Blob', isString)
 
-  if (typeof tx.Blob === 'string' && !isHex(tx.Blob)) {
+  if (!isHex(tx.Blob)) {
     throw new ValidationError('Import: Blob must be in hex format')
   }
 

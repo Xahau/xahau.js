@@ -2,6 +2,8 @@
 
 ## Unreleased Changes
 
+## 4.3.0 (2026-11-09)
+
 ### Added
 * Adds utility function `convertTxFlagsToNumber`
 * Adds the Xahau `lsfTshCollect` and `lsfURITokenIssuer` flags to `AccountRootFlagsInterface` (the result of `parseAccountRootFlags`)

@@ -29,7 +29,7 @@
     "bignumber.js": "^9.0.0",
     "eventemitter3": "^5.0.1",
     "xahau-address-codec": "^5.0.0",
-    "xahau-binary-codec": "^2.4.0",
+    "xahau-binary-codec": "^2.3.1",
     "xahau-keypairs": "^2.0.0"
   },
   "devDependencies": {

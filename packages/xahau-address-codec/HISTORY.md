@@ -2,11 +2,6 @@
 
 ## Unreleased
 
-## 5.1.0 (2026-11-09)
-
-### Changed
-* No functional changes. Version bump to publish alongside xahau 4.3.0 and xahau-binary-codec 2.4.0 (the published 5.0.0 build is identical to the current source).
-
 ## 5.0.0 (2024-02-01)
 
 ### BREAKING CHANGES

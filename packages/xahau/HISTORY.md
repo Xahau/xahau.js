@@ -2,6 +2,15 @@
 
 ## Unreleased Changes
 
+### Added
+* Adds utility function `convertTxFlagsToNumber`
+
+### Changed
+* Deprecated `setTransactionFlagsToNumber`. Start using convertTxFlagsToNumber instead
+
+### Fixed
+* `parseTransactionFlags` no longer modifies the transaction passed to it
+
 ## 4.2.0 (2026-10-14)
 
 ### Added

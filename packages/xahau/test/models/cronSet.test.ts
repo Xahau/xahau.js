@@ -1,15 +1,14 @@
 /* eslint-disable import/no-deprecated -- using deprecated setTransactionFlagsToNumber to ensure no breaking changes */
-import { assert } from 'chai'
-
-import {
-  setTransactionFlagsToNumber,
-  validate,
-  ValidationError,
-} from '../../src'
+import { setTransactionFlagsToNumber } from '../../src'
 import {
   CronSetFlags,
   validateCronSet,
 } from '../../src/models/transactions/cronSet'
+import { assertTxIsValid, assertTxValidationError } from '../testUtils'
+
+const assertValid = (tx: any): void => assertTxIsValid(tx, validateCronSet)
+const assertInvalid = (tx: any, message: string): void =>
+  assertTxValidationError(tx, validateCronSet, message)
 
 /**
  * CronSet Transaction Verification Testing.
@@ -27,8 +26,7 @@ describe('CronSet', function () {
       StartTime: 0,
     } as any
 
-    assert.doesNotThrow(() => validateCronSet(validCronSet))
-    assert.doesNotThrow(() => validate(validCronSet))
+    assertValid(validCronSet)
 
     validCronSet = {
       TransactionType: 'CronSet',
@@ -37,8 +35,7 @@ describe('CronSet', function () {
       Flags: CronSetFlags.tfCronUnset,
     } as any
 
-    assert.doesNotThrow(() => validateCronSet(validCronSet))
-    assert.doesNotThrow(() => validate(validCronSet))
+    assertValid(validCronSet)
 
     validCronSet = {
       TransactionType: 'CronSet',
@@ -47,11 +44,8 @@ describe('CronSet', function () {
       Flags: { tfCronUnset: true },
     } as any
 
-    assert.doesNotThrow(() => {
-      setTransactionFlagsToNumber(validCronSet)
-      validateCronSet(validCronSet)
-    })
-    assert.doesNotThrow(() => validate(validCronSet))
+    setTransactionFlagsToNumber(validCronSet)
+    assertValid(validCronSet)
   })
 
   it(`throws w/ invalid Delete Operation`, function () {
@@ -65,14 +59,8 @@ describe('CronSet', function () {
       Fee: '100',
     } as any
 
-    assert.throws(
-      () => validateCronSet(invalidDeleteOperation),
-      ValidationError,
-      'CronSet: RepeatCount, DelaySeconds, and StartTime must not be set when Flags is set to tfCronUnset',
-    )
-    assert.throws(
-      () => validate(invalidDeleteOperation),
-      ValidationError,
+    assertInvalid(
+      invalidDeleteOperation,
       'CronSet: RepeatCount, DelaySeconds, and StartTime must not be set when Flags is set to tfCronUnset',
     )
   })
@@ -87,14 +75,8 @@ describe('CronSet', function () {
       Fee: '100',
     } as any
 
-    assert.throws(
-      () => validateCronSet(invalidRepeatCount),
-      ValidationError,
-      'CronSet: RepeatCount must be less than 256',
-    )
-    assert.throws(
-      () => validate(invalidRepeatCount),
-      ValidationError,
+    assertInvalid(
+      invalidRepeatCount,
       'CronSet: RepeatCount must be less than 256',
     )
   })
@@ -108,14 +90,8 @@ describe('CronSet', function () {
       Fee: '100',
     } as any
 
-    assert.throws(
-      () => validateCronSet(invalidDelaySeconds),
-      ValidationError,
-      `CronSet: DelaySeconds must be less than ${365 * 24 * 60 * 60}`,
-    )
-    assert.throws(
-      () => validate(invalidDelaySeconds),
-      ValidationError,
+    assertInvalid(
+      invalidDelaySeconds,
       `CronSet: DelaySeconds must be less than ${365 * 24 * 60 * 60}`,
     )
   })

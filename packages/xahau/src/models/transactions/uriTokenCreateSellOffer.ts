@@ -1,7 +1,12 @@
 import { ValidationError } from '../../errors'
 import { Amount } from '../common'
 
-import { BaseTransaction, isAmount, validateBaseTransaction } from './common'
+import {
+  BaseTransaction,
+  isAmount,
+  validateBaseTransaction,
+  validateRequiredField,
+} from './common'
 
 /**
  * Map of flags to boolean values representing {@link URITokenCreateSellOffer} transaction
@@ -87,7 +92,5 @@ export function validateURITokenCreateSellOffer(
     )
   }
 
-  if (!isAmount(tx.Amount)) {
-    throw new ValidationError('URITokenCreateSellOffer: invalid Amount')
-  }
+  validateRequiredField(tx, 'Amount', isAmount)
 }

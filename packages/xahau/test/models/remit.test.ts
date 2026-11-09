@@ -1,7 +1,9 @@
-import { assert } from 'chai'
-
-import { validate, ValidationError } from '../../src'
 import { validateRemit } from '../../src/models/transactions/remit'
+import { assertTxIsValid, assertTxValidationError } from '../testUtils'
+
+const assertValid = (tx: any): void => assertTxIsValid(tx, validateRemit)
+const assertInvalid = (tx: any, message: string): void =>
+  assertTxValidationError(tx, validateRemit, message)
 
 /**
  * Remit Verification Testing.
@@ -56,25 +58,16 @@ describe('Remit', function () {
   })
 
   it(`verifies valid Remit`, function () {
-    assert.doesNotThrow(() => validateRemit(remit))
-    assert.doesNotThrow(() => validate(remit))
+    assertValid(remit)
   })
 
   it(`throws w/ Bad Amounts`, function () {
     remit.Amounts = {}
-    assert.throws(
-      () => validateRemit(remit),
-      ValidationError,
-      'Remit: Amounts must be an array',
-    )
+    assertInvalid(remit, 'Remit: invalid field Amounts')
   })
   it(`throws w/ Empty Amounts`, function () {
     remit.Amounts = []
-    assert.throws(
-      () => validateRemit(remit),
-      ValidationError,
-      'Remit: empty field Amounts',
-    )
+    assertInvalid(remit, 'Remit: empty field Amounts')
   })
   it(`throws w/ Max Amounts`, function () {
     remit.Amounts = [
@@ -113,22 +106,14 @@ describe('Remit', function () {
       { AmountEntry: { Amount: '1000' } },
       { AmountEntry: { Amount: '1000' } },
     ]
-    assert.throws(
-      () => validateRemit(remit),
-      ValidationError,
-      'Remit: max field Amounts',
-    )
+    assertInvalid(remit, 'Remit: max field Amounts')
   })
   it(`throws w/ Duplicate native amounts`, function () {
     remit.Amounts = [
       { AmountEntry: { Amount: '1000' } },
       { AmountEntry: { Amount: '1000' } },
     ]
-    assert.throws(
-      () => validateRemit(remit),
-      ValidationError,
-      'Remit: Duplicate Native amounts are not allowed',
-    )
+    assertInvalid(remit, 'Remit: Duplicate Native amounts are not allowed')
   })
   it(`throws w/ Duplicate amounts`, function () {
     remit.Amounts = [
@@ -151,35 +136,19 @@ describe('Remit', function () {
         },
       },
     ]
-    assert.throws(
-      () => validateRemit(remit),
-      ValidationError,
-      'Remit: Duplicate amounts are not allowed',
-    )
+    assertInvalid(remit, 'Remit: Duplicate amounts are not allowed')
   })
   it(`throws w/ Bad Amount`, function () {
     remit.Amounts = [{ AmountEntry: { Amount: 1234 } }]
-    assert.throws(
-      () => validateRemit(remit),
-      ValidationError,
-      'Remit: invalid Amounts.AmountEntry.Amount',
-    )
+    assertInvalid(remit, 'Remit: invalid Amounts.AmountEntry.Amount')
   })
   it(`throws w/ Bad URITokenIDs`, function () {
     remit.URITokenIDs = {}
-    assert.throws(
-      () => validateRemit(remit),
-      ValidationError,
-      'Remit: invalid field URITokenIDs',
-    )
+    assertInvalid(remit, 'Remit: invalid field URITokenIDs')
   })
   it(`throws w/ Empty URITokenIDs`, function () {
     remit.URITokenIDs = []
-    assert.throws(
-      () => validateRemit(remit),
-      ValidationError,
-      'Remit: empty field URITokenIDs',
-    )
+    assertInvalid(remit, 'Remit: empty field URITokenIDs')
   })
   it(`throws w/ Empty URITokenIDs`, function () {
     remit.URITokenIDs = [
@@ -217,46 +186,26 @@ describe('Remit', function () {
       'DEADBEEF',
       'DEADBEEF',
     ]
-    assert.throws(
-      () => validateRemit(remit),
-      ValidationError,
-      'Remit: max field URITokenIDs',
-    )
+    assertInvalid(remit, 'Remit: max field URITokenIDs')
   })
   it(`throws w/ Invalid URITokenID`, function () {
     remit.URITokenIDs = [1]
-    assert.throws(
-      () => validateRemit(remit),
-      ValidationError,
-      'Remit: URITokenID must be a hex string',
-    )
+    assertInvalid(remit, 'Remit: URITokenID must be a hex string')
   })
   it(`throws w/ Invalid URITokenID`, function () {
     remit.URITokenIDs = ['ZZ11']
-    assert.throws(
-      () => validateRemit(remit),
-      ValidationError,
-      'Remit: URITokenID must be a hex string',
-    )
+    assertInvalid(remit, 'Remit: URITokenID must be a hex string')
   })
   it(`throws w/ Duplicate URITokenIDs`, function () {
     remit.URITokenIDs = ['DEADBEEF']
-    assert.throws(
-      () => validateRemit(remit),
-      ValidationError,
-      'Remit: URITokenID must be exactly 64 characters',
-    )
+    assertInvalid(remit, 'Remit: URITokenID must be exactly 64 characters')
   })
   it(`throws w/ Duplicate URITokenIDs`, function () {
     remit.URITokenIDs = [
       'AED08CC1F50DD5F23A1948AF86153A3F3B7593E5EC77D65A02BB1B29E05AB6AE',
       'AED08CC1F50DD5F23A1948AF86153A3F3B7593E5EC77D65A02BB1B29E05AB6AE',
     ]
-    assert.throws(
-      () => validateRemit(remit),
-      ValidationError,
-      'Remit: Duplicate URITokens are not allowed',
-    )
+    assertInvalid(remit, 'Remit: Duplicate URITokens are not allowed')
   })
   // it(`throws w/ Bad MintURIToken`, function () {
   //   remit.MintURIToken = []
@@ -268,102 +217,61 @@ describe('Remit', function () {
   // })
   it(`throws w/ Missing MintURIToken.URI`, function () {
     remit.MintURIToken = {}
-    assert.throws(
-      () => validateRemit(remit),
-      ValidationError,
-      'Remit: missing field MintURIToken.URI',
-    )
+    assertInvalid(remit, 'Remit: missing field MintURIToken.URI')
   })
   it(`throws w/ Bad MintURIToken.URI`, function () {
     remit.MintURIToken = {
       URI: 1,
     }
-    assert.throws(
-      () => validateRemit(remit),
-      ValidationError,
-      'Remit: MintURIToken.URI must be a hex string',
-    )
+    assertInvalid(remit, 'Remit: invalid field MintURIToken.URI')
   })
   it(`throws w/ Bad MintURIToken.URI`, function () {
     remit.MintURIToken = {
       URI: 'ZZ11',
     }
-    assert.throws(
-      () => validateRemit(remit),
-      ValidationError,
-      'Remit: MintURIToken.URI must be a hex string',
-    )
+    assertInvalid(remit, 'Remit: MintURIToken.URI must be a hex string')
   })
   it(`throws w/ Bad MintURIToken Less than 1`, function () {
     remit.MintURIToken = {
       URI: '',
     }
-    assert.throws(
-      () => validateRemit(remit),
-      ValidationError,
-      'Remit: MintURIToken.URI must be a hex string',
-    )
+    assertInvalid(remit, 'Remit: MintURIToken.URI must be a hex string')
   })
   it(`throws w/ Bad MintURIToken.Digest`, function () {
     remit.MintURIToken = {
       URI: 'DEADBEEF',
       Digest: 1,
     }
-    assert.throws(
-      () => validateRemit(remit),
-      ValidationError,
-      'Remit: MintURIToken.Digest must be a string',
-    )
+    assertInvalid(remit, 'Remit: invalid field MintURIToken.Digest')
   })
   it(`throws w/ Bad MintURIToken.Digest`, function () {
     remit.MintURIToken = {
       URI: 'DEADBEEF',
       Digest: 'ZZ11',
     }
-    assert.throws(
-      () => validateRemit(remit),
-      ValidationError,
-      'Remit: Digest must be exactly 64 characters',
-    )
+    assertInvalid(remit, 'Remit: Digest must be exactly 64 characters')
   })
   it(`throws w/ Bad Destination`, function () {
     remit.Destination = 'rUn84CUYbNjRoTQ6mSW7BVJPSVJNLb1QLo'
-    assert.throws(
-      () => validateRemit(remit),
-      ValidationError,
-      'Remit: Destination must not be equal to the account',
-    )
+    assertInvalid(remit, 'Remit: Destination must not be equal to the account')
   })
   it(`throws w/ Bad Destination Tag`, function () {
     remit.DestinationTag = '1'
-    assert.throws(
-      () => validateRemit(remit),
-      ValidationError,
-      'Remit: DestinationTag must be a number',
-    )
+    assertInvalid(remit, 'Remit: DestinationTag must be a number')
   })
   it(`throws w/ Bad Inform`, function () {
     remit.Inform = 'rUn84CUYbNjRoTQ6mSW7BVJPSVJNLb1QLo'
-    assert.throws(
-      () => validateRemit(remit),
-      ValidationError,
+    assertInvalid(
+      remit,
       'Remit: Inform must not be equal to the account or destination',
     )
   })
   it(`throws w/ Bad Blob Type`, function () {
     remit.Blob = 1
-    assert.throws(
-      () => validateRemit(remit),
-      ValidationError,
-      'Remit: Blob must be a string',
-    )
+    assertInvalid(remit, 'Remit: invalid field Blob')
   })
   it(`throws w/ Bad Blob Not Hex`, function () {
     remit.Blob = 'ZZ11'
-    assert.throws(
-      () => validateRemit(remit),
-      ValidationError,
-      'Remit: Blob must be a hex string',
-    )
+    assertInvalid(remit, 'Remit: Blob must be a hex string')
   })
 })

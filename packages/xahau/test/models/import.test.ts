@@ -1,7 +1,9 @@
-import { assert } from 'chai'
-
-import { validate, ValidationError } from '../../src'
 import { validateImport } from '../../src/models/transactions/import'
+import { assertTxIsValid, assertTxValidationError } from '../testUtils'
+
+const assertValid = (tx: any): void => assertTxIsValid(tx, validateImport)
+const assertInvalid = (tx: any, message: string): void =>
+  assertTxValidationError(tx, validateImport, message)
 
 /**
  * Import Transaction Verification Testing.
@@ -17,8 +19,7 @@ describe('Import', function () {
       Fee: '12',
     } as any
 
-    assert.doesNotThrow(() => validateImport(validImport))
-    assert.doesNotThrow(() => validate(validImport))
+    assertValid(validImport)
   })
 
   it(`throws w/ bad Issuer`, function () {
@@ -30,16 +31,7 @@ describe('Import', function () {
       Fee: '12',
     } as any
 
-    assert.throws(
-      () => validateImport(invalidIssuer),
-      ValidationError,
-      'Import: Issuer must be a string',
-    )
-    assert.throws(
-      () => validate(invalidIssuer),
-      ValidationError,
-      'Import: Issuer must be a string',
-    )
+    assertInvalid(invalidIssuer, 'Import: invalid field Issuer')
   })
   it(`throws w/ redundant Issuer`, function () {
     const invalidIssuer = {
@@ -50,16 +42,7 @@ describe('Import', function () {
       Fee: '12',
     } as any
 
-    assert.throws(
-      () => validateImport(invalidIssuer),
-      ValidationError,
-      'Import: Issuer and Account must not be equal',
-    )
-    assert.throws(
-      () => validate(invalidIssuer),
-      ValidationError,
-      'Import: Issuer and Account must not be equal',
-    )
+    assertInvalid(invalidIssuer, 'Import: Issuer and Account must not be equal')
   })
   it(`throws w/ bad Blob`, function () {
     const invalidBlob = {
@@ -70,16 +53,7 @@ describe('Import', function () {
       Fee: '12',
     } as any
 
-    assert.throws(
-      () => validateImport(invalidBlob),
-      ValidationError,
-      'Import: Blob must be a string',
-    )
-    assert.throws(
-      () => validate(invalidBlob),
-      ValidationError,
-      'Import: Blob must be a string',
-    )
+    assertInvalid(invalidBlob, 'Import: invalid field Blob')
   })
   it(`throws w/ bad Blob Hex`, function () {
     const invalidBlob = {
@@ -90,15 +64,6 @@ describe('Import', function () {
       Fee: '12',
     } as any
 
-    assert.throws(
-      () => validateImport(invalidBlob),
-      ValidationError,
-      'Import: Blob must be in hex format',
-    )
-    assert.throws(
-      () => validate(invalidBlob),
-      ValidationError,
-      'Import: Blob must be in hex format',
-    )
+    assertInvalid(invalidBlob, 'Import: Blob must be in hex format')
   })
 })

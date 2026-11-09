@@ -139,6 +139,10 @@ export interface AccountRootFlagsInterface {
    */
   lsfDepositAuth?: boolean
   /**
+   * The TSH pays for the execution of their own Hook Chain. Added by the Hooks amendment.
+   */
+  lsfTshCollect?: boolean
+  /**
    * This account is an Automated Market Maker (AMM) instance.
    */
   lsfAMM?: boolean
@@ -158,6 +162,10 @@ export interface AccountRootFlagsInterface {
    * Disallow incoming Trustlines from other accounts.
    */
   lsfDisallowIncomingTrustline?: boolean
+  /**
+   * The account has issued a URIToken.
+   */
+  lsfURITokenIssuer?: boolean
   /**
    * Disallow incoming Remit from other accounts.
    */

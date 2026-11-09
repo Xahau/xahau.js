@@ -64,6 +64,7 @@ describe('Models Utils', function () {
       const accountRootFlags =
         AccountRootFlags.lsfDefaultRipple |
         AccountRootFlags.lsfDepositAuth |
+        AccountRootFlags.lsfTshCollect |
         AccountRootFlags.lsfDisableMaster |
         AccountRootFlags.lsfDisallowXAH |
         AccountRootFlags.lsfGlobalFreeze |
@@ -75,6 +76,7 @@ describe('Models Utils', function () {
         AccountRootFlags.lsfDisallowIncomingCheck |
         AccountRootFlags.lsfDisallowIncomingPayChan |
         AccountRootFlags.lsfDisallowIncomingTrustline |
+        AccountRootFlags.lsfURITokenIssuer |
         AccountRootFlags.lsfDisallowIncomingRemit |
         AccountRootFlags.lsfAllowTrustLineClawback
 
@@ -83,6 +85,7 @@ describe('Models Utils', function () {
       assert.isTrue(
         parsed.lsfDefaultRipple &&
           parsed.lsfDepositAuth &&
+          parsed.lsfTshCollect &&
           parsed.lsfDisableMaster &&
           parsed.lsfDisallowXAH &&
           parsed.lsfGlobalFreeze &&
@@ -94,6 +97,7 @@ describe('Models Utils', function () {
           parsed.lsfDisallowIncomingCheck &&
           parsed.lsfDisallowIncomingPayChan &&
           parsed.lsfDisallowIncomingTrustline &&
+          parsed.lsfURITokenIssuer &&
           parsed.lsfDisallowIncomingRemit &&
           parsed.lsfAllowTrustLineClawback,
       )
@@ -104,6 +108,7 @@ describe('Models Utils', function () {
 
       assert.isUndefined(parsed.lsfDefaultRipple)
       assert.isUndefined(parsed.lsfDepositAuth)
+      assert.isUndefined(parsed.lsfTshCollect)
       assert.isUndefined(parsed.lsfDisableMaster)
       assert.isUndefined(parsed.lsfDisallowXAH)
       assert.isUndefined(parsed.lsfGlobalFreeze)
@@ -115,6 +120,7 @@ describe('Models Utils', function () {
       assert.isUndefined(parsed.lsfDisallowIncomingCheck)
       assert.isUndefined(parsed.lsfDisallowIncomingPayChan)
       assert.isUndefined(parsed.lsfDisallowIncomingTrustline)
+      assert.isUndefined(parsed.lsfURITokenIssuer)
       assert.isUndefined(parsed.lsfDisallowIncomingRemit)
       assert.isUndefined(parsed.lsfAllowTrustLineClawback)
     })

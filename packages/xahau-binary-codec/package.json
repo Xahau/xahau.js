@@ -1,6 +1,6 @@
 {
   "name": "xahau-binary-codec",
-  "version": "2.3.0",
+  "version": "2.4.0",
   "description": "Xahau Network binary codec",
   "files": [
     "dist/*",
@@ -13,7 +13,7 @@
   "dependencies": {
     "@xrplf/isomorphic": "^1.0.1",
     "bignumber.js": "^9.0.0",
-    "xahau-address-codec": "^5.0.0"
+    "xahau-address-codec": "^5.1.0"
   },
   "scripts": {
     "build": "tsc --build tsconfig.build.json && copyfiles ./src/enums/definitions.json ./dist/enums/",

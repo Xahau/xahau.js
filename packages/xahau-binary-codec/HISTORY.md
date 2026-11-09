@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 2.4.0 (2026-11-09)
+
 ### Fixed
 * Throw an error during serialization if a field is unknown, rather than silently throwing it away.
 * Error if a decimal is passed into a `UInt`-typed field.

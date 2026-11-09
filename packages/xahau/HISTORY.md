@@ -6,6 +6,7 @@
 * Adds utility function `convertTxFlagsToNumber`
 * Adds the Xahau `lsfTshCollect` and `lsfURITokenIssuer` flags to `AccountRootFlagsInterface` (the result of `parseAccountRootFlags`)
 * Export signing and binary codec utilities
+* Add `faucetProtocol` (http or https) option to `fundWallet` method. Makes `fundWallet` work with locally running faucet servers.
 
 ### Changed
 * Deprecated `setTransactionFlagsToNumber`. Start using convertTxFlagsToNumber instead

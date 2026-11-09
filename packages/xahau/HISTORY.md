@@ -11,6 +11,7 @@
 
 ### Fixed
 * `parseTransactionFlags` no longer modifies the transaction passed to it
+* `TransactionStream` model includes `hash` field in APIv2
 
 ## 4.2.0 (2026-10-14)
 

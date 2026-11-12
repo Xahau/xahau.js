@@ -64,6 +64,8 @@ import signPaymentChannelClaim from './signPaymentChannelClaim'
 import { convertHexToString, convertStringToHex } from './stringConversion'
 import {
   rippleTimeToISOTime,
+  unixTimeToTransactionTime,
+  transactionTimeToUnixTime,
   isoTimeToRippleTime,
   rippleTimeToUnixTime,
   unixTimeToRippleTime,
@@ -192,6 +194,8 @@ export {
   xahToDrops,
   hasNextPage,
   rippleTimeToISOTime,
+  unixTimeToTransactionTime,
+  transactionTimeToUnixTime,
   isoTimeToRippleTime,
   rippleTimeToUnixTime,
   unixTimeToRippleTime,

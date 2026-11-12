@@ -12,6 +12,8 @@ export interface SubmitTxBlobRequest extends BaseRequest {
   /** The complete transaction in hex string format. */
   tx_blob: string
   manifest?: never
+  tx?: never
+  sig?: never
   /**
    * If true, and the transaction fails locally, do not retry or relay the
    * transaction to other servers. The default is false.
@@ -27,6 +29,8 @@ export interface SubmitTxBlobRequest extends BaseRequest {
 export interface SubmitManifestRequest extends BaseRequest {
   command: 'submit'
   tx_blob?: never
+  tx?: never
+  sig?: never
   /**
    * A validator manifest in hex string format. The node builds the canonical
    * SetManifest transaction from it. Requires the OnChainManifests amendment.
@@ -40,14 +44,37 @@ export interface SubmitManifestRequest extends BaseRequest {
 }
 
 /**
- * The submit method applies a transaction and sends it to the network to be
- * confirmed and included in future ledgers. Exactly one of `tx_blob` or
- * `manifest` must be given. Expects a response in the form of a
- * {@link SubmitResponse}.
+ * A {@link SubmitRequest} that submits a JsonTx: the signed JSON text and its
+ * signature instead of a transaction blob. Requires the JsonTx amendment. Use
+ * `Wallet.signJsonTx` to produce `tx` and `sig`.
  *
  * @category Requests
  */
-export type SubmitRequest = SubmitTxBlobRequest | SubmitManifestRequest
+export interface SubmitJsonTxRequest extends BaseRequest {
+  command: 'submit'
+  tx_blob?: never
+  manifest?: never
+  /** The exact JSON text that was signed. */
+  tx: string
+  /** The hex ed25519 signature of the signed text (see `Wallet.signJsonTx`). */
+  sig: string
+  /**
+   * If true, and the transaction fails locally, do not retry or relay the
+   * transaction to other servers. The default is false.
+   */
+  fail_hard?: boolean
+}
+
+/**
+ * The submit method applies a transaction and sends it to the network to be
+ * confirmed and included in future ledgers. Exactly one of `tx_blob`,
+ * `manifest` or `tx` with `sig` must be given. Expects a response in the form
+ * of a {@link SubmitResponse}.
+ *
+ * @category Requests
+ */
+export type SubmitRequest =
+  SubmitTxBlobRequest | SubmitManifestRequest | SubmitJsonTxRequest
 
 /**
  * Response expected from a {@link SubmitRequest}.

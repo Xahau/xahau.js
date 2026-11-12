@@ -1051,6 +1051,26 @@
       }
     ],
     [
+      "LastTxnTime",
+      {
+        "isSerialized": true,
+        "isSigningField": true,
+        "isVLEncoded": false,
+        "nth": 95,
+        "type": "UInt64"
+      }
+    ],
+    [
+      "Time",
+      {
+        "isSerialized": true,
+        "isSigningField": true,
+        "isVLEncoded": false,
+        "nth": 96,
+        "type": "UInt64"
+      }
+    ],
+    [
       "TouchCount",
       {
         "isSerialized": true,
@@ -2197,6 +2217,16 @@
         "isSigningField": true,
         "isVLEncoded": true,
         "nth": 32,
+        "type": "Blob"
+      }
+    ],
+    [
+      "JsonTxDelta",
+      {
+        "isSerialized": true,
+        "isSigningField": false,
+        "isVLEncoded": true,
+        "nth": 95,
         "type": "Blob"
       }
     ],
@@ -3942,6 +3972,6 @@
     "Vector256": 19,
     "XChainBridge": 25
   },
-  "hash": "D30D35A5AA1DCD39DC60FB3781B4AC1B31A60A8408A16B826632B8D82D94F802",
+  "hash": "5FE60FE0CF53C69CB3211558E82B97EA0E3C3CE313032A95B2B2B16347E07013",
   "native_currency_code": "XAH"
 }

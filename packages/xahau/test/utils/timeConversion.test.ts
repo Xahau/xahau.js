@@ -5,6 +5,8 @@ import {
   isoTimeToRippleTime,
   unixTimeToRippleTime,
   rippleTimeToUnixTime,
+  unixTimeToTransactionTime,
+  transactionTimeToUnixTime,
 } from '../../src'
 
 describe('time conversion', function () {
@@ -43,6 +45,34 @@ describe('time conversion', function () {
       const unixTime = 946684801000
       const xahauTime = 1
       assert.equal(rippleTimeToUnixTime(xahauTime), unixTime)
+    })
+  })
+
+  describe('transactionTimeToUnixTime', function () {
+    it('converts a transaction Time to unix time', function () {
+      assert.equal(
+        transactionTimeToUnixTime('c563d7bfa9'),
+        0xc563d7bfa9 + 946684800000,
+      )
+      assert.equal(transactionTimeToUnixTime('0'), 946684800000)
+    })
+  })
+
+  describe('unixTimeToTransactionTime', function () {
+    it('converts unix time to a lowercase hex transaction Time', function () {
+      assert.equal(
+        unixTimeToTransactionTime(0xc563d7bfa9 + 946684800000),
+        'c563d7bfa9',
+      )
+      assert.equal(unixTimeToTransactionTime(946684800000), '0')
+    })
+
+    it('round trips', function () {
+      const unixTime = 1794468442345
+      assert.equal(
+        transactionTimeToUnixTime(unixTimeToTransactionTime(unixTime)),
+        unixTime,
+      )
     })
   })
 })

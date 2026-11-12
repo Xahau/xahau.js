@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+### Added
+* Update `definitions.json` for xahaud 2026.11.12-dev+4378 (JsonTx amendment): the `LastTxnTime`, `Time` and `JsonTxDelta` fields
+
 ## 2.3.1 (2026-11-09)
 
 ### Fixed

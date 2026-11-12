@@ -1,7 +1,8 @@
+/* eslint-disable max-lines -- Wallet is a large class */
 import { HDKey } from '@scure/bip32'
 import { mnemonicToSeedSync, validateMnemonic } from '@scure/bip39'
 import { wordlist } from '@scure/bip39/wordlists/english'
-import { bytesToHex } from '@xrplf/isomorphic/utils'
+import { bytesToHex, stringToHex } from '@xrplf/isomorphic/utils'
 import BigNumber from 'bignumber.js'
 import {
   classicAddressToXAddress,
@@ -24,14 +25,21 @@ import {
 import ECDSA from '../ECDSA'
 import { ValidationError } from '../errors'
 import { Transaction, validate } from '../models/transactions'
+import {
+  convertTxFlagsToNumber,
+  setNestedFlagsToNumber,
+} from '../models/utils/flags'
 import { ensureClassicAddress } from '../sugar/utils'
 import { omitBy } from '../utils/collections'
 import { hashSignedTx } from '../utils/hashes/hashLedger'
+import { transactionTimeToUnixTime } from '../utils/timeConversion'
 
 import { rfc1751MnemonicToKey } from './rfc1751'
 import { verifySignature } from './signer'
 
 const DEFAULT_ALGORITHM: ECDSA = ECDSA.ed25519
+// Prefix of the signed message of a JsonTx: 0xFF 'J' 'T' 'X'
+const JSON_TX_PREFIX_HEX = 'FF4A5458'
 const DEFAULT_DERIVATION_PATH = "m/44'/144'/0'/0/0"
 
 type ValidHDKey = HDKey & {
@@ -435,6 +443,77 @@ export class Wallet {
     return {
       tx_blob: serialized,
       hash: hashSignedTx(serialized),
+    }
+  }
+
+  /**
+   * Signs a transaction as a JsonTx: signs the JSON text of the transaction
+   * instead of its binary serialization. Requires the JsonTx amendment and an
+   * ed25519 key.
+   *
+   * Submit the result with `client.request({ command: 'submit', tx, sig })`.
+   * The server computes `JsonTxDelta`, so the `tx_blob` and the hash are only
+   * known from the submit response (`result.tx_blob`, `result.tx_json.hash`),
+   * and `submitAndWait` and `verifyTransaction` do not apply.
+   *
+   * Hex field values must be uppercase and amounts must be in canonical
+   * spelling (for example `"100"`, not `"100.0"`), otherwise the server
+   * refuses the signature. `Time` in the transaction object is the usual hex
+   * value; it is written as ISO 8601 in the signed text.
+   *
+   * @param this - Wallet instance.
+   * @param transaction - A transaction to be signed offline.
+   * @returns The exact signed JSON text `tx` and its hex signature `sig`.
+   * @throws ValidationError if the key is not ed25519, the transaction is already signed,
+   * or it has none of `Sequence`, `Time` and `TicketSequence`.
+   */
+  public signJsonTx(
+    this: Wallet,
+    transaction: Transaction,
+  ): { tx: string; sig: string } {
+    if (!this.publicKey.startsWith('ED')) {
+      throw new ValidationError('JsonTx can only be signed with an ed25519 key')
+    }
+
+    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions -- ensure Transaction flows through
+    const tx = omitBy(
+      { ...transaction },
+      (value) => value == null,
+    ) as unknown as Transaction
+
+    if (tx.TxnSignature || tx.Signers || tx.JsonTxDelta) {
+      throw new ValidationError(
+        'txJSON must not contain "TxnSignature", "Signers" or "JsonTxDelta" properties',
+      )
+    }
+
+    if (tx.Sequence == null && tx.Time == null && tx.TicketSequence == null) {
+      throw new ValidationError(
+        'JsonTx: transaction must have a Sequence, a Time or a TicketSequence',
+      )
+    }
+
+    removeTrailingZeros(tx)
+    tx.Flags = convertTxFlagsToNumber(tx)
+    setNestedFlagsToNumber(tx)
+
+    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions -- validate does not accept Transaction type
+    validate(tx as unknown as Record<string, unknown>)
+
+    const signedObject: Record<string, unknown> = {
+      ...tx,
+      SigningPubKey: this.publicKey,
+    }
+    if (tx.Time != null) {
+      signedObject.Time = new Date(
+        transactionTimeToUnixTime(tx.Time),
+      ).toISOString()
+    }
+
+    const text = JSON.stringify(signedObject)
+    return {
+      tx: text,
+      sig: sign(JSON_TX_PREFIX_HEX + stringToHex(text), this.privateKey),
     }
   }
 

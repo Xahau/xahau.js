@@ -152,6 +152,7 @@ import {
 } from './simulate'
 import {
   SubmitManifestRequest,
+  SubmitJsonTxRequest,
   SubmitRequest,
   SubmitResponse,
   SubmitTxBlobRequest,
@@ -541,6 +542,7 @@ export {
   SubmitRequest,
   SubmitTxBlobRequest,
   SubmitManifestRequest,
+  SubmitJsonTxRequest,
   SubmitResponse,
   SubmitMultisignedRequest,
   SubmitMultisignedResponse,

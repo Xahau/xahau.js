@@ -1,8 +1,10 @@
 import { assert } from 'chai'
 import { decode } from 'xahau-binary-codec'
+import { verify } from 'xahau-keypairs'
 
 import { Payment, Transaction, walletFromSecretNumbers } from '../../src'
 import ECDSA from '../../src/ECDSA'
+import { ValidationError } from '../../src/errors'
 import { Wallet } from '../../src/Wallet'
 import requests from '../fixtures/requests'
 import responses from '../fixtures/responses'
@@ -961,6 +963,89 @@ describe('Wallet', function () {
       }
 
       assert.deepEqual(result, expectedResult)
+    })
+  })
+
+  describe('signJsonTx', function () {
+    const wallet = new Wallet(publicKeyED25519, privateKeyED25519)
+    const jsonTx = (): Record<string, unknown> => ({
+      TransactionType: 'Payment',
+      Account: wallet.classicAddress,
+      Destination: 'rfkE1aSy9G8Upk4JssnwBxhEv5p4mn2KTy',
+      Amount: '1000',
+      Fee: '100',
+      Flags: { tfPartialPayment: true },
+      NetworkID: 21337,
+      Time: 'c563d7bfa9',
+      Sequence: 0,
+    })
+    const signJsonTx = (
+      tx: Record<string, unknown>,
+    ): ReturnType<Wallet['signJsonTx']> =>
+      wallet.signJsonTx(tx as unknown as Transaction)
+
+    it('signs the JSON text of the transaction', function () {
+      const input = jsonTx()
+      const { tx, sig } = signJsonTx(input)
+
+      assert.equal(
+        tx,
+        `{"TransactionType":"Payment","Account":"${wallet.classicAddress}","Destination":"rfkE1aSy9G8Upk4JssnwBxhEv5p4mn2KTy","Amount":"1000","Fee":"100","Flags":131072,"NetworkID":21337,"Time":"2026-11-12T07:27:21.001Z","Sequence":0,"SigningPubKey":"${publicKeyED25519}"}`,
+      )
+      assert.equal(
+        sig,
+        '46B34FFACFECD79A5029365B68D80FF151C173506E9C7BB4016113E55C1F1A7269ADECF53ED4FD56F69A2CF99E7501009C4BAD2E785136B92CE0C484DAF8A601',
+      )
+      const message = `FF4A5458${Buffer.from(tx, 'utf8').toString('hex')}`
+      assert.isTrue(verify(message, sig, publicKeyED25519))
+      assert.deepEqual(input, jsonTx())
+    })
+
+    it('accepts a TicketSequence or a Sequence instead of a Time', function () {
+      const base = jsonTx()
+      delete base.Time
+      assert.doesNotThrow(() => signJsonTx({ ...base, TicketSequence: 5 }))
+      assert.doesNotThrow(() => signJsonTx({ ...base, Sequence: 5 }))
+    })
+
+    it('throws for a secp256k1 wallet', function () {
+      const secpWallet = new Wallet(publicKeySecp256k1, privateKeySecp256k1)
+      assert.throws(
+        () => secpWallet.signJsonTx(jsonTx() as unknown as Transaction),
+        ValidationError,
+        'JsonTx can only be signed with an ed25519 key',
+      )
+    })
+
+    it('throws for TxnSignature, Signers and JsonTxDelta', function () {
+      const message =
+        'txJSON must not contain "TxnSignature", "Signers" or "JsonTxDelta" properties'
+      assert.throws(
+        () => signJsonTx({ ...jsonTx(), TxnSignature: 'AB' }),
+        ValidationError,
+        message,
+      )
+      assert.throws(
+        () => signJsonTx({ ...jsonTx(), Signers: [] }),
+        ValidationError,
+        message,
+      )
+      assert.throws(
+        () => signJsonTx({ ...jsonTx(), JsonTxDelta: 'AB' }),
+        ValidationError,
+        message,
+      )
+    })
+
+    it('throws without Sequence, Time and TicketSequence', function () {
+      const tx = jsonTx()
+      delete tx.Time
+      delete tx.Sequence
+      assert.throws(
+        () => signJsonTx(tx),
+        ValidationError,
+        'JsonTx: transaction must have a Sequence, a Time or a TicketSequence',
+      )
     })
   })
 

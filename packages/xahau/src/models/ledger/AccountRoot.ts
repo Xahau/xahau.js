@@ -29,6 +29,12 @@ export default interface AccountRoot extends BaseLedgerEntry, HasPreviousTxnID {
    */
   AccountTxnID?: string
   /**
+   * The `Time` of the last time-sequenced transaction applied for this account,
+   * in milliseconds since the Ripple Epoch as a UInt64 hex string. Requires the
+   * JsonTx amendment.
+   */
+  LastTxnTime?: string
+  /**
    * A domain associated with this account. In JSON, this is the hexadecimal
    * for the ASCII representation of the domain.
    */

@@ -15,6 +15,10 @@ import { isHex, onlyHasFields } from '../utils'
 
 const MEMO_SIZE = 3
 
+function isHexString(str: unknown): str is string {
+  return isString(str) && isHex(str)
+}
+
 function isMemo(obj: unknown): obj is Memo {
   if (!isRecord(obj)) {
     return false
@@ -312,6 +316,21 @@ export interface BaseTransaction {
    */
   Signers?: Signer[]
   /**
+   * Milliseconds since the Ripple Epoch (2000-01-01T00:00:00Z) as a UInt64 hex
+   * string (see `unixTimeToTransactionTime`). The transaction is only valid
+   * while the parent ledger close time is within 120 seconds before and 300
+   * seconds after this time. A transaction with a `Time`, `Sequence` 0 and no
+   * `TicketSequence` is time-sequenced: the account `Sequence` is neither
+   * checked nor consumed, and replay protection is `Time` being greater than
+   * the account's `LastTxnTime`. Requires the JsonTx amendment.
+   */
+  Time?: string
+  /**
+   * Set by the server for a JsonTx submitted with `tx` and `sig`. Not a signing
+   * field. Never set it yourself.
+   */
+  JsonTxDelta?: string
+  /**
    * Arbitrary integer used to identify the reason for this payment, or a sender
    * on whose behalf this transaction is made. Conventionally, a refund should
    * specify the initial payment's SourceTag as the refund payment's
@@ -375,6 +394,7 @@ function validateHookName(common: Record<string, unknown>): void {
  * @param common - An interface w/ common transaction fields.
  * @throws When the common param is malformed.
  */
+// eslint-disable-next-line max-lines-per-function, max-statements -- one validator per common field
 export function validateBaseTransaction(
   common: unknown,
 ): asserts common is BaseTransaction {
@@ -423,6 +443,10 @@ export function validateBaseTransaction(
   validateOptionalField(common, 'SourceTag', isNumber)
 
   validateOptionalField(common, 'SigningPubKey', isString)
+
+  validateOptionalField(common, 'Time', isHexString)
+
+  validateOptionalField(common, 'JsonTxDelta', isHexString)
 
   validateOptionalField(common, 'TicketSequence', isNumber)
 

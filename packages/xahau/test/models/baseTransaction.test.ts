@@ -73,6 +73,39 @@ describe('BaseTransaction', function () {
     assertValid(txJson)
   })
 
+  it(`Verifies valid Time and JsonTxDelta`, function () {
+    assertValid({
+      Account: 'r97KeayHuEsDwyU1yPBVtMLLoQr79QcRFe',
+      TransactionType: 'Payment',
+      Time: 'c563d7bfa9',
+      JsonTxDelta: '01001E01D0',
+    })
+  })
+
+  it(`Handles invalid Time`, function () {
+    const tx = {
+      Account: 'r97KeayHuEsDwyU1yPBVtMLLoQr79QcRFe',
+      TransactionType: 'Payment',
+    }
+    assertInvalid({ ...tx, Time: 1794468442345 }, 'Payment: invalid field Time')
+    assertInvalid({ ...tx, Time: 'not hex' }, 'Payment: invalid field Time')
+  })
+
+  it(`Handles invalid JsonTxDelta`, function () {
+    const tx = {
+      Account: 'r97KeayHuEsDwyU1yPBVtMLLoQr79QcRFe',
+      TransactionType: 'Payment',
+    }
+    assertInvalid(
+      { ...tx, JsonTxDelta: 5 },
+      'Payment: invalid field JsonTxDelta',
+    )
+    assertInvalid(
+      { ...tx, JsonTxDelta: 'xyz' },
+      'Payment: invalid field JsonTxDelta',
+    )
+  })
+
   it(`Verifies valid HookName`, function () {
     const txJson = {
       Account: 'r97KeayHuEsDwyU1yPBVtMLLoQr79QcRFe',

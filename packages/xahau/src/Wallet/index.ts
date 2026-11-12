@@ -38,9 +38,9 @@ import { rfc1751MnemonicToKey } from './rfc1751'
 import { verifySignature } from './signer'
 
 const DEFAULT_ALGORITHM: ECDSA = ECDSA.ed25519
+const DEFAULT_DERIVATION_PATH = "m/44'/144'/0'/0/0"
 // Prefix of the signed message of a JsonTx: 0xFF 'J' 'T' 'X'
 const JSON_TX_PREFIX_HEX = 'FF4A5458'
-const DEFAULT_DERIVATION_PATH = "m/44'/144'/0'/0/0"
 
 type ValidHDKey = HDKey & {
   privateKey: Uint8Array
@@ -456,10 +456,13 @@ export class Wallet {
    * known from the submit response (`result.tx_blob`, `result.tx_json.hash`),
    * and `submitAndWait` and `verifyTransaction` do not apply.
    *
-   * Hex field values must be uppercase and amounts must be in canonical
-   * spelling (for example `"100"`, not `"100.0"`), otherwise the server
-   * refuses the signature. `Time` in the transaction object is the usual hex
-   * value; it is written as ISO 8601 in the signed text.
+   * The server only accepts a text whose values are spelled the way it renders
+   * them in `tx_json`, and refuses the signature otherwise: uppercase hex for
+   * blobs and hashes, lowercase hex without leading zeros for UInt64 fields
+   * other than `Time`, amounts in canonical spelling (for example `"100"`, not
+   * `"100.0"`) and classic addresses (`Client.autofill` converts X-addresses).
+   * The text is limited to 8192 bytes. `Time` in the transaction object is the
+   * usual hex value; it is written as ISO 8601 in the signed text.
    *
    * @param this - Wallet instance.
    * @param transaction - A transaction to be signed offline.
@@ -467,6 +470,7 @@ export class Wallet {
    * @throws ValidationError if the key is not ed25519, the transaction is already signed,
    * or it has none of `Sequence`, `Time` and `TicketSequence`.
    */
+  // eslint-disable-next-line max-lines-per-function -- the checks before signing
   public signJsonTx(
     this: Wallet,
     transaction: Transaction,
@@ -494,7 +498,9 @@ export class Wallet {
     }
 
     removeTrailingZeros(tx)
-    tx.Flags = convertTxFlagsToNumber(tx)
+    if (tx.Flags != null) {
+      tx.Flags = convertTxFlagsToNumber(tx)
+    }
     setNestedFlagsToNumber(tx)
 
     // eslint-disable-next-line @typescript-eslint/consistent-type-assertions -- validate does not accept Transaction type

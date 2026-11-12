@@ -622,8 +622,9 @@ class Client extends EventEmitter<EventTypes> {
    * Autofills fields in a transaction. This will set `Sequence`, `Fee`,
    * `lastLedgerSequence` according to the current state of the server this Client
    * is connected to. It also converts all X-Addresses to classic addresses and
-   * flags interfaces into numbers. A transaction with a `Time` and no `Sequence`
-   * gets `Sequence` 0 (time-sequenced, JsonTx amendment) instead of a lookup.
+   * flags interfaces into numbers. A transaction with a `Time` or a
+   * `TicketSequence` and no `Sequence` gets `Sequence` 0 instead of a lookup
+   * (with a `Time` it is time-sequenced, JsonTx amendment).
    *
    * @category Core
    *
@@ -678,10 +679,10 @@ class Client extends EventEmitter<EventTypes> {
     const promises: Array<Promise<void>> = []
     tx.NetworkID ??= txNeedsNetworkID(this) ? this.networkID : undefined
     if (tx.Sequence == null) {
-      if (tx.Time == null) {
+      if (tx.Time == null && tx.TicketSequence == null) {
         promises.push(setNextValidSequenceNumber(this, tx))
       } else {
-        // time-sequenced transaction (JsonTx amendment)
+        // sequenced by its Time (JsonTx amendment) or by a Ticket
         tx.Sequence = 0
       }
     }

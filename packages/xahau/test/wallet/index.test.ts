@@ -1001,6 +1001,12 @@ describe('Wallet', function () {
       assert.deepEqual(input, jsonTx())
     })
 
+    it('does not add Flags to the text', function () {
+      const input = jsonTx()
+      delete input.Flags
+      assert.notInclude(signJsonTx(input).tx, 'Flags')
+    })
+
     it('accepts a TicketSequence or a Sequence instead of a Time', function () {
       const base = jsonTx()
       delete base.Time

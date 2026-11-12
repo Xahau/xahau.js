@@ -232,6 +232,20 @@ describe('client.autofill', function () {
     assert.strictEqual(txResult.Sequence, 0)
   })
 
+  it('should set Sequence to 0 for a transaction with a TicketSequence and no Sequence', async function () {
+    const tx: Transaction = {
+      TransactionType: 'DepositPreauth',
+      Account: 'rGWrZyQqhTp9Xu7G5Pkayo7bXjH4k4QYpf',
+      Authorize: 'rpZc4mVfWUif9CRoHRKKcmhu1nx2xktxBo',
+      Fee,
+      LastLedgerSequence,
+      TicketSequence: 5,
+    }
+    const txResult = await testContext.client.autofill(tx)
+
+    assert.strictEqual(txResult.Sequence, 0)
+  })
+
   it('should keep an explicit Sequence together with a Time', async function () {
     const tx: Transaction = {
       TransactionType: 'DepositPreauth',

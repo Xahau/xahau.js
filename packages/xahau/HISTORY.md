@@ -3,7 +3,7 @@
 ## Unreleased Changes
 
 ### Added
-* Support for the JsonTx amendment: the `Time` and `JsonTxDelta` common transaction fields, `AccountRoot.LastTxnTime`, `Wallet.signJsonTx` and the `tx` + `sig` form of the `submit` request (`SubmitJsonTxRequest`), the `unixTimeToTransactionTime` / `transactionTimeToUnixTime` utils, and `autofill` setting `Sequence` to 0 for a transaction with a `Time` and no `Sequence`
+* Support for the JsonTx amendment: the `Time` and `JsonTxDelta` common transaction fields, `AccountRoot.LastTxnTime`, `Wallet.signJsonTx` and the `tx` + `sig` form of the `submit` request (`SubmitJsonTxRequest`), the `unixTimeToTransactionTime` / `transactionTimeToUnixTime` utils, and `autofill` setting `Sequence` to 0 for a transaction with a `Time` or a `TicketSequence` and no `Sequence`
 
 ## 4.3.0 (2026-11-09)
 

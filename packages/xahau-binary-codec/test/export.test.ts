@@ -273,7 +273,7 @@ describe('Export amendment', () => {
   // Field IDs as serialized, written out from xahaud's sfields.macro
   // (type code and field code), so a wrong `nth` or `type` in
   // definitions.json fails here even though it would still round trip.
-  it.each([
+  const fieldIds: Array<[string, unknown, string]> = [
     ['RemoteNetworkID', 1, '2055'],
     ['TransactionCount', 1, '2056'],
     ['SampleFee', 1, '2057'],
@@ -294,7 +294,11 @@ describe('Export amendment', () => {
     ['ExportKeyReport', { PublicKey: PUBKEY }, 'E057'],
     ['ExportedTxn', { Sequence: 0 }, 'E059'],
     ['ExportKeys', [{ ExportKeyEntry: { CloseTime: 1 } }], 'F05AE055'],
-  ])('%s is serialized with its field ID', (field, value, prefix) => {
-    expect(encode({ [field]: value }).startsWith(prefix)).toBe(true)
+  ]
+  // a loop rather than it.each, which the browser (Jasmine) run does not have
+  fieldIds.forEach(([field, value, prefix]) => {
+    it(`${field} is serialized with its field ID`, () => {
+      expect(encode({ [field]: value }).startsWith(prefix)).toBe(true)
+    })
   })
 })

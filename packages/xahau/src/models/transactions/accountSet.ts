@@ -66,6 +66,12 @@ export enum AccountSetAsfFlags {
   asfDisallowIncomingRemit = 16,
   /** Permanently gain the ability to claw back issued IOUs */
   asfAllowTrustLineClawback = 17,
+  /**
+   * List the account as an exporter on every network where it holds a signer
+   * list of the UNL's export keys; clear it to unlist. Setting it fails with
+   * `tecNO_TARGET` if the account holds none (Export amendment).
+   */
+  asfExporter = 18,
 }
 
 /**

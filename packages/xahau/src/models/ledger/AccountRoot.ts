@@ -93,6 +93,16 @@ export default interface AccountRoot extends BaseLedgerEntry, HasPreviousTxnID {
    * manifest (OnChainManifests amendment).
    */
   ManifestID?: string
+  /**
+   * A validator's export keys, newest first (Export amendment). What the
+   * account holds on other networks is in its `Exporter` objects.
+   */
+  ExportKeys?: Array<{
+    ExportKeyEntry: {
+      ExportKey: string
+      CloseTime: number
+    }
+  }>
 }
 
 /**

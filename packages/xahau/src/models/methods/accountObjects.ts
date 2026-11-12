@@ -1,5 +1,7 @@
 import {
   Amendments,
+  ExportedTxn,
+  ExportFee,
   FeeSettings,
   HookDefinition,
   HookState,
@@ -15,6 +17,8 @@ export type AccountObjectType = Exclude<
   LedgerEntryFilter,
   | 'amendments'
   | 'app_loader'
+  | 'export_fee'
+  | 'exported_txn'
   | 'fee'
   | 'hashes'
   | 'hook_definition'
@@ -63,6 +67,8 @@ export interface AccountObjectsRequest
 export type AccountObject = Exclude<
   LedgerEntry,
   | Amendments
+  | ExportedTxn
+  | ExportFee
   | FeeSettings
   | LedgerHashes
   | HookDefinition

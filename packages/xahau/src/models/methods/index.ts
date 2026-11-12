@@ -66,6 +66,28 @@ import {
   DepositAuthorizedResponse,
 } from './depositAuthorized'
 import {
+  ExportInfoAccountResult,
+  ExportInfoCommon,
+  ExportInfoInFlight,
+  ExportInfoKeys,
+  ExportInfoNetwork,
+  ExportInfoOverviewResult,
+  ExportInfoPending,
+  ExportInfoRecord,
+  ExportInfoRequest,
+  ExportInfoResponse,
+  ExportInfoSignerList,
+  ExportInfoTickets,
+  ExportInfoTxn,
+  ExportInfoValidator,
+} from './exportInfo'
+import {
+  ExportSetupRequest,
+  ExportSetupResponse,
+  ExportSetupSigner,
+  ExportSetupTxJson,
+} from './exportSetup'
+import {
   FeatureAllRequest,
   FeatureAllResponse,
   FeatureOneRequest,
@@ -238,6 +260,9 @@ type Request =
   | RandomRequest
   // PWA methods
   | PwaValidateRequest
+  // Export methods
+  | ExportInfoRequest
+  | ExportSetupRequest
   // Price Oracle methods
   | GetAggregatePriceRequest
 
@@ -291,6 +316,8 @@ type Response<Version extends APIVersion = typeof DEFAULT_API_VERSION> =
   | RandomResponse
   // PWA methods
   | PwaValidateResponse
+  | ExportInfoResponse
+  | ExportSetupResponse
   // Price Oracle methods
   | GetAggregatePriceResponse
 
@@ -439,6 +466,10 @@ export type RequestResponseMap<
   ? PingResponse
   : T extends PwaValidateRequest
   ? PwaValidateResponse
+  : T extends ExportInfoRequest
+  ? ExportInfoResponse
+  : T extends ExportSetupRequest
+  ? ExportSetupResponse
   : T extends RandomRequest
   ? RandomResponse
   : Response<Version>
@@ -612,6 +643,24 @@ export {
   PingResponse,
   PwaValidateRequest,
   PwaValidateResponse,
+  ExportInfoAccountResult,
+  ExportInfoCommon,
+  ExportInfoInFlight,
+  ExportInfoKeys,
+  ExportInfoNetwork,
+  ExportInfoOverviewResult,
+  ExportInfoPending,
+  ExportInfoRecord,
+  ExportInfoRequest,
+  ExportInfoResponse,
+  ExportInfoSignerList,
+  ExportInfoTickets,
+  ExportInfoTxn,
+  ExportInfoValidator,
+  ExportSetupRequest,
+  ExportSetupResponse,
+  ExportSetupSigner,
+  ExportSetupTxJson,
   RandomRequest,
   RandomResponse,
   ErrorResponse,

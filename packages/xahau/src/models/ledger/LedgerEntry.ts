@@ -7,6 +7,9 @@ import DepositPreauth from './DepositPreauth'
 import DirectoryNode from './DirectoryNode'
 import EmittedTxn from './EmittedTxn'
 import Escrow from './Escrow'
+import ExportedTxn from './ExportedTxn'
+import Exporter from './Exporter'
+import ExportFee from './ExportFee'
 import FeeSettings from './FeeSettings'
 import Hook from './Hook'
 import HookDefinition from './HookDefinition'
@@ -20,6 +23,7 @@ import Oracle from './Oracle'
 import PayChannel from './PayChannel'
 import Random from './Random'
 import RippleState from './RippleState'
+import ShadowTicket from './ShadowTicket'
 import SignerList from './SignerList'
 import Ticket from './Ticket'
 import UNLReport from './UNLReport'
@@ -35,6 +39,9 @@ type LedgerEntry =
   | DirectoryNode
   | EmittedTxn
   | Escrow
+  | ExportedTxn
+  | ExportFee
+  | Exporter
   | FeeSettings
   | Hook
   | HookDefinition
@@ -48,6 +55,7 @@ type LedgerEntry =
   | PayChannel
   | Random
   | RippleState
+  | ShadowTicket
   | SignerList
   | Ticket
   | UNLReport
@@ -62,6 +70,9 @@ type LedgerEntryFilter =
   | 'deposit_preauth'
   | 'directory'
   | 'escrow'
+  | 'exported_txn'
+  | 'export_fee'
+  | 'exporter'
   | 'fee'
   | 'hook'
   | 'hook_state'
@@ -73,6 +84,7 @@ type LedgerEntryFilter =
   | 'oracle'
   | 'payment_channel'
   | 'random'
+  | 'shadow_ticket'
   | 'signer_list'
   | 'state'
   | 'ticket'

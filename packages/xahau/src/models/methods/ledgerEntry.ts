@@ -106,6 +106,66 @@ export interface LedgerEntryRequest extends BaseRequest, LookupByLedgerRequest {
     | string
 
   /**
+   * The ExportedTxn object (Export amendment) to retrieve. If a string, must
+   * be the object ID of the ExportedTxn, as hexadecimal. If an object, the
+   * `seq` and `transaction_hash` sub-fields are required to uniquely specify
+   * the pending export.
+   */
+  exported_txn?:
+    | {
+        /** The ledger index in which the Export transaction applied. */
+        seq: number
+        /** The id of the exported transaction, without signatures. */
+        transaction_hash: string
+      }
+    | string
+
+  /**
+   * The Exporter object (Export amendment) to retrieve: an account's
+   * standing on another network. If a string, must be the object ID of the
+   * Exporter, as hexadecimal. If an object, the `account` and `network_id`
+   * sub-fields are required.
+   */
+  exporter?:
+    | {
+        /** The exporting account. */
+        account: string
+        /** The ID of the other network. 0 for the XRPL. */
+        network_id: number
+      }
+    | string
+
+  /**
+   * The ExportFee object (Export amendment) to retrieve: what `Ingest` has
+   * proven of another network's fees. If a string, must be the object ID of
+   * the ExportFee, as hexadecimal. If an object, the `network_id` sub-field is
+   * required.
+   */
+  export_fee?:
+    | {
+        /** The ID of the other network. 0 for the XRPL. */
+        network_id: number
+      }
+    | string
+
+  /**
+   * The ShadowTicket object (Export amendment) to retrieve: the shadow ticket
+   * of an export in flight. If a string, must be the object ID of the
+   * ShadowTicket, as hexadecimal. If an object, the `account`, `network_id`
+   * and `ticket_seq` sub-fields are required.
+   */
+  shadow_ticket?:
+    | {
+        /** The exporting account. */
+        account: string
+        /** The ID of the other network. 0 for the XRPL. */
+        network_id: number
+        /** The ticket that the export uses on the other network. */
+        ticket_seq: number
+      }
+    | string
+
+  /**
    * The hash of the Hook object to retrieve.
    */
   hook_definition?: string

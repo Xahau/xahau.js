@@ -22,7 +22,12 @@ import { Entropy } from './entropy'
 import { EscrowCancel, validateEscrowCancel } from './escrowCancel'
 import { EscrowCreate, validateEscrowCreate } from './escrowCreate'
 import { EscrowFinish, validateEscrowFinish } from './escrowFinish'
+import { Export } from './export'
+import { ExportAuto } from './exportAuto'
+import { ExportFinal } from './exportFinal'
+import { ExportSign } from './exportSign'
 import { Import, validateImport } from './import'
+import { Ingest, validateIngest } from './ingest'
 import { Invoke, validateInvoke } from './invoke'
 import { TransactionMetadata } from './metadata'
 import { OfferCancel, validateOfferCancel } from './offerCancel'
@@ -82,6 +87,7 @@ export type SubmittableTransaction =
   | EscrowCreate
   | EscrowFinish
   | Import
+  | Ingest
   | Invoke
   | OfferCancel
   | OfferCreate
@@ -110,14 +116,22 @@ export type SubmittableTransaction =
  * @category Transaction Models
  */
 export type PseudoTransaction =
-  Cron | EnableAmendment | Entropy | SetFee | SetManifest | UNLModify
+  | Cron
+  | EnableAmendment
+  | Entropy
+  | ExportAuto
+  | ExportFinal
+  | SetFee
+  | SetManifest
+  | UNLModify
 
 /**
  * All transactions that can live on the XAHL
  *
  * @category Transaction Models
  */
-export type Transaction = SubmittableTransaction | PseudoTransaction
+export type Transaction =
+  SubmittableTransaction | PseudoTransaction | Export | ExportSign
 
 /**
  * @category Transaction Models
@@ -211,6 +225,10 @@ export function validate(transaction: Record<string, unknown>): void {
 
     case 'Import':
       validateImport(tx)
+      break
+
+    case 'Ingest':
+      validateIngest(tx)
       break
 
     case 'Invoke':

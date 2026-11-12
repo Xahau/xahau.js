@@ -10,6 +10,9 @@ import DepositPreauth from './DepositPreauth'
 import DirectoryNode from './DirectoryNode'
 import EmittedTxn from './EmittedTxn'
 import Escrow from './Escrow'
+import ExportedTxn from './ExportedTxn'
+import Exporter from './Exporter'
+import ExportFee from './ExportFee'
 import FeeSettings, {
   FeeSettingsPreAmendmentFields,
   FeeSettingsPostAmendmentFields,
@@ -29,6 +32,7 @@ import Oracle from './Oracle'
 import PayChannel from './PayChannel'
 import Random from './Random'
 import RippleState, { RippleStateFlags } from './RippleState'
+import ShadowTicket from './ShadowTicket'
 import SignerList, { SignerListFlags } from './SignerList'
 import Ticket from './Ticket'
 import UNLReport from './UNLReport'
@@ -47,6 +51,9 @@ export {
   DirectoryNode,
   EmittedTxn,
   Escrow,
+  ExportedTxn,
+  ExportFee,
+  Exporter,
   FEE_SETTINGS_ID,
   FeeSettings,
   FeeSettingsPreAmendmentFields,
@@ -71,6 +78,7 @@ export {
   Random,
   RippleState,
   RippleStateFlags,
+  ShadowTicket,
   SignerList,
   SignerListFlags,
   Ticket,

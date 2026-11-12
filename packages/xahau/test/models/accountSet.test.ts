@@ -30,6 +30,11 @@ describe('AccountSet', function () {
     assertValid(tx)
   })
 
+  it(`verifies SetFlag asfExporter`, function () {
+    tx.SetFlag = 18
+    assertValid(tx)
+  })
+
   it(`throws w/ invalid SetFlag (out of range)`, function () {
     tx.SetFlag = 20
     assertInvalid(tx, 'AccountSet: invalid SetFlag')

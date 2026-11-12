@@ -711,6 +711,86 @@
       }
     ],
     [
+      "RemoteNetworkID",
+      {
+        "isSerialized": true,
+        "isSigningField": true,
+        "isVLEncoded": false,
+        "nth": 85,
+        "type": "UInt32"
+      }
+    ],
+    [
+      "TransactionCount",
+      {
+        "isSerialized": true,
+        "isSigningField": true,
+        "isVLEncoded": false,
+        "nth": 86,
+        "type": "UInt32"
+      }
+    ],
+    [
+      "SampleFee",
+      {
+        "isSerialized": true,
+        "isSigningField": true,
+        "isVLEncoded": false,
+        "nth": 87,
+        "type": "UInt32"
+      }
+    ],
+    [
+      "ExportFeeUnit",
+      {
+        "isSerialized": true,
+        "isSigningField": true,
+        "isVLEncoded": false,
+        "nth": 88,
+        "type": "UInt32"
+      }
+    ],
+    [
+      "ExportSequence",
+      {
+        "isSerialized": true,
+        "isSigningField": true,
+        "isVLEncoded": false,
+        "nth": 89,
+        "type": "UInt32"
+      }
+    ],
+    [
+      "ExportTicketPending",
+      {
+        "isSerialized": true,
+        "isSigningField": true,
+        "isVLEncoded": false,
+        "nth": 90,
+        "type": "UInt32"
+      }
+    ],
+    [
+      "ExportTicketNext",
+      {
+        "isSerialized": true,
+        "isSigningField": true,
+        "isVLEncoded": false,
+        "nth": 91,
+        "type": "UInt32"
+      }
+    ],
+    [
+      "ExportKeysSeq",
+      {
+        "isSerialized": true,
+        "isSigningField": true,
+        "isVLEncoded": false,
+        "nth": 92,
+        "type": "UInt32"
+      }
+    ],
+    [
       "StartTime",
       {
         "isSerialized": true,
@@ -1047,6 +1127,26 @@
         "isSigningField": true,
         "isVLEncoded": false,
         "nth": 28,
+        "type": "UInt64"
+      }
+    ],
+    [
+      "BurnedDrops",
+      {
+        "isSerialized": true,
+        "isSigningField": true,
+        "isVLEncoded": false,
+        "nth": 93,
+        "type": "UInt64"
+      }
+    ],
+    [
+      "ExportNode",
+      {
+        "isSerialized": true,
+        "isSigningField": true,
+        "isVLEncoded": false,
+        "nth": 94,
         "type": "UInt64"
       }
     ],
@@ -1501,6 +1601,16 @@
       }
     ],
     [
+      "ExportTxnID",
+      {
+        "isSerialized": true,
+        "isSigningField": true,
+        "isVLEncoded": false,
+        "nth": 92,
+        "type": "Hash256"
+      }
+    ],
+    [
       "HookOnOutgoing",
       {
         "isSerialized": true,
@@ -1567,6 +1677,16 @@
         "isSigningField": true,
         "isVLEncoded": false,
         "nth": 99,
+        "type": "Hash256"
+      }
+    ],
+    [
+      "RemoteTxnID",
+      {
+        "isSerialized": true,
+        "isSigningField": true,
+        "isVLEncoded": false,
+        "nth": 100,
         "type": "Hash256"
       }
     ],
@@ -2201,6 +2321,26 @@
       }
     ],
     [
+      "ExportKey",
+      {
+        "isSerialized": true,
+        "isSigningField": true,
+        "isVLEncoded": true,
+        "nth": 93,
+        "type": "Blob"
+      }
+    ],
+    [
+      "ExportKeyProof",
+      {
+        "isSerialized": true,
+        "isSigningField": true,
+        "isVLEncoded": true,
+        "nth": 94,
+        "type": "Blob"
+      }
+    ],
+    [
       "AppLoader",
       {
         "isSerialized": true,
@@ -2731,12 +2871,52 @@
       }
     ],
     [
+      "ExportKeyEntry",
+      {
+        "isSerialized": true,
+        "isSigningField": true,
+        "isVLEncoded": false,
+        "nth": 85,
+        "type": "STObject"
+      }
+    ],
+    [
+      "ExportSignerList",
+      {
+        "isSerialized": true,
+        "isSigningField": true,
+        "isVLEncoded": false,
+        "nth": 86,
+        "type": "STObject"
+      }
+    ],
+    [
+      "ExportKeyReport",
+      {
+        "isSerialized": true,
+        "isSigningField": true,
+        "isVLEncoded": false,
+        "nth": 87,
+        "type": "STObject"
+      }
+    ],
+    [
       "RandomDigestEntry",
       {
         "isSerialized": true,
         "isSigningField": true,
         "isVLEncoded": false,
         "nth": 88,
+        "type": "STObject"
+      }
+    ],
+    [
+      "ExportedTxn",
+      {
+        "isSerialized": true,
+        "isSigningField": true,
+        "isVLEncoded": false,
+        "nth": 89,
         "type": "STObject"
       }
     ],
@@ -3061,6 +3241,16 @@
       }
     ],
     [
+      "ExportKeys",
+      {
+        "isSerialized": true,
+        "isSigningField": true,
+        "isVLEncoded": false,
+        "nth": 90,
+        "type": "STArray"
+      }
+    ],
+    [
       "RandomDigests",
       {
         "isSerialized": true,
@@ -3331,6 +3521,16 @@
       }
     ],
     [
+      "ExportTickets",
+      {
+        "isSerialized": true,
+        "isSigningField": true,
+        "isVLEncoded": true,
+        "nth": 7,
+        "type": "Vector256"
+      }
+    ],
+    [
       "URITokenIDs",
       {
         "isSerialized": true,
@@ -3485,6 +3685,9 @@
     "DirectoryNode": 100,
     "EmittedTxn": 69,
     "Escrow": 117,
+    "ExportFee": 90,
+    "ExportedTxn": 88,
+    "Exporter": 86,
     "FeeSettings": 115,
     "Hook": 72,
     "HookDefinition": 68,
@@ -3504,6 +3707,7 @@
     "PermissionedDomain": 130,
     "Random": 21102,
     "RippleState": 114,
+    "ShadowTicket": 89,
     "SignerList": 83,
     "Ticket": 84,
     "UNLReport": 82,
@@ -3622,6 +3826,7 @@
       "asfDisallowIncomingRemit": 16,
       "asfDisallowIncomingTrustline": 15,
       "asfDisallowXRP": 3,
+      "asfExporter": 18,
       "asfGlobalFreeze": 7,
       "asfNoFreeze": 6,
       "asfRequireAuth": 2,
@@ -3861,8 +4066,13 @@
     "EscrowCancel": 4,
     "EscrowCreate": 1,
     "EscrowFinish": 2,
+    "Export": 88,
+    "ExportAuto": 86,
+    "ExportFinal": 90,
+    "ExportSign": 87,
     "GenesisMint": 96,
     "Import": 97,
+    "Ingest": 85,
     "Invalid": -1,
     "Invoke": 99,
     "LedgerStateFix": 62,

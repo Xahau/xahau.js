@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+### Added
+* Update `definitions.json` for the Export amendment: new fields, transaction types (`Ingest`, `ExportAuto`, `ExportSign`, `Export`, `ExportFinal`) and ledger entry types (`Exporter`, `ExportedTxn`, `ShadowTicket`, `ExportFee`), plus the `asfExporter` AccountSet flag.
+
 ## 2.3.1 (2026-11-09)
 
 ### Fixed

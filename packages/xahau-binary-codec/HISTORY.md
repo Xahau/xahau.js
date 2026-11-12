@@ -3,7 +3,7 @@
 ## Unreleased
 
 ### Added
-* Update `definitions.json` for the Export amendment: new fields, transaction types (`Ingest`, `ExportAuto`, `ExportSign`, `Export`, `ExportFinal`) and ledger entry types (`Exporter`, `ExportedTxn`, `ShadowTicket`, `ExportFee`), plus the `asfExporter` AccountSet flag.
+* Update `definitions.json` for xahaud 2026.11.12-HEAD+4386 (Export amendment): new fields, transaction types (`Ingest`, `ExportAuto`, `ExportSign`, `Export`, `ExportFinal`) and ledger entry types (`Exporter`, `ExportedTxn`, `ShadowTicket`, `ExportFee`), plus the `asfExporter` AccountSet flag. Also adds the `LastTxnTime`, `Time` and `JsonTxDelta` fields of that build.
 
 ## 2.3.1 (2026-11-09)
 

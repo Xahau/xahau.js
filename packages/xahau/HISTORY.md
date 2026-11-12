@@ -3,7 +3,7 @@
 ## Unreleased Changes
 
 ### Added
-* Support for the Export amendment: the `Ingest`, `Export`, `ExportSign`, `ExportFinal` and `ExportAuto` transactions, the `ExportedTxn`, `ShadowTicket`, `Exporter` and `ExportFee` ledger entries, the `export_info` and `export_setup` methods, the `asfExporter` AccountSet flag, and the new `AccountRoot` (`ExportKeys`) and `UNLReport` (`LedgerSequence`, `ExportKeysSeq`, `RemoteNetworkID`) fields.
+* Support for the Export amendment: the `Ingest`, `Export`, `ExportSign`, `ExportFinal` and `ExportAuto` transactions, the `ExportedTxn`, `ShadowTicket`, `Exporter` and `ExportFee` ledger entries, the `export_info` and `export_setup` methods, the `exported_txn`, `exporter`, `export_fee` and `shadow_ticket` selectors of `ledger_entry`, the `asfExporter` AccountSet flag, and the new `AccountRoot` (`ExportKeys`) and `UNLReport` (`LedgerSequence`, `ExportKeysSeq`, `RemoteNetworkID`) fields.
 
 ## 4.3.0 (2026-11-09)
 

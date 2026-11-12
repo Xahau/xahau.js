@@ -19,7 +19,7 @@ export default interface ExportFee extends BaseLedgerEntry, HasPreviousTxnID {
   LedgerSequence: number
   /** The number of transactions in that ledger. */
   TransactionCount: number
-  /** The drops that those transactions burned between them. */
+  /** The drops that those transactions burned between them, as a hex string (UInt64). */
   BurnedDrops: string
   /** The median fee unit sampled among those transactions. */
   SampleFee: number

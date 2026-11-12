@@ -83,4 +83,40 @@ describe('ledger_entry', function () {
     },
     TIMEOUT,
   )
+
+  it(
+    'Export entries that do not exist',
+    async () => {
+      // None of them exists on a node without exporters or exports; each
+      // selector is parsed by the server, so a malformed one would be another
+      // error.
+      const account = testContext.wallet.classicAddress
+      const selectors: Array<Partial<LedgerEntryRequest>> = [
+        { exporter: { account, network_id: 0 } },
+        { shadow_ticket: { account, network_id: 0, ticket_seq: 1 } },
+        { exported_txn: { seq: 1, transaction_hash: '0'.repeat(64) } },
+        { export_fee: { network_id: 1 } },
+      ]
+      for (const selector of selectors) {
+        let thrown: unknown
+        try {
+          // eslint-disable-next-line no-await-in-loop -- sequential on purpose
+          await testContext.client.request({
+            command: 'ledger_entry',
+            ledger_index: 'validated',
+            ...selector,
+          })
+        } catch (error) {
+          thrown = error
+        }
+        assert.instanceOf(thrown, XahaudError)
+        assert.equal(
+          (thrown as XahaudError & { data: { error: string } }).data.error,
+          'entryNotFound',
+          JSON.stringify(selector),
+        )
+      }
+    },
+    TIMEOUT,
+  )
 })

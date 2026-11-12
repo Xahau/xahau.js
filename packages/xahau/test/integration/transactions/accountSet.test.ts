@@ -3,6 +3,7 @@ import { assert } from 'chai'
 import {
   AccountInfoRequest,
   AccountSet,
+  AccountSetAsfFlags,
   convertStringToHex,
   LedgerEntryRequest,
   XahaudError,
@@ -14,7 +15,7 @@ import {
   teardownClient,
   type XrplIntegrationTestContext,
 } from '../setup'
-import { testTransaction } from '../utils'
+import { submitTransaction, testTransaction } from '../utils'
 
 // how long before each test case times out
 const TIMEOUT = 20000
@@ -93,6 +94,26 @@ describe('AccountSet', function () {
 
       const infoAfter = await testContext.client.request(infoRequest)
       assert.equal(infoAfter.result.account_data.AppLoaderSequence, 2)
+    },
+    TIMEOUT,
+  )
+
+  it(
+    'asfExporter without an Exporter',
+    async () => {
+      // Only an Import the account signs can make it an exporter on another
+      // network: there is none to list.
+      const set: AccountSet = {
+        TransactionType: 'AccountSet',
+        Account: testContext.wallet.classicAddress,
+        SetFlag: AccountSetAsfFlags.asfExporter,
+      }
+      const response = await submitTransaction({
+        client: testContext.client,
+        transaction: set,
+        wallet: testContext.wallet,
+      })
+      assert.equal(response.result.engine_result, 'tecNO_TARGET')
     },
     TIMEOUT,
   )
